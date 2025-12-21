@@ -1,11 +1,7 @@
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router";
 function App() {
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <p className="text-3xl font-bold underline">
-                Welcome to the CoreFlow Frontend
-            </p>
-        </div>
-    );
+    return <RouterProvider router={router} />
 }
 
 export default App;
