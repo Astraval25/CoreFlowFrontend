@@ -33,7 +33,7 @@ const LoginPage = () => {
 
         <p className="text-center mt-5 text-sm">
           Don’t have an account?{" "}
-          <span className="text-blue-600 cursor-pointer font-medium">
+          <span className="text-blue-600 cursor-pointer font-medium" onClick={() => navigate("/register")}>
             Sign Up
           </span>
         </p>

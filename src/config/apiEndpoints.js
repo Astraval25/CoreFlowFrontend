@@ -1,4 +1,6 @@
-export const ENDPOINTS =  {
-    LOGIN: "/auth/login",
-    // REFRESH: "/auth/refresh"
-}
+export const ENDPOINTS = {
+  LOGIN: "/auth/login",
+  REGISTER: "/auth/register",
+  VERIFY_OTP: "/auth/verify-otp",
+  RESEND_OTP: "/auth/send-otp"
+};
