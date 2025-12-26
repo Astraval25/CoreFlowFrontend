@@ -10,7 +10,7 @@ const RegisterForm = ({ onSubmit, loading, error }) => {
     lastName: "",
     userName: "",
     email: "",
-    password: "",
+    password: ""
   });
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -30,6 +30,9 @@ const RegisterForm = ({ onSubmit, loading, error }) => {
       name: `${formData.firstName} ${formData.lastName}`.trim(),
       email: formData.email,
     });
+    if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = "Passwords do not match";
+    }
 
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
@@ -118,32 +121,34 @@ const RegisterForm = ({ onSubmit, loading, error }) => {
       </div>
 
       {/* Email */}
-      <div>
-        <label className="block text-xs text-gray-500 mb-1">Email</label>
-        <div className="relative">
-          <MdEmail
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            size={16}
-          />
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Email"
-            className={`w-full pl-9 pr-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-              validationErrors.email ? "border-red-500" : "border-gray-300"
-            }`}
-            required
-          />
-        </div>
-        {validationErrors.email && (
-          <p className="text-red-500 text-xs mt-1">{validationErrors.email}</p>
-        )}
-      </div>
 
       {/* Username + Password */}
       <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">Email</label>
+          <div className="relative">
+            <MdEmail
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={16}
+            />
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Email"
+              className={`w-full pl-9 pr-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                validationErrors.email ? "border-red-500" : "border-gray-300"
+              }`}
+              required
+            />
+          </div>
+          {validationErrors.email && (
+            <p className="text-red-500 text-xs mt-1">
+              {validationErrors.email}
+            </p>
+          )}
+        </div>
         <div>
           <label className="block text-xs text-gray-500 mb-1">Username</label>
           <div className="relative">
@@ -162,7 +167,9 @@ const RegisterForm = ({ onSubmit, loading, error }) => {
             />
           </div>
         </div>
+      </div>
 
+      <div className="grid grid-cols-2 gap-3">
         <div>
           <label className="block text-xs text-gray-500 mb-1">Password</label>
           <div className="relative">
@@ -180,6 +187,31 @@ const RegisterForm = ({ onSubmit, loading, error }) => {
               required
             />
           </div>
+        </div>
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">
+            Confirm Password
+          </label>
+          <div className="relative">
+            <MdLock
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={16}
+            />
+            <input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              placeholder="Password"
+              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
+          </div>
+          {validationErrors.confirmPassword && (
+            <p className="text-red-500 text-xs mt-1">
+              {validationErrors.confirmPassword}
+            </p>
+          )}
         </div>
       </div>
 

@@ -11,13 +11,18 @@ const RegisterPage = () => {
   const handleRegister = async (formData) => {
     try {
       setError("");
-      const res = await register(formData);
+      const { confirmPassword, ...payload } = formData;
+      const res = await register(payload);
       if (res.responseStatus) {
-        navigate(res.responseData.landingUrl);
+        navigate(res.responseData.landingUrl, {
+          state: {
+            email: formData.email
+          }
+        });
       }
     } catch (err) {
-      console.log("Error caught:", err);
-      setError(err.response.data.responseMessage);
+      console.log("Error caught:", err.message);
+      setError(err.message);
     }
   };
 

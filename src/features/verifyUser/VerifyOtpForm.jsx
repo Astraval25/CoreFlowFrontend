@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { MdEmail, MdLock } from "react-icons/md";
 
-const VerifyOtpForm = ({ onSubmit, onResend, error }) => {
+const VerifyOtpForm = ({ onSubmit, onResend, error, prefilledEmail  }) => {
   const [formData, setFormData] = useState({
-    email: "",
+    email: prefilledEmail || "",
     otp: "",
   });
-
+  const isEmailLocked = Boolean(prefilledEmail);
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -32,7 +32,14 @@ const VerifyOtpForm = ({ onSubmit, onResend, error }) => {
             value={formData.email}
             onChange={handleChange}
             placeholder="Enter your email"
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+            disabled={isEmailLocked}
+            className={`w-full pl-10 pr-4 py-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400
+              ${
+                isEmailLocked
+                  ? "bg-slate-50 cursor-not-allowed border-gray-300"
+                  : "border-gray-300"
+              }
+            `}
             required
           />
         </div>

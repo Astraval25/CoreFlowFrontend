@@ -1,13 +1,15 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import VerifyOtpForm from "./VerifyOtpForm";
 import { useVerifyOtp } from "./useVerifyOtp";
 
 const VerifyOtpPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { verifyOtp, resendOtp  } = useVerifyOtp();
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const prefilledEmail = location.state?.email || "";
 
   const handleVerify = async (data) => {
     try {
@@ -55,6 +57,7 @@ const VerifyOtpPage = () => {
         <VerifyOtpForm
           onSubmit={handleVerify}
           onResend={handleResend}
+          prefilledEmail={prefilledEmail} 
           error={error}
         />
 
