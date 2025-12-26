@@ -7,7 +7,7 @@ export const useLogin = () => {
 
       // If login failed
       if (!data.responseStatus) {
-        throw new Error(data.responseMessage || "Login failed");
+        throw new Error(data.responseData.email || "Login failed");
       }
 
       if (data.responseData?.token) {

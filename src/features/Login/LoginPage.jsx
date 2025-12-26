@@ -14,7 +14,7 @@ const LoginPage = () => {
       const data = await login(credentials);
       navigate(data.responseData.landingUrl);
     } catch (err) {
-      setError(err.message || "Login failed");
+      setError(err.message);
     }
   };
 
