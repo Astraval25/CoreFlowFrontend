@@ -14,7 +14,7 @@ const LoginPage = () => {
       const data = await login(credentials);
       navigate(data.responseData.landingUrl);
     } catch (err) {
-      setError(err.message || "Login failed");
+      setError(err.message);
     }
   };
 
@@ -33,7 +33,7 @@ const LoginPage = () => {
 
         <p className="text-center mt-5 text-sm">
           Don’t have an account?{" "}
-          <span className="text-blue-600 cursor-pointer font-medium">
+          <span className="text-blue-600 cursor-pointer font-medium" onClick={() => navigate("/register")}>
             Sign Up
           </span>
         </p>

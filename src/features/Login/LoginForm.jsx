@@ -1,7 +1,13 @@
 import { useState } from "react";
-import { MdPerson, MdLock } from "react-icons/md";
+import {
+  MdPerson,
+  MdLock,
+  MdVisibility,
+  MdVisibilityOff,
+} from "react-icons/md";
 
 const LoginForm = ({ onSubmit, loading, error }) => {
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -45,7 +51,7 @@ const LoginForm = ({ onSubmit, loading, error }) => {
             size={16}
           />
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
             value={formData.password}
             onChange={handleChange}
@@ -53,6 +59,14 @@ const LoginForm = ({ onSubmit, loading, error }) => {
             className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-1 focus:ring-blue-400"
             required
           />
+          <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+          >
+            {showPassword ? (
+              <MdVisibilityOff size={18} />
+            ) : (
+              <MdVisibility size={18} />
+            )}
+          </button>
         </div>
       </div>
 

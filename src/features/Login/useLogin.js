@@ -1,11 +1,11 @@
 import { coreApi } from "../../shared/services/coreApi";
 
 export const useLogin = () => {
-  const login = (credentials) => {
-    return coreApi.login(credentials).then((res) => {
+  const login = async (credentials) => {
+    try {
+      const res = await coreApi.login(credentials);
       const data = res.data;
 
-      // If login failed
       if (!data.responseStatus) {
         throw new Error(data.responseMessage || "Login failed");
       }
@@ -16,7 +16,14 @@ export const useLogin = () => {
       }
 
       return data;
-    });
+    } catch (error) {
+      const message =
+        error.response?.data?.responseMessage ||
+        error.message ||
+        "Something went wrong";
+
+      throw new Error(message);
+    }
   };
 
   return { login };
