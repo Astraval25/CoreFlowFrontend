@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { MdPerson, MdLock, MdEmail, MdBusiness } from "react-icons/md";
+import {
+  MdPerson,
+  MdLock,
+  MdEmail,
+  MdBusiness,
+  MdVisibilityOff,
+  MdVisibility,
+} from "react-icons/md";
 import { validateForm } from "../../shared/utils/validation";
 
 const RegisterForm = ({ onSubmit, loading, error }) => {
@@ -10,8 +17,10 @@ const RegisterForm = ({ onSubmit, loading, error }) => {
     lastName: "",
     userName: "",
     email: "",
-    password: ""
+    password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
 
   const handleChange = (e) => {
@@ -178,7 +187,7 @@ const RegisterForm = ({ onSubmit, loading, error }) => {
               size={16}
             />
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
@@ -186,6 +195,17 @@ const RegisterForm = ({ onSubmit, loading, error }) => {
               className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            >
+              {showPassword ? (
+                <MdVisibilityOff size={18} />
+              ) : (
+                <MdVisibility size={18} />
+              )}
+            </button>
           </div>
         </div>
         <div>
@@ -198,7 +218,7 @@ const RegisterForm = ({ onSubmit, loading, error }) => {
               size={16}
             />
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
@@ -206,6 +226,17 @@ const RegisterForm = ({ onSubmit, loading, error }) => {
               className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            >
+              {showConfirmPassword ? (
+                <MdVisibilityOff size={18} />
+              ) : (
+                <MdVisibility size={18} />
+              )}
+            </button>
           </div>
           {validationErrors.confirmPassword && (
             <p className="text-red-500 text-xs mt-1">
