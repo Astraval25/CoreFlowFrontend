@@ -5,6 +5,8 @@ import ProtectedRoute from "./features/Login/routes/ProtectedRoute";
 import RedirectIfLoggedIn from "./features/Login/routes/RedirectIfLoggedIn";
 import RegisterPage from "./features/Register/RegisterPage";
 import VerifyOtpPage from "./features/verifyUser/VerifyOtpPage";
+import MainLayout from "./shared/layouts/MainLayout";
+import CustomerPage from "./features/customer/CustomerPage";
 
 export const router = createBrowserRouter([
   {
@@ -32,11 +34,15 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/admin/dashboard",
+    path: "/admin",
     element: (
       <ProtectedRoute>
-        <Dashboard />
+        <MainLayout />
       </ProtectedRoute>
     ),
+    children: [
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "customers", element: <CustomerPage /> },
+    ],
   },
 ]);

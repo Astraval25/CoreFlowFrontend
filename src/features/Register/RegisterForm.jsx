@@ -9,7 +9,7 @@ import {
 } from "react-icons/md";
 import { validateForm } from "../../shared/utils/validation";
 
-const RegisterForm = ({ onSubmit, loading, error }) => {
+const RegisterForm = ({ onSubmit, error }) => {
   const [formData, setFormData] = useState({
     companyName: "",
     industry: "",
