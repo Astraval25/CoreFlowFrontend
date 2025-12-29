@@ -254,10 +254,9 @@ const RegisterForm = ({ onSubmit, error }) => {
 
       <button
         type="submit"
-        disabled={loading}
         className="w-full bg-blue-500 text-white py-2.5 rounded-full font-semibold hover:bg-blue-400 transition text-sm cursor-pointer"
       >
-        {loading ? "Registering..." : "Register"}
+        Sign In
       </button>
     </form>
   );
