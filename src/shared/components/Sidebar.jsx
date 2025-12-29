@@ -27,7 +27,7 @@ const Sidebar = () => {
      ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`;
 
   return (
-    <aside className="w-50 h-screen bg-gray-900 text-white fixed left-0 top-0">
+    <aside className="w-55 h-screen bg-gray-900 text-white fixed left-0 top-0">
       <div className="flex items-center justify-center h-20 border-b border-gray-700">
         <img src={logo} alt="Company Logo" className="h-12 object-contain" />
       </div>
