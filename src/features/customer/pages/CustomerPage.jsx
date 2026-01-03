@@ -7,10 +7,16 @@ import {
   MdSearch,
 } from "react-icons/md";
 import { flexRender } from "@tanstack/react-table";
-import { useCustomer } from "./useCustomer";
+import { useCustomer } from "../hooks/useCustomer";
+import { useNavigate } from "react-router-dom";
 
 const CustomerPage = () => {
   const { table, globalFilter, setGlobalFilter } = useCustomer();
+  const navigate = useNavigate();
+
+  const handleNewCustomer = () => {
+    navigate("/admin/create-customer");
+  };
 
   return (
     <div className="px-6">
@@ -32,7 +38,10 @@ const CustomerPage = () => {
           />
         </div>
 
-        <button className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition">
+        <button 
+          onClick={handleNewCustomer}
+          className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition cursor-pointer"
+        >
           New
           <MdAdd size={18} />
         </button>

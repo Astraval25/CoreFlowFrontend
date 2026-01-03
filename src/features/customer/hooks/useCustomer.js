@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { coreApi } from "../../shared/services/coreApi";
+import { coreApi } from "../../../shared/services/coreApi";
 import { jwtDecode } from "jwt-decode";
 import {
   createColumnHelper,

@@ -7,5 +7,8 @@ export const coreApi = {
   verify_otp: (data) => api.post(ENDPOINTS.VERIFY_OTP, data),
   resend_otp: (data) => api.post(ENDPOINTS.RESEND_OTP, data),
   getMyCompanies: () => api.get(ENDPOINTS.GET_COMPANY),
-  getCustomers: (companyId) => api.get(ENDPOINTS.GET_CUSTOMERS(companyId)),
+  getCustomers: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/active`),
+  createCustomer: (companyId, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers`, data),
 };
