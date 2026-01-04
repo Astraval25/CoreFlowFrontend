@@ -7,7 +7,7 @@ const useCompanyDrawer = () => {
   useEffect(() => {
     coreApi.getMyCompanies().then((res) => {
       setCompanies(res.data.responseData);
-      console.log(res);
+      // console.log(res);
     }).catch((err) => {
       console.error("Failed to fetch companies:", err);
     });
