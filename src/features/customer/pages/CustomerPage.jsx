@@ -1,4 +1,5 @@
 import {
+  MdCheckCircle,
   MdAdd,
   MdDelete,
   MdEditDocument,
@@ -17,6 +18,7 @@ const CustomerPage = () => {
     globalFilter,
     setGlobalFilter,
     deactivateCustomer,
+    activateCustomer,
     allCustomers,
     setCustomers,
   } = useCustomer();
@@ -49,6 +51,12 @@ const CustomerPage = () => {
     }
   };
 
+  const handleActivateCustomer = (customer) => {
+    if (window.confirm("Are you sure you want to activate this customer?")) {
+      activateCustomer(customer.customerId);
+    }
+  };
+
   const handleViewCustomer = (customer) => {
     navigate(`/admin/view-customer?customerId=${customer.customerId}`);
   };
@@ -60,12 +68,12 @@ const CustomerPage = () => {
         <select
           value={customerType}
           onChange={handleCustomerTypeChange}
-          className="cursor-pointer text-sm font-medium text-gray-700"
+          className="cursor-pointer text-sm font-medium text-gray-700 focus:outline-none focus:ring-0"
         >
           <option value="active">Active Customers</option>
           <option value="deleted">Deleted Customers</option>
         </select>
-        
+
         <div className="relative w-80">
           <MdSearch
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -81,15 +89,6 @@ const CustomerPage = () => {
                shadow-sm"
           />
         </div>
-
-        {/* <select
-          value={customerType}
-          onChange={handleCustomerTypeChange}
-          className="px-4 py-2 border border-gray-300 rounded-lg text-sm cursor-pointer"
-        >
-          <option value="active">Active Customers</option>
-          <option value="deleted">Deleted Customers</option>
-        </select> */}
 
         <button
           onClick={handleNewCustomer}
@@ -173,13 +172,38 @@ const CustomerPage = () => {
                       >
                         <MdEditDocument size={18} className="text-yellow-500" />
                       </button>
-                      <button
+                      {/* <button
                         onClick={() => handleDeleteCustomer(row.original)}
                         className="px-3 py-1 text-sm rounded cursor-pointer"
                         title="Delete"
                       >
                         <MdDelete size={18} className="text-red-500" />
-                      </button>
+                      </button> */}
+                      {row.original.isActive ? (
+                        // Deactivate button (Active customers)
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteCustomer(row.original);
+                          }}
+                          className="px-3 py-1 cursor-pointer"
+                          title="Deactivate"
+                        >
+                          <MdDelete size={18} className="text-red-500" />
+                        </button>
+                      ) : (
+                        // Activate button (Deleted customers)
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleActivateCustomer(row.original);
+                          }}
+                          className="px-3 py-1 cursor-pointer"
+                          title="Activate"
+                        >
+                          <MdCheckCircle size={18} className="text-green-600" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>

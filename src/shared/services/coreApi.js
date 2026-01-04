@@ -22,5 +22,10 @@ export const coreApi = {
     api.patch(
       `${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/deactivate`
     ),
-  getAllCustomerByCompanyId: (companyId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers`)
+  activateCustomer: (companyId, customerId) =>
+    api.patch(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/activate`
+    ),
+  getAllCustomerByCompanyId: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers`),
 };

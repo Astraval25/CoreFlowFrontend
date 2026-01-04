@@ -37,6 +37,15 @@ export const useCustomer = () => {
     }
   };
 
+  const activateCustomer = async (customerId) => {
+    try {
+      await coreApi.activateCustomer(companyId, customerId);
+      getAllCustomers(companyId); // refresh
+    } catch (err) {
+      console.error("Activate customer error:", err);
+    }
+  };
+
   const getAllCustomers = (compId) => {
     coreApi
       .getAllCustomerByCompanyId(compId)
@@ -84,6 +93,7 @@ export const useCustomer = () => {
     globalFilter,
     setGlobalFilter,
     deactivateCustomer,
+    activateCustomer,
     getAllCustomers,
     allCustomers,
     setCustomers,
