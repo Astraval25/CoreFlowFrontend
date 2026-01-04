@@ -15,5 +15,12 @@ export const coreApi = {
   createCustomer: (companyId, data) =>
     api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers`, data),
   editCustomer: (companyId, customerId, data) =>
-    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}`, data),
+    api.put(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}`,
+      data
+    ),
+  deactivateCustomer: (companyId, customerId) =>
+    api.patch(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/deactivate`
+    ),
 };

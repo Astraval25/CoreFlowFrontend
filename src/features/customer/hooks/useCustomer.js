@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { coreApi } from "../../../shared/services/coreApi";
 import { jwtDecode } from "jwt-decode";
+import { useSearchParams } from "react-router-dom";
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -13,23 +14,41 @@ import {
 export const useCustomer = () => {
   const [customers, setCustomers] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [companyId, setCompanyId] = useState("");
+  const [searchParams] = useSearchParams();
+  const customerId = searchParams.get("customerId");
+
+  const fetchCustomers = (compId) => {
+    coreApi
+      .getCustomers(compId)
+      .then((res) => {
+        setCustomers(res.data.responseData || []);
+      })
+      .catch((err) => {
+        console.error("Customer API error:", err);
+      });
+  };
+
+  const deactivateCustomer = async (customerId) => {
+    try {
+      await coreApi.deactivateCustomer(companyId, customerId);
+      fetchCustomers(companyId); 
+    } catch (err) {
+      console.error("Deactivate customer error:", err);
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
 
     const decode = jwtDecode(token);
-    const companyId = decode.defaultComp[0];
+    const compId = decode.defaultComp[0];
+    setCompanyId(compId);
 
-    coreApi
-      .getCustomers(companyId)
-      .then((res) => {
-        setCustomers(res.data.responseData || []);
-        // console.log(res.data.responseData)
-      })
-      .catch((err) => {
-        console.error("Customer API error:", err);
-      });
+    fetchCustomers(compId);
   }, []);
+
+
 
   const columnHelper = createColumnHelper();
 
@@ -69,5 +88,6 @@ export const useCustomer = () => {
     table,
     globalFilter,
     setGlobalFilter,
+    deactivateCustomer,
   };
 };

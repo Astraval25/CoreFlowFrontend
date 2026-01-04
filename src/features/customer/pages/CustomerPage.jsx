@@ -11,7 +11,7 @@ import { useCustomer } from "../hooks/useCustomer";
 import { useNavigate } from "react-router-dom";
 
 const CustomerPage = () => {
-  const { table, globalFilter, setGlobalFilter } = useCustomer();
+  const { table, globalFilter, setGlobalFilter, deactivateCustomer } = useCustomer();
   const navigate = useNavigate();
 
   const handleNewCustomer = () => {
@@ -20,6 +20,12 @@ const CustomerPage = () => {
 
   const handleEditCustomer = (customer) => {
     navigate(`/admin/create-customer?customerId=${customer.customerId}`);
+  };
+
+  const handleDeleteCustomer = (customer) => {
+    if (window.confirm('Are you sure you want to deactivate this customer?')) {
+      deactivateCustomer(customer.customerId);
+    }
   };
 
   return (
@@ -115,6 +121,7 @@ const CustomerPage = () => {
                         <MdEditDocument size={18} className="text-yellow-500" />
                       </button>
                       <button
+                        onClick={() => handleDeleteCustomer(row.original)}
                         className="px-3 py-1 text-sm rounded cursor-pointer"
                         title="Delete"
                       >
