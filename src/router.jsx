@@ -8,6 +8,7 @@ import VerifyOtpPage from "./features/verifyUser/VerifyOtpPage";
 import MainLayout from "./shared/layouts/MainLayout";
 import CustomerPage from "./features/customer/pages/CustomerPage";
 import CreateCustomerPage from "./features/customer/pages/CreateCustomerPage";
+import ViewCustomer from "./features/customer/pages/ViewCustomer";
 
 export const router = createBrowserRouter([
   {
@@ -45,6 +46,7 @@ export const router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard /> },
       { path: "customers", element: <CustomerPage /> },
       { path: "create-customer", element: <CreateCustomerPage /> },
+      { path: "view-customer", element: <ViewCustomer /> },
     ],
   },
 ]);

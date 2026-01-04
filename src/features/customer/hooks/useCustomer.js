@@ -13,10 +13,9 @@ import {
 
 export const useCustomer = () => {
   const [customers, setCustomers] = useState([]);
+  const [allCustomers, setAllCustomers] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [companyId, setCompanyId] = useState("");
-  const [searchParams] = useSearchParams();
-  const customerId = searchParams.get("customerId");
 
   const fetchCustomers = (compId) => {
     coreApi
@@ -32,51 +31,47 @@ export const useCustomer = () => {
   const deactivateCustomer = async (customerId) => {
     try {
       await coreApi.deactivateCustomer(companyId, customerId);
-      fetchCustomers(companyId); 
+      getAllCustomers(companyId); // refresh
     } catch (err) {
       console.error("Deactivate customer error:", err);
     }
   };
 
+  const getAllCustomers = (compId) => {
+    coreApi
+      .getAllCustomerByCompanyId(compId)
+      .then((res) => {
+        const data = res.data.responseData || [];
+        setAllCustomers(data);
+        setCustomers(data.filter((c) => c.isActive === true)); // default active
+      })
+      .catch((err) => {
+        console.error("Customer API error:", err);
+      });
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     const decode = jwtDecode(token);
     const compId = decode.defaultComp[0];
+
     setCompanyId(compId);
-
-    fetchCustomers(compId);
+    getAllCustomers(compId);
   }, []);
-
-
 
   const columnHelper = createColumnHelper();
 
   const columns = [
-    columnHelper.accessor("sno", {
-      header: "S.No",
-      enableSorting: true,
-    }),
-    columnHelper.accessor("displayName", {
-      header: "Display Name",
-      enableSorting: true,
-    }),
-    columnHelper.accessor("email", {
-      header: "Email",
-      enableSorting: true,
-    }),
-    columnHelper.accessor("action", {
-      header: "Action",
-      enableSorting: true,
-    }),
+    columnHelper.accessor("sno", { header: "S.No" }),
+    columnHelper.accessor("displayName", { header: "Display Name" }),
+    columnHelper.accessor("email", { header: "Email" }),
+    columnHelper.accessor("action", { header: "Action" }),
   ];
 
   const table = useReactTable({
     data: customers,
     columns,
-    state: {
-      globalFilter,
-    },
+    state: { globalFilter },
     onGlobalFilterChange: setGlobalFilter,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -89,5 +84,8 @@ export const useCustomer = () => {
     globalFilter,
     setGlobalFilter,
     deactivateCustomer,
+    getAllCustomers,
+    allCustomers,
+    setCustomers,
   };
 };

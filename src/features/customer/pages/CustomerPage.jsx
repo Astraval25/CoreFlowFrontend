@@ -9,10 +9,31 @@ import {
 import { flexRender } from "@tanstack/react-table";
 import { useCustomer } from "../hooks/useCustomer";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const CustomerPage = () => {
-  const { table, globalFilter, setGlobalFilter, deactivateCustomer } = useCustomer();
+  const {
+    table,
+    globalFilter,
+    setGlobalFilter,
+    deactivateCustomer,
+    allCustomers,
+    setCustomers,
+  } = useCustomer();
   const navigate = useNavigate();
+
+  const [customerType, setCustomerType] = useState("active");
+
+  const handleCustomerTypeChange = (e) => {
+    const value = e.target.value;
+    setCustomerType(value);
+
+    if (value === "active") {
+      setCustomers(allCustomers.filter((c) => c.isActive === true));
+    } else {
+      setCustomers(allCustomers.filter((c) => c.isActive === false));
+    }
+  };
 
   const handleNewCustomer = () => {
     navigate("/admin/create-customer");
@@ -23,15 +44,28 @@ const CustomerPage = () => {
   };
 
   const handleDeleteCustomer = (customer) => {
-    if (window.confirm('Are you sure you want to deactivate this customer?')) {
+    if (window.confirm("Are you sure you want to deactivate this customer?")) {
       deactivateCustomer(customer.customerId);
     }
+  };
+
+  const handleViewCustomer = (customer) => {
+    navigate(`/admin/view-customer?customerId=${customer.customerId}`);
   };
 
   return (
     <div className="px-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
+        <select
+          value={customerType}
+          onChange={handleCustomerTypeChange}
+          className="cursor-pointer text-sm font-medium text-gray-700"
+        >
+          <option value="active">Active Customers</option>
+          <option value="deleted">Deleted Customers</option>
+        </select>
+        
         <div className="relative w-80">
           <MdSearch
             className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -47,6 +81,15 @@ const CustomerPage = () => {
                shadow-sm"
           />
         </div>
+
+        {/* <select
+          value={customerType}
+          onChange={handleCustomerTypeChange}
+          className="px-4 py-2 border border-gray-300 rounded-lg text-sm cursor-pointer"
+        >
+          <option value="active">Active Customers</option>
+          <option value="deleted">Deleted Customers</option>
+        </select> */}
 
         <button
           onClick={handleNewCustomer}
@@ -95,7 +138,14 @@ const CustomerPage = () => {
               </tr>
             ) : (
               table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="hover:bg-gray-50">
+                <tr
+                  key={row.id}
+                  className="hover:bg-gray-50 cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleViewCustomer(row.original);
+                  }}
+                >
                   {/* S.No */}
                   <td className="px-6 py-4 text-gray-500 font-semibold text-center">
                     {row.index + 1}
@@ -114,7 +164,10 @@ const CustomerPage = () => {
                   <td className="px-6 py-4 text-center">
                     <div className="flex justify-center gap-2">
                       <button
-                        onClick={() => handleEditCustomer(row.original)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditCustomer(row.original);
+                        }}
                         className="px-3 py-1 text-sm rounded cursor-pointer"
                         title="Edit"
                       >
