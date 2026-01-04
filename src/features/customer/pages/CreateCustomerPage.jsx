@@ -1,6 +1,11 @@
+import { useSearchParams } from "react-router-dom";
 import useCreateCustomer from "../hooks/useCreateCustomer.js";
 
 const CreateCustomerPage = () => {
+  const [searchParams] = useSearchParams();
+  const customerId = searchParams.get("customerId");
+  const isEditMode = !!customerId;
+
   const {
     formData,
     errors,
@@ -9,7 +14,7 @@ const CreateCustomerPage = () => {
     handleChange,
     handleSameAsBilling,
     submitCustomer,
-  } = useCreateCustomer();
+  } = useCreateCustomer(customerId);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,7 +23,9 @@ const CreateCustomerPage = () => {
 
   return (
     <div className="p-6">
-      <h1 className="font-semibold text-lg mb-6">New Customer</h1>
+      <h1 className="font-semibold text-lg mb-6">
+        {isEditMode ? "Edit Customer" : "New Customer"}
+      </h1>
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-[180px_1fr] gap-x-6 gap-y-4 items-center max-w-3xl">
@@ -232,11 +239,15 @@ const CreateCustomerPage = () => {
                   onChange={handleChange}
                   placeholder="Phone"
                   className={`w-full px-4 py-2.5 border rounded-lg ${
-                    errors['billingAddress.phone'] ? "border-red-500" : "border-gray-300"
+                    errors["billingAddress.phone"]
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {errors['billingAddress.phone'] && (
-                  <p className="text-red-500 text-xs mt-1">{errors['billingAddress.phone']}</p>
+                {errors["billingAddress.phone"] && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors["billingAddress.phone"]}
+                  </p>
                 )}
               </div>
 
@@ -248,11 +259,15 @@ const CreateCustomerPage = () => {
                   onChange={handleChange}
                   placeholder="Email"
                   className={`w-full px-4 py-2.5 border rounded-lg ${
-                    errors['billingAddress.email'] ? "border-red-500" : "border-gray-300"
+                    errors["billingAddress.email"]
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {errors['billingAddress.email'] && (
-                  <p className="text-red-500 text-xs mt-1">{errors['billingAddress.email']}</p>
+                {errors["billingAddress.email"] && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors["billingAddress.email"]}
+                  </p>
                 )}
               </div>
             </div>
@@ -347,11 +362,15 @@ const CreateCustomerPage = () => {
                   onChange={handleChange}
                   placeholder="Phone"
                   className={`w-full px-4 py-2.5 border rounded-lg ${
-                    errors['shippingAddress.phone'] ? "border-red-500" : "border-gray-300"
+                    errors["shippingAddress.phone"]
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {errors['shippingAddress.phone'] && (
-                  <p className="text-red-500 text-xs mt-1">{errors['shippingAddress.phone']}</p>
+                {errors["shippingAddress.phone"] && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors["shippingAddress.phone"]}
+                  </p>
                 )}
               </div>
 
@@ -363,11 +382,15 @@ const CreateCustomerPage = () => {
                   onChange={handleChange}
                   placeholder="Email"
                   className={`w-full px-4 py-2.5 border rounded-lg ${
-                    errors['shippingAddress.email'] ? "border-red-500" : "border-gray-300"
+                    errors["shippingAddress.email"]
+                      ? "border-red-500"
+                      : "border-gray-300"
                   }`}
                 />
-                {errors['shippingAddress.email'] && (
-                  <p className="text-red-500 text-xs mt-1">{errors['shippingAddress.email']}</p>
+                {errors["shippingAddress.email"] && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors["shippingAddress.email"]}
+                  </p>
                 )}
               </div>
             </div>
@@ -380,7 +403,13 @@ const CreateCustomerPage = () => {
             disabled={loading}
             className="mt-4 bg-blue-600 text-white px-6 py-2 rounded cursor-pointer"
           >
-            {loading ? "Creating..." : "Create Customer"}
+            {loading
+              ? isEditMode
+                ? "Updating..."
+                : "Creating..."
+              : isEditMode
+              ? "Update Customer"
+              : "Create Customer"}
           </button>
         </div>
       </form>

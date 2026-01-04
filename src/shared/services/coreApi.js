@@ -1,5 +1,6 @@
 import api from "../services/apiService";
 import { ENDPOINTS } from "../../config/apiEndpoints";
+import { data } from "react-router-dom";
 
 export const coreApi = {
   login: (data) => api.post(ENDPOINTS.LOGIN, data),
@@ -9,6 +10,10 @@ export const coreApi = {
   getMyCompanies: () => api.get(ENDPOINTS.GET_COMPANY),
   getCustomers: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/active`),
+  getCustomerDetail: (companyId, customerId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}`),
   createCustomer: (companyId, data) =>
     api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers`, data),
+  editCustomer: (companyId, customerId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}`, data),
 };
