@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { validateCustomerFormField, validateCustomerForm } from "../../../shared/utils/customerValidation";
+import {
+  validateCustomerFormField,
+  validateCustomerForm,
+} from "../../../shared/utils/customerValidation";
 import { coreApi } from "../../../shared/services/coreApi";
 
 const initialAddress = {
