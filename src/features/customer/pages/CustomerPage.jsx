@@ -6,11 +6,12 @@ import {
   MdChevronLeft,
   MdChevronRight,
   MdSearch,
+  MdMoreVert,
 } from "react-icons/md";
 import { flexRender } from "@tanstack/react-table";
 import { useCustomer } from "../hooks/useCustomer";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const CustomerPage = () => {
   const {
@@ -61,10 +62,82 @@ const CustomerPage = () => {
     navigate(`/admin/view-customer?customerId=${customer.customerId}`);
   };
 
+  const ActionMenu = ({ row }) => {
+    const [open, setOpen] = useState(false);
+    const menuRef = useRef(null);
+
+    useEffect(() => {
+      const handler = (e) => {
+        if (menuRef.current && !menuRef.current.contains(e.target)) {
+          setOpen(false);
+        }
+      };
+      document.addEventListener("mousedown", handler);
+      return () => document.removeEventListener("mousedown", handler);
+    }, []);
+
+    return (
+      <div
+        ref={menuRef}
+        className="relative inline-block"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Three dots */}
+        <button
+          onClick={() => setOpen((prev) => !prev)}
+          className="p-2 rounded hover:bg-gray-100"
+        >
+          <MdMoreVert size={20} />
+        </button>
+
+        {/* Dropdown */}
+        {open && (
+          <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+            <button
+              onClick={() => {
+                handleEditCustomer(row.original);
+                setOpen(false);
+              }}
+              className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100"
+            >
+              <MdEditDocument className="text-yellow-500" />
+              Edit
+            </button>
+
+            {row.original.isActive ? (
+              <button
+                onClick={() => {
+                  handleDeleteCustomer(row.original);
+                  setOpen(false);
+                }}
+                className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100"
+              >
+                <MdDelete className="text-red-500" />
+                Deactivate
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  handleActivateCustomer(row.original);
+                  setOpen(false);
+                }}
+                className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100"
+              >
+                <MdCheckCircle className="text-green-600" />
+                Activate
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="px-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex items-center justify-between mb-4">
+        {/* Left: Dropdown */}
         <select
           value={customerType}
           onChange={handleCustomerTypeChange}
@@ -74,29 +147,31 @@ const CustomerPage = () => {
           <option value="deleted">Deleted Customers</option>
         </select>
 
-        <div className="relative w-80">
-          <MdSearch
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            size={18}
-          />
-          <div className="absolute left-10 top-1/2 -translate-y-1/2 h-6 w-px bg-gray-300"></div>
-          <input
-            value={globalFilter ?? ""}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            placeholder="Search customers..."
-            className="w-full pl-14 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm
-               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
-               shadow-sm"
-          />
-        </div>
+        {/* Right: Search + New button */}
+        <div className="flex items-center gap-4">
+          <div className="relative w-80">
+            <MdSearch
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={18}
+            />
+            <div className="absolute left-10 top-1/2 -translate-y-1/2 h-6 w-px bg-gray-300"></div>
+            <input
+              value={globalFilter ?? ""}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              placeholder="Search customers..."
+              className="w-full pl-14 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm
+        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+            />
+          </div>
 
-        <button
-          onClick={handleNewCustomer}
-          className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition cursor-pointer"
-        >
-          New
-          <MdAdd size={18} />
-        </button>
+          <button
+            onClick={handleNewCustomer}
+            className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
+          >
+            New
+            <MdAdd size={18} />
+          </button>
+        </div>
       </div>
 
       {/* Table */}
@@ -160,7 +235,7 @@ const CustomerPage = () => {
                     {row.getValue("email")}
                   </td>
 
-                  <td className="px-6 py-4 text-center">
+                  {/* <td className="px-6 py-4 text-center">
                     <div className="flex justify-center gap-2">
                       <button
                         onClick={(e) => {
@@ -172,13 +247,6 @@ const CustomerPage = () => {
                       >
                         <MdEditDocument size={18} className="text-yellow-500" />
                       </button>
-                      {/* <button
-                        onClick={() => handleDeleteCustomer(row.original)}
-                        className="px-3 py-1 text-sm rounded cursor-pointer"
-                        title="Delete"
-                      >
-                        <MdDelete size={18} className="text-red-500" />
-                      </button> */}
                       {row.original.isActive ? (
                         // Deactivate button (Active customers)
                         <button
@@ -205,6 +273,9 @@ const CustomerPage = () => {
                         </button>
                       )}
                     </div>
+                  </td> */}
+                  <td className="px-6 py-3 text-center">
+                    <ActionMenu row={row} />
                   </td>
                 </tr>
               ))

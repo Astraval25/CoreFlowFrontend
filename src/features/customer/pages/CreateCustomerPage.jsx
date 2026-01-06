@@ -11,15 +11,24 @@ const CreateCustomerPage = () => {
     errors,
     loading,
     sameAsBilling,
-    handleChange,
+    handleChange: originalHandleChange,
     handleSameAsBilling,
     submitCustomer,
   } = useCreateCustomer(customerId);
+
+  // Wrap the original handleChange to ensure it updates only the specific field
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    originalHandleChange({ target: { name, value } });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     submitCustomer();
   };
+
+  const languageOptions = ["English", "Tamil", "Hindi", "Malayalam", "Telugu"];
+  const countryOptions = ["United States", "India", "Canada", "Australia", "United Kingdom"];
 
   return (
     <div className="p-6">
@@ -75,6 +84,7 @@ const CreateCustomerPage = () => {
               type="email"
               value={formData.email}
               onChange={handleChange}
+              onBlur={handleChange}
               placeholder="Enter Email"
               className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 errors.email ? "border-red-500" : "border-gray-300"
@@ -92,6 +102,7 @@ const CreateCustomerPage = () => {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
+              onBlur={handleChange}
               placeholder="Enter Phone"
               className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 errors.phone ? "border-red-500" : "border-gray-300"
@@ -102,15 +113,25 @@ const CreateCustomerPage = () => {
             )}
           </div>
 
-          {/* Language */}
+          {/* Language Dropdown */}
           <label className="text-sm font-medium text-gray-700">Language</label>
-          <input
-            name="lang"
-            value={formData.lang}
-            onChange={handleChange}
-            placeholder="Enter Language"
-            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div>
+            <select
+              name="lang"
+              value={formData.lang}
+              onChange={handleChange}
+              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="" disabled>
+                Select Language
+              </option>
+              {languageOptions.map((lang) => (
+                <option key={lang} value={lang}>
+                  {lang}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {/* PAN */}
           <label className="text-sm font-medium text-gray-700">PAN</label>
@@ -119,6 +140,7 @@ const CreateCustomerPage = () => {
               name="pan"
               value={formData.pan}
               onChange={handleChange}
+              onBlur={handleChange}
               placeholder="Enter PAN Number"
               className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 errors.pan ? "border-red-500" : "border-gray-300"
@@ -136,6 +158,7 @@ const CreateCustomerPage = () => {
               name="gst"
               value={formData.gst}
               onChange={handleChange}
+              onBlur={handleChange}
               placeholder="Enter GST Number"
               className={`w-full px-4 py-2.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 errors.gst ? "border-red-500" : "border-gray-300"
@@ -169,22 +192,43 @@ const CreateCustomerPage = () => {
             </h3>
             <div className="grid grid-cols-[180px_1fr] gap-y-4 items-center">
               <label>Attention Name</label>
-              <input
-                name="billingAddress.attentionName"
-                value={formData.billingAddress.attentionName}
-                onChange={handleChange}
-                placeholder="Attention Name"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-              />
+              <div>
+                <input
+                  name="billingAddress.attentionName"
+                  value={formData.billingAddress.attentionName}
+                  onChange={handleChange}
+                  placeholder="Attention Name"
+                  className={`w-full px-4 py-2.5 border rounded-lg ${
+                    errors["billingAddress.attentionName"]
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
+                />
+                {errors["billingAddress.attentionName"] && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors["billingAddress.attentionName"]}
+                  </p>
+                )}
+              </div>
 
               <label>Country</label>
-              <input
-                name="billingAddress.country"
-                value={formData.billingAddress.country}
-                onChange={handleChange}
-                placeholder="Country"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-              />
+              <div>
+                <select
+                  name="billingAddress.country"
+                  value={formData.billingAddress.country}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="" disabled>
+                    Select Country
+                  </option>
+                  {countryOptions.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <label>Line 1</label>
               <input
@@ -223,13 +267,24 @@ const CreateCustomerPage = () => {
               />
 
               <label>Pincode</label>
-              <input
-                name="billingAddress.pincode"
-                value={formData.billingAddress.pincode}
-                onChange={handleChange}
-                placeholder="Pincode"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-              />
+              <div>
+                <input
+                  name="billingAddress.pincode"
+                  value={formData.billingAddress.pincode}
+                  onChange={handleChange}
+                  placeholder="Pincode"
+                  className={`w-full px-4 py-2.5 border rounded-lg ${
+                    errors["billingAddress.pincode"]
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
+                />
+                {errors["billingAddress.pincode"] && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors["billingAddress.pincode"]}
+                  </p>
+                )}
+              </div>
 
               <label>Phone</label>
               <div>
@@ -237,6 +292,7 @@ const CreateCustomerPage = () => {
                   name="billingAddress.phone"
                   value={formData.billingAddress.phone}
                   onChange={handleChange}
+                  onBlur={handleChange}
                   placeholder="Phone"
                   className={`w-full px-4 py-2.5 border rounded-lg ${
                     errors["billingAddress.phone"]
@@ -257,6 +313,7 @@ const CreateCustomerPage = () => {
                   name="billingAddress.email"
                   value={formData.billingAddress.email}
                   onChange={handleChange}
+                  onBlur={handleChange}
                   placeholder="Email"
                   className={`w-full px-4 py-2.5 border rounded-lg ${
                     errors["billingAddress.email"]
@@ -292,22 +349,43 @@ const CreateCustomerPage = () => {
 
             <div className="grid grid-cols-[180px_1fr] gap-y-4 items-center">
               <label>Attention Name</label>
-              <input
-                name="shippingAddress.attentionName"
-                value={formData.shippingAddress.attentionName}
-                onChange={handleChange}
-                placeholder="Attention Name"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-              />
+              <div>
+                <input
+                  name="shippingAddress.attentionName"
+                  value={formData.shippingAddress.attentionName}
+                  onChange={handleChange}
+                  placeholder="Attention Name"
+                  className={`w-full px-4 py-2.5 border rounded-lg ${
+                    errors["shippingAddress.attentionName"]
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
+                />
+                {errors["shippingAddress.attentionName"] && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors["shippingAddress.attentionName"]}
+                  </p>
+                )}
+              </div>
 
               <label>Country</label>
-              <input
-                name="shippingAddress.country"
-                value={formData.shippingAddress.country}
-                onChange={handleChange}
-                placeholder="Country"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-              />
+              <div>
+                <select
+                  name="shippingAddress.country"
+                  value={formData.shippingAddress.country}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="" disabled>
+                    Select Country
+                  </option>
+                  {countryOptions.map((country) => (
+                    <option key={country} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <label>Line 1</label>
               <input
@@ -346,13 +424,24 @@ const CreateCustomerPage = () => {
               />
 
               <label>Pincode</label>
-              <input
-                name="shippingAddress.pincode"
-                value={formData.shippingAddress.pincode}
-                onChange={handleChange}
-                placeholder="Pincode"
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg"
-              />
+              <div>
+                <input
+                  name="shippingAddress.pincode"
+                  value={formData.shippingAddress.pincode}
+                  onChange={handleChange}
+                  placeholder="Pincode"
+                  className={`w-full px-4 py-2.5 border rounded-lg ${
+                    errors["shippingAddress.pincode"]
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
+                />
+                {errors["shippingAddress.pincode"] && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors["shippingAddress.pincode"]}
+                  </p>
+                )}
+              </div>
 
               <label>Phone</label>
               <div>
@@ -360,6 +449,7 @@ const CreateCustomerPage = () => {
                   name="shippingAddress.phone"
                   value={formData.shippingAddress.phone}
                   onChange={handleChange}
+                  onBlur={handleChange}
                   placeholder="Phone"
                   className={`w-full px-4 py-2.5 border rounded-lg ${
                     errors["shippingAddress.phone"]
@@ -380,6 +470,7 @@ const CreateCustomerPage = () => {
                   name="shippingAddress.email"
                   value={formData.shippingAddress.email}
                   onChange={handleChange}
+                  onBlur={handleChange}
                   placeholder="Email"
                   className={`w-full px-4 py-2.5 border rounded-lg ${
                     errors["shippingAddress.email"]

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import { validateCustomerForm } from "../../../shared/utils/customerValidation";
+import { validateCustomerFormField, validateCustomerForm } from "../../../shared/utils/customerValidation";
 import { coreApi } from "../../../shared/services/coreApi";
 
 const initialAddress = {
@@ -94,32 +94,33 @@ const useCreateCustomer = (customerId = null) => {
     }
   };
 
-  //  Input change
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+    let updatedForm;
+
     if (name.includes(".")) {
       const [section, field] = name.split(".");
-      setFormData((prev) => {
-        const updated = {
-          ...prev,
-          [section]: {
-            ...prev[section],
-            [field]: value,
-          },
-        };
+      updatedForm = {
+        ...formData,
+        [section]: {
+          ...formData[section],
+          [field]: value,
+        },
+      };
 
-        if (sameAsBilling && section === "billingAddress") {
-          updated.shippingAddress = { ...updated.billingAddress };
-        }
-
-        return updated;
-      });
+      if (sameAsBilling && section === "billingAddress") {
+        updatedForm.shippingAddress = { ...updatedForm.billingAddress };
+      }
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      updatedForm = { ...formData, [name]: value };
     }
 
-    setErrors((prev) => ({ ...prev, [name]: "" }));
+    setFormData(updatedForm);
+
+    // Validate only this field
+    const fieldError = validateCustomerFormField(name, value);
+    setErrors((prev) => ({ ...prev, [name]: fieldError }));
   };
 
   // Same as billing toggle

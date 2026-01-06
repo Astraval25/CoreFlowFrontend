@@ -1,94 +1,169 @@
 export const validateCustomerForm = (formData) => {
   const errors = {};
 
-  // Customer Name - mandatory
-  if (!formData.customerName || formData.customerName.trim().length === 0) {
-    errors.customerName = "Customer Name is required";
+  /* ================= REQUIRED ================= */
+
+  // Customer Name
+  if (!formData.customerName) {
+    errors.customerName = "Customer name is required.";
+  } else if (/\d/.test(formData.customerName)) {
+    errors.customerName = "Customer name cannot contain numbers.";
   }
 
-  // Display Name - mandatory
-  if (!formData.displayName || formData.displayName.trim().length === 0) {
-    errors.displayName = "Display Name is required";
+  // Display Name
+  if (!formData.displayName) {
+    errors.displayName = "Display name is required.";
+  } else if (/\d/.test(formData.displayName)) {
+    errors.displayName = "Display name cannot contain numbers.";
   }
 
-  // Email validation (optional but must be valid if provided)
-  if (formData.email && formData.email.trim().length > 0) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      errors.email = "Please enter a valid email address";
-    }
+  /* ================= EMAIL ================= */
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (formData.email?.trim() && !emailRegex.test(formData.email)) {
+    errors.email = "Invalid email address";
   }
 
-  // Contact validation (optional but must be valid if provided)
-  if (formData.contact && formData.contact.trim().length > 0) {
-    const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(formData.contact.replace(/\s+/g, ""))) {
-      errors.contact = "Please enter a valid 10-digit mobile number";
-    }
+  /* ================= PHONE ================= */
+
+  const phoneRegex = /^[0-9]{10}$/;
+  if (formData.phone?.trim() && !phoneRegex.test(formData.phone)) {
+    errors.phone = "Phone must be 10 digits";
   }
 
-  // PAN validation (optional but must be valid if provided)
-  if (formData.pan && formData.pan.trim().length > 0) {
-    // PAN format: 5 letters, 4 digits, 1 letter (e.g., ABCDE1234F)
-    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i;
-    if (!panRegex.test(formData.pan.trim())) {
-      errors.pan = "Please enter a valid PAN number";
-    }
+  /* ================= PAN ================= */
+
+  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i;
+  if (formData.pan?.trim() && !panRegex.test(formData.pan)) {
+    errors.pan = "Invalid PAN (ABCDE1234F)";
   }
 
-  // GST validation (optional but must be valid if provided)
-  if (formData.gst && formData.gst.trim().length > 0) {
-    // GST format: 2 digits state code + 10-char PAN + 1 entity + 1 Z + 1 checksum (15 chars)
-    const gstRegex =
-      /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i;
-    if (!gstRegex.test(formData.gst.trim())) {
-      errors.gst = "Please enter a valid GST number";
-    }
+  /* ================= GST ================= */
+
+  const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i;
+  if (formData.gst?.trim() && !gstRegex.test(formData.gst)) {
+    errors.gst = "Invalid GST number";
   }
 
-  // Billing Address validations
+  /* ================= BILLING ================= */
+
   if (
-    formData.billingAddress?.email &&
-    formData.billingAddress.email.trim().length > 0
+    formData.billingAddress?.email?.trim() &&
+    !emailRegex.test(formData.billingAddress.email)
   ) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.billingAddress.email)) {
-      errors["billingAddress.email"] = "Please enter a valid email address";
-    }
+    errors["billingAddress.email"] = "Invalid billing email";
   }
 
   if (
-    formData.billingAddress?.phone &&
-    formData.billingAddress.phone.trim().length > 0
+    formData.billingAddress?.phone?.trim() &&
+    !phoneRegex.test(formData.billingAddress.phone)
   ) {
-    const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(formData.billingAddress.phone.replace(/\s+/g, ""))) {
-      errors["billingAddress.phone"] =
-        "Please enter a valid 10-digit phone number";
-    }
+    errors["billingAddress.phone"] = "Invalid billing phone";
   }
 
-  // Shipping Address validations
+  /* ================= SHIPPING ================= */
+
   if (
-    formData.shippingAddress?.email &&
-    formData.shippingAddress.email.trim().length > 0
+    formData.shippingAddress?.email?.trim() &&
+    !emailRegex.test(formData.shippingAddress.email)
   ) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.shippingAddress.email)) {
-      errors["shippingAddress.email"] = "Please enter a valid email address";
-    }
+    errors["shippingAddress.email"] = "Invalid shipping email";
   }
 
   if (
-    formData.shippingAddress?.phone &&
-    formData.shippingAddress.phone.trim().length > 0
+    formData.shippingAddress?.phone?.trim() &&
+    !phoneRegex.test(formData.shippingAddress.phone)
   ) {
-    const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(formData.shippingAddress.phone.replace(/\s+/g, ""))) {
-      errors["shippingAddress.phone"] =
-        "Please enter a valid 10-digit phone number";
-    }
+    errors["shippingAddress.phone"] = "Invalid shipping phone";
+  }
+
+  /* ================= PINCODE ================= */
+
+  const pincodeRegex = /^[0-9]{6}$/; // Ensure pincode is exactly 6 digits
+  if (formData.billingAddress?.pincode && !pincodeRegex.test(formData.billingAddress.pincode)) {
+    errors["billingAddress.pincode"] = "Pincode must be a 6-digit number.";
+  }
+
+  if (formData.shippingAddress?.pincode && !pincodeRegex.test(formData.shippingAddress.pincode)) {
+    errors["shippingAddress.pincode"] = "Pincode must be a 6-digit number.";
+  }
+
+  /* ================= ATTENTION NAME ================= */
+
+  const nameRegex = /^[a-zA-Z\s]+$/; // Only letters and spaces allowed
+  if (
+    formData.billingAddress?.attentionName?.trim() &&
+    !nameRegex.test(formData.billingAddress.attentionName)
+  ) {
+    errors["billingAddress.attentionName"] = "Attention name cannot contain numbers or special characters.";
+  }
+
+  if (
+    formData.shippingAddress?.attentionName?.trim() &&
+    !nameRegex.test(formData.shippingAddress.attentionName)
+  ) {
+    errors["shippingAddress.attentionName"] = "Attention name cannot contain numbers or special characters.";
   }
 
   return errors;
+};
+
+export const validateCustomerFormField = (name, value) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^[0-9]{10}$/;
+  const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i;
+  const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/i;
+  const pincodeRegex = /^[0-9]{6}$/;
+  const nameRegex = /^[a-zA-Z\s]+$/; // Only letters and spaces allowed
+
+  switch (name) {
+    case "customerName":
+      if (!value) return "Customer name is required.";
+      if (/\d/.test(value)) return "Customer name cannot contain numbers.";
+      return "";
+
+    case "displayName":
+      if (!value) return "Display name is required.";
+      if (/\d/.test(value)) return "Display name cannot contain numbers.";
+      return "";
+
+    case "email":
+    case "billingAddress.email":
+    case "shippingAddress.email":
+      if (!value) return "";
+      if (!emailRegex.test(value)) return "Invalid email address.";
+      return "";
+
+    case "phone":
+    case "billingAddress.phone":
+    case "shippingAddress.phone":
+      if (!value) return "";
+      if (!phoneRegex.test(value)) return "Phone must be 10 digits.";
+      return "";
+
+    case "pan":
+      if (!value) return "";
+      if (!panRegex.test(value)) return "Invalid PAN (ABCDE1234F).";
+      return "";
+
+    case "gst":
+      if (!value) return "";
+      if (!gstRegex.test(value)) return "Invalid GST number.";
+      return "";
+
+    case "billingAddress.pincode":
+    case "shippingAddress.pincode":
+      if (!value) return "";
+      if (!pincodeRegex.test(value)) return "Pincode must be a 6-digit number.";
+      return "";
+
+    case "billingAddress.attentionName":
+    case "shippingAddress.attentionName":
+      if (!value) return "";
+      if (!nameRegex.test(value)) return "Attention name cannot contain numbers or special characters.";
+      return "";
+
+    default:
+      return "";
+  }
 };
