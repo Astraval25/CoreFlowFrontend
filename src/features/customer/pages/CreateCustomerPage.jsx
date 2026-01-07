@@ -1,10 +1,11 @@
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import useCreateCustomer from "../hooks/useCreateCustomer.js";
 
 const CreateCustomerPage = () => {
   const [searchParams] = useSearchParams();
   const customerId = searchParams.get("customerId");
   const isEditMode = !!customerId;
+  const navigate = useNavigate();
 
   const {
     formData,
@@ -22,13 +23,22 @@ const CreateCustomerPage = () => {
     originalHandleChange({ target: { name, value } });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    submitCustomer();
+    const success = await submitCustomer();
+  if (success) {
+    navigate("/admin/customers");
+  }
   };
 
   const languageOptions = ["English", "Tamil", "Hindi", "Malayalam", "Telugu"];
-  const countryOptions = ["United States", "India", "Canada", "Australia", "United Kingdom"];
+  const countryOptions = [
+    "United States",
+    "India",
+    "Canada",
+    "Australia",
+    "United Kingdom",
+  ];
 
   return (
     <div className="p-6">
