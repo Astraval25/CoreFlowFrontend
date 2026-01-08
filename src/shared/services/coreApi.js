@@ -28,4 +28,5 @@ export const coreApi = {
     ),
   getAllCustomerByCompanyId: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers`),
+  
 };
