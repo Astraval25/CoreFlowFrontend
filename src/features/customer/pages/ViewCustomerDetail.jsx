@@ -4,14 +4,16 @@ import {
   MdEmail,
   MdLocationOn,
   MdBusiness,
-  MdDateRange,
+  MdEdit,
 } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 const ViewCustomerDetail = ({ companyId, customerId }) => {
   const { customer, loading, error } = useViewCustomerDetail(
     companyId,
     customerId
   );
+  const navigate = useNavigate();
 
   if (!customerId)
     return (
@@ -32,45 +34,63 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
     .toUpperCase()
     .slice(0, 2);
 
+  const handleEdit = () => {
+    console.log("Edit customer");
+    navigate(`/admin/create/customer?customerId=${customer.customerId}`);
+  };
+
   return (
-    <div className="mx-auto p-1">
+    <div className="mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
         {/* Column 1: Basic Info */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center gap-4 mb-6">
+        <div className="relative bg-[#E2E8F0] rounded-xl shadow-sm border border-gray-200 p-6">
+          <button className="absolute bottom-6 right-4 text-gray-500 hover:text-blue-600 cursor-pointer" onClick={handleEdit}>
+            <MdEdit size={18} />
+          </button>
+          <div className="flex items-start gap-4">
+            {/* Avatar */}
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-md">
               {initials}
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">
+
+            {/* Name + Phone + Email */}
+            <div className="flex flex-col">
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
                 {customer.displayName}
               </h2>
-              <p className="text-sm text-gray-500">{customer.customerName}</p>
-            </div>
-          </div>
+              <p className="text-sm text-gray-500 font-semibold mb-2">
+                {customer.customerName}
+              </p>
 
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 text-gray-700">
-              <MdPhone className="text-lg text-gray-500" />
-              <span className="text-sm">{customer.phone || "No phone"}</span>
-            </div>
-            <div className="flex items-center gap-3 text-gray-700">
-              <MdEmail className="text-lg text-gray-500" />
-              <span className="text-sm">{customer.email || "No email"}</span>
+              {/* Phone */}
+              <div className="flex items-center gap-2 text-gray-700 mb-2">
+                <MdPhone className="text-sm text-gray-500" />
+                <span className="text-sm font-semibold text-gray-500">
+                  {customer.phone || "No phone"}
+                </span>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-center gap-2 text-gray-700 mt-1">
+                <MdEmail className="text-sm text-gray-500" />
+                <span className="text-sm font-semibold text-gray-500">
+                  {customer.email || "No email"}
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Column 2: Addresses */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="space-y-5">
+        <div className="bg-[#E2E8F0] rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="space-y-2">
             {/* Billing Address */}
             <div>
               <h3 className="flex items-center gap-2 font-semibold text-gray-800 mb-3">
                 <MdLocationOn className="text-lg" />
                 Billing Address
               </h3>
-              <div className="text-sm text-gray-600 leading-relaxed">
+              <div className="text-sm text-gray-600 leading-relaxed text-gray-500 font-semibold">
                 {billing ? (
                   <>
                     {billing.line1}
@@ -82,7 +102,7 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
                 )}
               </div>
               {billing && (
-                <div className="mt-1 space-y-1 text-sm text-gray-500">
+                <div className="mt-1 space-y-1 text-sm text-gray-500 flex gap-5">
                   {billing.email && (
                     <div className="flex items-center gap-2">
                       <MdEmail className="text-xs" /> {billing.email}
@@ -103,7 +123,7 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
                 <MdLocationOn className="text-lg" />
                 Shipping Address
               </h3>
-              <div className="text-sm text-gray-600 leading-relaxed">
+              <div className="text-sm text-gray-600 leading-relaxed  text-gray-500 font-semibold">
                 {shipping ? (
                   <>
                     {shipping.line1}
@@ -118,7 +138,7 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
                 )}
               </div>
               {shipping && (
-                <div className="mt-1 space-y-1 text-sm text-gray-500">
+                <div className="mt-1 space-y-1 text-sm text-gray-500 flex gap-5">
                   {shipping.email && (
                     <div className="flex items-center gap-2">
                       <MdEmail className="text-xs" /> {shipping.email}
@@ -136,50 +156,56 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
         </div>
 
         {/* Column 3: Other Details */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-[#E2E8F0] rounded-xl shadow-sm border border-gray-200 p-6">
           <h3 className="flex items-center gap-2 font-semibold text-gray-800 mb-5">
             <MdBusiness className="text-lg" />
             Other Details
           </h3>
 
-          <div className="space-y-4 text-sm">
-            <div>
-              <span className="text-gray-500">GST:</span>
-              <span className="ml-2 font-medium text-gray-800">
-                {customer.gst || "N/A"}
-              </span>
-            </div>
-            <div>
-              <span className="text-gray-500">PAN:</span>
-              <span className="ml-2 font-medium text-gray-800">
-                {customer.pan || "N/A"}
-              </span>
-            </div>
-            <div>
-              <span className="text-gray-500">Company:</span>
-              <span className="ml-2 font-medium text-gray-800">
-                {customer.customerCompany || "N/A"}
-              </span>
-            </div>
-            <div className="flex items-center gap-2 text-gray-700">
-              <MdDateRange className="text-lg text-gray-500" />
-              <span>
-                Created: {new Date(customer.createdDt).toLocaleDateString()}
-              </span>
-            </div>
-            <div>
-              <span className="text-gray-500">Status:</span>
-              <span
-                className={`ml-2 font-semibold ${
-                  customer.isActive ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {customer.isActive ? "Active" : "Inactive"}
-              </span>
-            </div>
+          <div className="grid grid-cols-2 gap-y-4 text-sm">
+            {/* GST */}
+            <span className="text-gray-500">GST</span>
+            <span className="font-medium text-gray-800">
+              {customer.gst || "-"}
+            </span>
+
+            {/* PAN */}
+            <span className="text-gray-500">PAN</span>
+            <span className="font-medium text-gray-800">
+              {customer.pan || "-"}
+            </span>
+
+            {/* Company */}
+            <span className="text-gray-500">Company</span>
+            <span className="font-medium text-purple-600">
+              {customer.customerCompany || "-"}
+            </span>
+
+            {/* Created Date */}
+            <span className="text-gray-500">Created</span>
+            <span className="text-gray-700">
+              {new Date(customer.createdDt).toLocaleDateString()}
+            </span>
+
+            {/* Status */}
+            <span className="text-gray-500">Status</span>
+            <span
+              className={`font-semibold ${
+                customer.isActive ? "text-green-500" : "text-red-600"
+              }`}
+            >
+              {customer.isActive ? "Active" : "Inactive"}
+            </span>
           </div>
         </div>
       </div>
+      <div className="flex gap-30 w-full mt-5 mb-2">
+        <button className="font-semibold text-gray-600">OverView</button>
+        <button className="font-semibold text-gray-600">Statistics</button>
+        <button className="font-semibold text-gray-600">Order Track</button>
+        <button className="font-semibold text-gray-600">Transaction</button>
+      </div>
+      <hr className="text-gray-300" />
     </div>
   );
 };

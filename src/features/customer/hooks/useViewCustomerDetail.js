@@ -15,6 +15,7 @@ const useViewCustomerDetail = (companyId, customerId) => {
         const res = await coreApi.getCustomerDetail(companyId, customerId);
         if (res.data.responseStatus) {
           setCustomer(res.data.responseData);
+          console.log(res)
         } else {
           setError("Failed to fetch customer details");
         }

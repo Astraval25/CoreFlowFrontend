@@ -72,7 +72,7 @@ export const useCustomer = () => {
 
   const columns = [
     columnHelper.accessor("sno", { header: "S.No" }),
-    columnHelper.accessor("displayName", { header: "Display Name" }),
+    columnHelper.accessor("displayName", { header: "Customer Name" }),
     columnHelper.accessor("email", { header: "Email" }),
     columnHelper.accessor("action", { header: "Action" }),
   ];

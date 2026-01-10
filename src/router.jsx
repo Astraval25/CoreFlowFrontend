@@ -45,8 +45,8 @@ export const router = createBrowserRouter([
     children: [
       { path: "dashboard", element: <Dashboard /> },
       { path: "customers", element: <CustomerPage /> },
-      { path: "create-customer", element: <CreateCustomerPage /> },
-      { path: "view-customer", element: <ViewCustomer /> },
+      { path: "create/customer", element: <CreateCustomerPage /> },
+      { path: "view/customer", element: <ViewCustomer /> },
     ],
   },
 ]);

@@ -39,11 +39,11 @@ const CustomerPage = () => {
   };
 
   const handleNewCustomer = () => {
-    navigate("/admin/create-customer");
+    navigate("/admin/create/customer");
   };
 
   const handleEditCustomer = (customer) => {
-    navigate(`/admin/create-customer?customerId=${customer.customerId}`);
+    navigate(`/admin/create/customer?customerId=${customer.customerId}`);
   };
 
   const handleDeleteCustomer = (customer) => {
@@ -59,7 +59,7 @@ const CustomerPage = () => {
   };
 
   const handleViewCustomer = (customer) => {
-    navigate(`/admin/view-customer?customerId=${customer.customerId}`);
+    navigate(`/admin/view/customer?customerId=${customer.customerId}`);
   };
 
   const ActionMenu = ({ row }) => {
@@ -85,7 +85,7 @@ const CustomerPage = () => {
         {/* Three dots */}
         <button
           onClick={() => setOpen((prev) => !prev)}
-          className="p-2 rounded hover:bg-gray-100"
+          className="p-1 rounded hover:bg-gray-100"
         >
           <MdMoreVert size={20} />
         </button>
@@ -137,7 +137,7 @@ const CustomerPage = () => {
     <div className="px-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        {/* Left: Dropdown */}
+        {/* Left Dropdown */}
         <select
           value={customerType}
           onChange={handleCustomerTypeChange}
@@ -184,9 +184,9 @@ const CustomerPage = () => {
                   <th
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
-                    className="px-6 py-4 text-center font-semibold cursor-pointer select-none"
+                    className="px-6 py-4 text-left font-semibold cursor-pointer select-none"
                   >
-                    <div className="flex justify-center gap-1">
+                    <div className="flex  gap-1">
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext()
@@ -221,60 +221,21 @@ const CustomerPage = () => {
                   }}
                 >
                   {/* S.No */}
-                  <td className="px-6 py-4 text-gray-500 font-semibold text-center">
+                  <td className="px-6 py-4 text-gray-500 font-semibold text-left">
                     {row.index + 1}
                   </td>
 
                   {/* Name */}
-                  <td className="px-6 py-4 text-blue-600 font-semibold text-center">
+                  <td className="px-6 py-4 text-blue-600 font-semibold text-left">
                     {row.getValue("displayName")}
                   </td>
 
                   {/* Email */}
-                  <td className="px-6 py-4 text-gray-600 font-semibold text-center">
+                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
                     {row.getValue("email")}
                   </td>
 
-                  {/* <td className="px-6 py-4 text-center">
-                    <div className="flex justify-center gap-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditCustomer(row.original);
-                        }}
-                        className="px-3 py-1 text-sm rounded cursor-pointer"
-                        title="Edit"
-                      >
-                        <MdEditDocument size={18} className="text-yellow-500" />
-                      </button>
-                      {row.original.isActive ? (
-                        // Deactivate button (Active customers)
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteCustomer(row.original);
-                          }}
-                          className="px-3 py-1 cursor-pointer"
-                          title="Deactivate"
-                        >
-                          <MdDelete size={18} className="text-red-500" />
-                        </button>
-                      ) : (
-                        // Activate button (Deleted customers)
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleActivateCustomer(row.original);
-                          }}
-                          className="px-3 py-1 cursor-pointer"
-                          title="Activate"
-                        >
-                          <MdCheckCircle size={18} className="text-green-600" />
-                        </button>
-                      )}
-                    </div>
-                  </td> */}
-                  <td className="px-6 py-3 text-center">
+                  <td className="px-6 py-3 text-left">
                     <ActionMenu row={row} />
                   </td>
                 </tr>

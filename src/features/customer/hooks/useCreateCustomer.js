@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import {
-  validateCustomerField,
-  validateCustomerForm,
-} from "../../../shared/utils/customerValidation";
+import { validateCustomerForm } from "../../../shared/utils/customerValidation";
 import { coreApi } from "../../../shared/services/coreApi";
 
 const initialAddress = {
@@ -97,39 +94,13 @@ const useCreateCustomer = (customerId = null) => {
     }
   };
 
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-
-  //   let updatedForm;
-
-  //   if (name.includes(".")) {
-  //     const [section, field] = name.split(".");
-  //     updatedForm = {
-  //       ...formData,
-  //       [section]: {
-  //         ...formData[section],
-  //         [field]: value,
-  //       },
-  //     };
-
-  //     if (sameAsBilling && section === "billingAddress") {
-  //       updatedForm.shippingAddress = { ...updatedForm.billingAddress };
-  //     }
-  //   } else {
-  //     updatedForm = { ...formData, [name]: value };
-  //   }
-
-  //   setFormData(updatedForm);
-
-  //   // Validate only this field
-  //   const fieldError = validateCustomerFormField(name, value);
-  //   setErrors((prev) => ({ ...prev, [name]: fieldError }));
-  // };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     setFormData((prev) => {
+      if (sameAsBilling && name.startsWith("shippingAddress.")) {
+        setSameAsBilling(false); 
+      }
       if (name.includes(".")) {
         const [section, field] = name.split(".");
         const updated = {
@@ -171,7 +142,7 @@ const useCreateCustomer = (customerId = null) => {
 
     // If there are validation errors, set them in the state and stop submission
     if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors); // Ensure errors are set in the state
+      setErrors(validationErrors);
       return;
     }
 

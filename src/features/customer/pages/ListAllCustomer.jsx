@@ -21,7 +21,7 @@ const ListAllCustomer = ({ onSelectCustomer, selectedCustomerId }) => {
       <select
         value={statusFilter}
         onChange={(e) => setStatusFilter(e.target.value)}
-        className="w-full p-2 text-sm focus:outline-none"
+        className="w-full p-2 text-sm focus:outline-none text-blue-600 font-medium"
       >
         <option value="all">All Customers</option>
         <option value="active">Active Customers</option>
@@ -30,20 +30,22 @@ const ListAllCustomer = ({ onSelectCustomer, selectedCustomerId }) => {
 
       {/* Customer List */}
       <div>
-        {filteredCustomers.map((customer) => (
+        {filteredCustomers.map((customer, index) => (
           <div
             key={customer.customerId}
             onClick={() => onSelectCustomer(customer.customerId)}
-            className={`p-4 cursor-pointer border-l-4
-      ${
-        selectedCustomerId === String(customer.customerId)
-          ? "bg-blue-50 border-blue-600"
-          : "border-transparent hover:bg-blue-100"
-      }
-    `}
+            className={`p-4 cursor-pointer ml-2
+        ${
+          selectedCustomerId === String(customer.customerId)
+            ? "bg-blue-50 border-blue-600"
+            : index % 2 === 0
+            ? "bg-gray-50 hover:bg-blue-100"
+            : "bg-white hover:bg-blue-100"
+        }
+      `}
           >
             <div className="font-medium mb-1">{customer.displayName}</div>
-            <div className="text-xs text-gray-500">
+            <div className="text-sm text-gray-500">
               {customer.email ?? "No Email"}
             </div>
           </div>

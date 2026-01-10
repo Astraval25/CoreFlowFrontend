@@ -5,14 +5,18 @@ import Toolbar from "../components/Toolbar";
 const MainLayout = () => {
   return (
     <div className="flex">
-      {/* Sidebar */}
-      <Sidebar />
+      {/* Fixed Sidebar */}
+      <div className="fixed top-0 left-0 h-screen w-52 bg-white z-20">
+        <Sidebar />
+      </div>
 
-      {/* Main content */}
-      <div className="flex-1 ml-50 min-h-screen bg-gray-100">
-        <Toolbar />
+      {/* Main content area */}
+      <div className="flex-1 ml-52">
+        <div className="fixed top-0 left-52 right-0 h-16 bg-white z-10">
+          <Toolbar />
+        </div>
 
-        <main className="p-6">
+        <main className="mt-16 p-6 min-h-screen bg-gray-100">
           <Outlet />
         </main>
       </div>
