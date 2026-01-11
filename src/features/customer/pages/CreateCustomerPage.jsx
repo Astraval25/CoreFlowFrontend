@@ -1,9 +1,9 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useCreateCustomer from "../hooks/useCreateCustomer.js";
 
 const CreateCustomerPage = () => {
-  const [searchParams] = useSearchParams();
-  const customerId = searchParams.get("customerId");
+  const { state } = useLocation();
+  const customerId = state?.customerId;
   const isEditMode = !!customerId;
   const navigate = useNavigate();
 

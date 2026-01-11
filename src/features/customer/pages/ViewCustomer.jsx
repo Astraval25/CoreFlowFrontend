@@ -2,12 +2,11 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import ListAllCustomer from "./ListAllCustomer";
 import ViewCustomerDetail from "./ViewCustomerDetail";
-import { useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const ViewCustomer = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const customerId = searchParams.get("customerId");
-
+  const { state } = useLocation();
+  const [selectedCustomerId, setSelectedCustomerId] = useState(state?.customerId || null);
   const [companyId, setCompanyId] = useState(null);
 
   useEffect(() => {
@@ -23,21 +22,21 @@ const ViewCustomer = () => {
   }, []);
 
   const handleSelectCustomer = (id) => {
-    setSearchParams({ customerId: id });
+    setSelectedCustomerId(id);
   };
 
   return (
     <div className="flex gap-4">
       <div className="w-[20%]">
         <ListAllCustomer
-          selectedCustomerId={customerId}
+          selectedCustomerId={selectedCustomerId}
           onSelectCustomer={handleSelectCustomer}
         />
       </div>
 
       <div className="w-[80%]">
-        {customerId && companyId ? (
-          <ViewCustomerDetail companyId={companyId} customerId={customerId} />
+        {selectedCustomerId && companyId ? (
+          <ViewCustomerDetail companyId={companyId} customerId={selectedCustomerId} />
         ) : (
           <p className="p-6 text-gray-600">Select a customer to view details</p>
         )}
