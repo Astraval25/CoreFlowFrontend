@@ -43,7 +43,9 @@ const CustomerPage = () => {
   };
 
   const handleEditCustomer = (customer) => {
-    navigate(`/admin/create/customer?customerId=${customer.customerId}`);
+    navigate("/admin/create/customer", {
+      state: { customerId: customer.customerId }
+    });
   };
 
   const handleDeleteCustomer = (customer) => {
@@ -59,7 +61,9 @@ const CustomerPage = () => {
   };
 
   const handleViewCustomer = (customer) => {
-    navigate(`/admin/view/customer?customerId=${customer.customerId}`);
+    navigate("/admin/view/customer", {
+      state: { customerId: customer.customerId }
+    });
   };
 
   const ActionMenu = ({ row }) => {

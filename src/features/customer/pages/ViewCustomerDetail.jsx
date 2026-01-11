@@ -35,8 +35,9 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
     .slice(0, 2);
 
   const handleEdit = () => {
-    console.log("Edit customer");
-    navigate(`/admin/create/customer?customerId=${customer.customerId}`);
+    navigate("/admin/create/customer", {
+      state: { customerId: customer.customerId },
+    });
   };
 
   return (
@@ -44,7 +45,11 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
         {/* Column 1: Basic Info */}
         <div className="relative bg-[#E2E8F0] rounded-xl shadow-sm border border-gray-200 p-6">
-          <button className="absolute bottom-6 right-4 text-gray-500 hover:text-blue-600 cursor-pointer" onClick={handleEdit}>
+          <button
+            className="absolute bottom-6 right-4 text-blue-500 hover:text-blue-600 cursor-pointer flex gap-2"
+            onClick={handleEdit}
+          >
+            <span className="text-blue-500 font-semibold">Edit</span>
             <MdEdit size={18} />
           </button>
           <div className="flex items-start gap-4">
