@@ -6,7 +6,9 @@ import RedirectIfLoggedIn from "./features/Login/routes/RedirectIfLoggedIn";
 import RegisterPage from "./features/Register/RegisterPage";
 import VerifyOtpPage from "./features/verifyUser/VerifyOtpPage";
 import MainLayout from "./shared/layouts/MainLayout";
-import CustomerPage from "./features/customer/CustomerPage";
+import CustomerPage from "./features/customer/pages/CustomerPage";
+import CreateCustomerPage from "./features/customer/pages/CreateCustomerPage";
+import ViewCustomer from "./features/customer/pages/ViewCustomer";
 
 export const router = createBrowserRouter([
   {
@@ -43,6 +45,8 @@ export const router = createBrowserRouter([
     children: [
       { path: "dashboard", element: <Dashboard /> },
       { path: "customers", element: <CustomerPage /> },
+      { path: "create/customer", element: <CreateCustomerPage /> },
+      { path: "view/customer", element: <ViewCustomer /> },
     ],
   },
 ]);
