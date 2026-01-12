@@ -9,10 +9,35 @@ import MainLayout from "./shared/layouts/MainLayout";
 import CustomerPage from "./features/customer/pages/CustomerPage";
 import CreateCustomerPage from "./features/customer/pages/CreateCustomerPage";
 import ViewCustomer from "./features/customer/pages/ViewCustomer";
+import ProductLandingPage from "./pages/ProductLandingPage";
+import FeaturesPage from "./pages/FeaturesPage";
+import PricingPage from "./pages/PricingPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
+    element: <ProductLandingPage />,
+  },
+  {
+    path: "/features",
+    element: <FeaturesPage />,
+  },
+  {
+    path: "/pricing",
+    element: <PricingPage />,
+  },
+  {
+    path: "/about",
+    element: <AboutPage />,
+  },
+  {
+    path: "/contact",
+    element: <ContactPage />,
+  },
+  {
+    path: "/login",
     element: (
       <RedirectIfLoggedIn>
         <LoginPage />
@@ -20,7 +45,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/register",
+    path: "/signup",
     element: (
       <RedirectIfLoggedIn>
         <RegisterPage />
