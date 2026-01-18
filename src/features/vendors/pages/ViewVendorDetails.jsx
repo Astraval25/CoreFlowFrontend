@@ -1,4 +1,4 @@
-import useViewCustomerDetail from "../hooks/useViewCustomerDetail";
+import useViewVendorDetail from "../hooks/useViewVendorDetail";
 import {
   MdPhone,
   MdEmail,
@@ -9,26 +9,21 @@ import {
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
-const ViewCustomerDetail = ({ companyId, customerId }) => {
-  const { customer, loading, error } = useViewCustomerDetail(
-    companyId,
-    customerId
-  );
+const ViewVendorDetails = ({ companyId, vendorId }) => {
+  const { vendor, loading, error } = useViewVendorDetail(companyId, vendorId);
   const navigate = useNavigate();
 
-  if (!customerId)
-    return (
-      <p className="p-6 text-gray-600">Select a customer to view details</p>
-    );
+  if (!vendorId)
+    return <p className="p-6 text-gray-600">Select a vendor to view details</p>;
   if (loading)
-    return <p className="p-6 text-gray-600">Loading customer details...</p>;
+    return <p className="p-6 text-gray-600">Loading vendor details...</p>;
   if (error)
-    return <p className="p-6 text-red-600">Error loading customer details</p>;
+    return <p className="p-6 text-red-600">Error loading vendor details</p>;
 
-  const billing = customer.billingAddrId;
-  const shipping = customer.shippingAddrId;
+  const billing = vendor.billingAddrId;
+  const shipping = vendor.shippingAddrId;
 
-  const initials = customer.displayName
+  const initials = vendor.displayName
     .split(" ")
     .map((n) => n[0])
     .join("")
@@ -36,8 +31,8 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
     .slice(0, 2);
 
   const handleEdit = () => {
-    navigate("/admin/create/customer", {
-      state: { customerId: customer.customerId },
+    navigate("/admin/create/vendor", {
+      state: { vendorId: vendor.vendorId },
     });
   };
 
@@ -56,7 +51,7 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
           
           {/* Display Name */}
           <h2 className="text-xl font-bold text-gray-900 mb-4">
-            {customer.displayName}
+            {vendor.displayName}
           </h2>
           
           {/* Flex layout with custom proportions */}
@@ -71,14 +66,14 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
             {/* Details - 2.5 parts */}
             <div className="flex-[2.5] flex flex-col">
               <p className="text-base text-gray-500 font-semibold mb-2">
-                {customer.customerName}
+                {vendor.vendorName}
               </p>
 
               {/* Phone */}
               <div className="flex items-center gap-2 text-gray-700 mb-2">
                 <MdPhone className="text-sm text-gray-500" />
                 <span className="text-sm font-semibold text-gray-500">
-                  {customer.phone || "No phone"}
+                  {vendor.phone || "No phone"}
                 </span>
               </div>
 
@@ -86,7 +81,7 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
               <div className="flex items-center gap-2 text-gray-700">
                 <MdEmail className="text-sm text-gray-500" />
                 <span className="text-sm font-semibold text-gray-500">
-                  {customer.email || "No email"}
+                  {vendor.email || "No email"}
                 </span>
               </div>
             </div>
@@ -163,7 +158,6 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
         {/* Column 3: Other Details */}
         <div className="bg-[#E2E8F0] rounded-xl shadow-sm border border-gray-200 p-4">
           <h3 className="flex items-center gap-2 font-semibold text-base mb-5">
-            {/* <MdBusiness className="text-lg" /> */}
             Other Details
           </h3>
 
@@ -171,35 +165,35 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
             {/* GST */}
             <span className="font-semibold">GST</span>
             <span className="font-medium text-gray-800">
-              {customer.gst || "-"}
+              {vendor.gst || "-"}
             </span>
 
             {/* PAN */}
             <span className="font-semibold">PAN</span>
             <span className="font-medium text-gray-800">
-              {customer.pan || "-"}
+              {vendor.pan || "-"}
             </span>
 
             {/* Company */}
             <span className="font-semibold">Company</span>
             <span className="font-medium text-purple-600">
-              {customer.customerCompany || "-"}
+              {vendor.vendorCompany || "-"}
             </span>
 
             {/* Created Date */}
             <span className="font-semibold">Created</span>
             <span className="text-gray-700">
-              {new Date(customer.createdDt).toLocaleDateString()}
+              {new Date(vendor.createdDt).toLocaleDateString()}
             </span>
 
             {/* Status */}
             <span className="font-semibold">Status</span>
             <span
               className={`font-semibold ${
-                customer.isActive ? "text-green-500" : "text-red-600"
+                vendor.isActive ? "text-green-500" : "text-red-600"
               }`}
             >
-              {customer.isActive ? "Active" : "Inactive"}
+              {vendor.isActive ? "Active" : "Inactive"}
             </span>
           </div>
         </div>
@@ -215,4 +209,4 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
   );
 };
 
-export default ViewCustomerDetail;
+export default ViewVendorDetails;

@@ -1,6 +1,6 @@
-import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
-import useCreateCustomer from "../hooks/useCreateCustomer";
+import useCreateVendor from "../hooks/useCreateVendor";
 
 import InputField from "../../../shared/components/InputField";
 import SelectField from "../../../shared/components/SelectField";
@@ -14,10 +14,10 @@ import {
   nameRegex,
 } from "../../../shared/utils/regex";
 
-const CreateCustomerPage = () => {
+const CreateVendorPage = () => {
   const { state } = useLocation();
-  const customerId = state?.customerId;
-  const isEditMode = !!customerId;
+  const vendorId = state?.vendorId;
+  const isEditMode = !!vendorId;
   const navigate = useNavigate();
 
   const {
@@ -27,8 +27,8 @@ const CreateCustomerPage = () => {
     sameAsBilling,
     handleChange: originalHandleChange,
     handleSameAsBilling,
-    submitCustomer,
-  } = useCreateCustomer(customerId);
+    submitVendor,
+  } = useCreateVendor(vendorId);
 
   const [fieldErrors, setFieldErrors] = useState({});
 
@@ -45,8 +45,8 @@ const CreateCustomerPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await submitCustomer();
-    if (success) navigate("/admin/customers");
+    const success = await submitVendor();
+    if (success) navigate("/admin/vendors");
   };
 
   const languageOptions = ["English", "Tamil", "Hindi", "Malayalam", "Telugu"];
@@ -61,22 +61,22 @@ const CreateCustomerPage = () => {
   return (
     <div className="p-6">
       <h1 className="font-semibold text-lg mb-6">
-        {isEditMode ? "Edit Customer" : "New Customer"}
+        {isEditMode ? "Edit vendor" : "New vendor"}
       </h1>
 
       <form onSubmit={handleSubmit}>
-        {/* ================= CUSTOMER ================= */}
+        {/* ================= vendor ================= */}
         <div className="grid grid-cols-[180px_1fr] gap-4 max-w-3xl">
           <InputField
-            label="Customer Name"
-            name="customerName"
+            label="Vendor Name"
+            name="vendorName"
             required
-            value={formData.customerName}
+            value={formData.vendorName}
             onChange={handleChange}
             onBlur={handleBlur}
             regex={nameRegex}
             regexError="Name cannot contain numbers."
-            error={allErrors.customerName}
+            error={allErrors.vendorName}
           />
 
           <InputField
@@ -145,11 +145,13 @@ const CreateCustomerPage = () => {
         </div>
 
         {/* ================= ADDRESSES ================= */}
-        <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-6">
+        <div className="mt-10 grid grid-cols-2 gap-10">
           {/* BILLING */}
           <div>
-            <h3 className="text-blue-600 font-medium mb-4 text-base">Billing Address</h3>
-            <div className="grid grid-cols-[180px_1fr] gap-y-4">
+            <h3 className="text-blue-600 font-medium mb-4 text-base">
+              Billing Address
+            </h3>
+            <div className="grid grid-cols-[180px_1fr] gap-4">
               <InputField
                 label="Attention Name"
                 name="billingAddress.attentionName"
@@ -159,14 +161,6 @@ const CreateCustomerPage = () => {
                 regex={nameRegex}
                 regexError="Invalid name."
                 error={allErrors["billingAddress.attentionName"]}
-              />
-
-              <SelectField
-                label="Country"
-                name="billingAddress.country"
-                value={formData.billingAddress.country}
-                onChange={handleChange}
-                options={countryOptions}
               />
 
               <InputField
@@ -195,6 +189,14 @@ const CreateCustomerPage = () => {
                 name="billingAddress.state"
                 value={formData.billingAddress.state}
                 onChange={handleChange}
+              />
+
+              <SelectField
+                label="Country"
+                name="billingAddress.country"
+                value={formData.billingAddress.country}
+                onChange={handleChange}
+                options={countryOptions}
               />
 
               <InputField
@@ -235,7 +237,9 @@ const CreateCustomerPage = () => {
           {/* SHIPPING */}
           <div>
             <div className="flex justify-between mb-4">
-              <h3 className="text-green-600 font-medium text-base">Shipping Address</h3>
+              <h3 className="text-green-600 font-medium text-base">
+                Shipping Address
+              </h3>
               <label className="flex gap-2 text-sm">
                 <input
                   type="checkbox"
@@ -246,7 +250,7 @@ const CreateCustomerPage = () => {
               </label>
             </div>
 
-            <div className="grid grid-cols-[180px_1fr] gap-y-4">
+            <div className="grid grid-cols-[180px_1fr] gap-4">
               {["attentionName", "line1", "line2", "city", "state"].map((f) => (
                 <InputField
                   key={f}
@@ -310,8 +314,8 @@ const CreateCustomerPage = () => {
             {loading
               ? "Saving..."
               : isEditMode
-              ? "Update Customer"
-              : "Create Customer"}
+              ? "Update vendor"
+              : "Create vendor"}
           </button>
         </div>
       </form>
@@ -319,4 +323,4 @@ const CreateCustomerPage = () => {
   );
 };
 
-export default CreateCustomerPage;
+export default CreateVendorPage;

@@ -47,4 +47,10 @@ api.interceptors.response.use(
   }
 );
 
+function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("refreshToken");
+  window.location.href = "/";
+}
+
 export default api;

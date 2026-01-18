@@ -14,6 +14,9 @@ import FeaturesPage from "./pages/FeaturesPage";
 import PricingPage from "./pages/PricingPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
+import VendorPage from "./features/vendors/pages/VendorPage";
+import CreateVendorPage from "./features/vendors/pages/CreateVendorPage";
+import ViewVendor from "./features/vendors/pages/ViewVendor";
 
 export const router = createBrowserRouter([
   {
@@ -72,6 +75,10 @@ export const router = createBrowserRouter([
       { path: "customers", element: <CustomerPage /> },
       { path: "create/customer", element: <CreateCustomerPage /> },
       { path: "view/customer", element: <ViewCustomer /> },
+
+      { path: "vendors", element: <VendorPage /> },
+      { path: "create/vendor", element: <CreateVendorPage /> },
+      { path: "view/vendor", element: <ViewVendor /> },
     ],
   },
 ]);
