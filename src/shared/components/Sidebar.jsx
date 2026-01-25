@@ -2,10 +2,6 @@ import { NavLink, useLocation } from "react-router-dom";
 import logo from "../../assets/Logo.png";
 import {
   MdDashboard,
-  MdPeople,
-  MdInventory,
-  MdLocalShipping,
-  MdPayments,
   MdKeyboardArrowDown,
   MdManageAccounts,
 } from "react-icons/md";

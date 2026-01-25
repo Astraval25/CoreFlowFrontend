@@ -1,141 +1,67 @@
 import {
-    MdCheckCircle,
-    MdAdd,
-    MdDelete,
-    MdEditDocument,
-    MdChevronLeft,
-    MdChevronRight,
-    MdSearch,
-    MdMoreVert,
-  } from "react-icons/md";
-  import { flexRender } from "@tanstack/react-table";
-  import { useVendor } from "../hooks/useVendor";
-  import { useNavigate } from "react-router-dom";
-  import { useState, useRef, useEffect } from "react";
-  
-  const VendorPage = () => {
-    const {
-      table,
-      globalFilter,
-      setGlobalFilter,
-      deactivateVendor,
-      activateVendor,
-      allVendors,
-      setVendors,
-    } = useVendor();
-    const navigate = useNavigate();
-  
-    const [vendorType, setvendorType] = useState("active");
-  
-    const handlevendorTypeChange = (e) => {
-      const value = e.target.value;
-      setvendorType(value);
-  
-      if (value === "active") {
-        setVendors(allVendors.filter((c) => c.isActive === true));
-      } else {
-        setVendors(allVendors.filter((c) => c.isActive === false));
-      }
-    };
-  
-    const handleNewvendor = () => {
-      navigate("/admin/create/vendor");
-    };
-  
-    const handleEditvendor = (vendor) => {
-      navigate("/admin/create/vendor", {
-        state: { vendorId: vendor.vendorId }
-      });
-    };
-  
-    const handleDeletevendor = (vendor) => {
-      if (window.confirm("Are you sure you want to deactivate this vendor?")) {
-        deactivateVendor(vendor.vendorId);
-      }
-    };
-  
-    const handleactivateVendor = (vendor) => {
-      if (window.confirm("Are you sure you want to activate this vendor?")) {
-        activateVendor(vendor.vendorId);
-      }
-    };
-  
-    const handleViewvendor = (vendor) => {
-      navigate("/admin/view/vendor", {
-        state: { vendorId: vendor.vendorId }
-      });
-    };
-  
-    const ActionMenu = ({ row }) => {
-      const [open, setOpen] = useState(false);
-      const menuRef = useRef(null);
-  
-      useEffect(() => {
-        const handler = (e) => {
-          if (menuRef.current && !menuRef.current.contains(e.target)) {
-            setOpen(false);
-          }
-        };
-        document.addEventListener("mousedown", handler);
-        return () => document.removeEventListener("mousedown", handler);
-      }, []);
-  
-      return (
-        <div
-          ref={menuRef}
-          className="relative inline-block"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Three dots */}
-          <button
-            onClick={() => setOpen((prev) => !prev)}
-            className="p-1 rounded hover:bg-gray-100"
-          >
-            <MdMoreVert size={20} />
-          </button>
-  
-          {/* Dropdown */}
-          {open && (
-            <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-              <button
-                onClick={() => {
-                  handleEditvendor(row.original);
-                  setOpen(false);
-                }}
-                className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100"
-              >
-                <MdEditDocument className="text-yellow-500" />
-                Edit
-              </button>
-  
-              {row.original.isActive ? (
-                <button
-                  onClick={() => {
-                    handleDeletevendor(row.original);
-                    setOpen(false);
-                  }}
-                  className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100"
-                >
-                  <MdDelete className="text-red-500" />
-                  Deactivate
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    handleactivateVendor(row.original);
-                    setOpen(false);
-                  }}
-                  className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100"
-                >
-                  <MdCheckCircle className="text-green-600" />
-                  Activate
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-      );
-    };
+  MdAdd,
+  MdChevronLeft,
+  MdChevronRight,
+  MdSearch,
+} from "react-icons/md";
+import { flexRender } from "@tanstack/react-table";
+import { useVendor } from "../hooks/useVendor";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import ActionMenu from "../../../shared/components/ActionMenu";
+
+const VendorPage = () => {
+  const {
+    table,
+    globalFilter,
+    setGlobalFilter,
+    deactivateVendor,
+    activateVendor,
+    allVendors,
+    setVendors,
+  } = useVendor();
+  const navigate = useNavigate();
+
+  const [vendorType, setvendorType] = useState("active");
+
+  const handlevendorTypeChange = (e) => {
+    const value = e.target.value;
+    setvendorType(value);
+
+    if (value === "active") {
+      setVendors(allVendors.filter((c) => c.isActive === true));
+    } else {
+      setVendors(allVendors.filter((c) => c.isActive === false));
+    }
+  };
+
+  const handleNewvendor = () => {
+    navigate("/admin/create/vendor");
+  };
+
+  const handleEditvendor = (vendor) => {
+    navigate("/admin/create/vendor", {
+      state: { vendorId: vendor.vendorId }
+    });
+  };
+
+  const handleDeletevendor = (vendor) => {
+    if (window.confirm("Are you sure you want to deactivate this vendor?")) {
+      deactivateVendor(vendor.vendorId);
+    }
+  };
+
+  const handleactivateVendor = (vendor) => {
+    if (window.confirm("Are you sure you want to activate this vendor?")) {
+      activateVendor(vendor.vendorId);
+    }
+  };
+
+  const handleViewvendor = (vendor) => {
+    navigate("/admin/view/vendor", {
+      state: { vendorId: vendor.vendorId }
+    });
+  };
   
     return (
       <div className="px-6">
@@ -240,7 +166,12 @@ import {
                     </td>
   
                     <td className="px-6 py-3 text-left">
-                      <ActionMenu row={row} />
+                      <ActionMenu 
+                        row={row} 
+                        onEdit={handleEditvendor}
+                        onDelete={handleDeletevendor}
+                        onActivate={handleactivateVendor}
+                      />
                     </td>
                   </tr>
                 ))

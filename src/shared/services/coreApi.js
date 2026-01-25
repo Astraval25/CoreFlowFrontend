@@ -51,4 +51,8 @@ export const coreApi = {
     ),
   getAllVendorByCompanyId: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors`),
+
+  // items
+  getItems: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/items`),
 };
