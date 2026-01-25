@@ -54,17 +54,6 @@ const ItemsPage = () => {
 
   return (
     <div className="px-6">
-      {/* <h1>Items Page</h1>
-
-      <div>
-        {items.map((item) => (
-          <div key={item.itemId}>
-            <h2>{item.itemName}</h2>
-            <p>{item.itemType}</p>
-          </div>
-        ))}
-      </div> */}
-
       <div className="flex items-center justify-between mb-4">
         {/* Left Dropdown */}
         <select

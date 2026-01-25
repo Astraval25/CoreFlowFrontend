@@ -1,5 +1,4 @@
-import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import {
   MdCheckCircle,
   MdDelete,
@@ -9,8 +8,9 @@ import {
 
 const ActionMenu = ({ row, onEdit, onDelete, onActivate }) => {
   const [open, setOpen] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, left: 0 });
   const menuRef = useRef(null);
-  const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const handler = (e) => {
@@ -43,6 +43,32 @@ const ActionMenu = ({ row, onEdit, onDelete, onActivate }) => {
     setOpen(false);
   };
 
+  /* ---------- close outside click ---------- */
+  useEffect(() => {
+    const handler = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  /* ---------- auto position logic ---------- */
+  useLayoutEffect(() => {
+    if (open && menuRef.current && dropdownRef.current) {
+      const rect = menuRef.current.getBoundingClientRect();
+      const dropdownHeight = dropdownRef.current.offsetHeight;
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const openUp = spaceBelow < dropdownHeight;
+      const top = openUp ? rect.top - dropdownHeight - 8 : rect.bottom + 8;
+      setCoords({
+        top,
+        left: rect.right - 160, // width = w-40 (160px)
+      });
+    }
+  }, [open]);
+
   return (
     <div
       ref={menuRef}
@@ -59,7 +85,15 @@ const ActionMenu = ({ row, onEdit, onDelete, onActivate }) => {
 
       {/* Dropdown */}
       {open && (
-        <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+        <div
+          ref={dropdownRef}
+          style={{
+            position: "fixed",
+            top: coords.top,
+            left: coords.left,
+          }}
+          className="w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-[9999]"
+        >
           <button
             onClick={handleEdit}
             className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100"
