@@ -10,6 +10,8 @@ const ItemsPage = () => {
     items,
     setItems,
     companyId,
+    activateItem,
+    deactivateItem,
     table,
     globalFilter,
     setGlobalFilter,
@@ -36,15 +38,23 @@ const ItemsPage = () => {
     });
   };
 
-  const handleDeleteItem = (item) => {
+  const handleDeleteItem = async (item) => {
     if (window.confirm("Are you sure you want to deactivate this item?")) {
-      console.log("Deactivate item:", item.itemId);
+      try {
+        await deactivateItem(companyId, item.itemId);
+      } catch (error) {
+        alert("Failed to deactivate item. Item may not exist.");
+      }
     }
   };
 
-  const handleActivateItem = (item) => {
+  const handleActivateItem = async (item) => {
     if (window.confirm("Are you sure you want to activate this item?")) {
-      console.log("Activate item:", item.itemId);
+      try {
+        await activateItem(companyId, item.itemId);
+      } catch (error) {
+        alert("Failed to activate item. Item may not exist.");
+      }
     }
   };
 

@@ -34,6 +34,26 @@ const useItemsPage = () => {
         })
     }
 
+    const deactivateItem = async (compId, itemId) => {
+        try {
+            await coreApi.deactivateItem(compId, itemId);
+            fetchItems(companyId); // refresh
+        } catch (err) {
+            console.error("Deactivate item error:", err);
+            throw err;
+        }
+    };
+
+    const activateItem = async (compId, itemId) => {
+        try {
+            await coreApi.activateItem(compId, itemId);
+            fetchItems(companyId); // refresh
+        } catch (err) {
+            console.error("Activate item error:", err);
+            throw err;
+        }
+    };
+
     // table columns
     const columnHelper = createColumnHelper();
     const columns = [
@@ -64,6 +84,7 @@ const useItemsPage = () => {
         globalFilter,
         setGlobalFilter,
         allItems,
+        activateItem, deactivateItem
     }
 }
 

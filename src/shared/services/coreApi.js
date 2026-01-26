@@ -64,5 +64,15 @@ export const coreApi = {
 
   downloadFile: (fsId) => api.get(`${ENDPOINTS.FILE_DOWNLOAD}?fsId=${fsId}`, {
     responseType: "blob",
-  })
+  }),
+
+  deactivateItem: (companyId, itemId) =>
+    api.patch(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/items/${itemId}/deactivate`
+    ),
+
+  activateItem: (companyId, itemId) =>
+    api.patch(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/items/${itemId}/activate`
+    ),
 };
