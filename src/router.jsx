@@ -18,6 +18,8 @@ import VendorPage from "./features/vendors/pages/VendorPage";
 import CreateVendorPage from "./features/vendors/pages/CreateVendorPage";
 import ViewVendor from "./features/vendors/pages/ViewVendor";
 import ItemsPage from "./features/Items/pages/ItemsPage";
+import CreateItemsPage from "./features/Items/pages/CreateItemPage";
+import ViewItemPage from "./features/Items/pages/ViewItemPage";
 
 export const router = createBrowserRouter([
   {
@@ -83,6 +85,8 @@ export const router = createBrowserRouter([
       { path: "view/vendor", element: <ViewVendor /> },
 
       { path: "items", element: <ItemsPage /> },
+      { path: "create/item", element: <CreateItemsPage /> },
+      { path: "view/item", element: <ViewItemPage /> },
     ],
   },
 ]);

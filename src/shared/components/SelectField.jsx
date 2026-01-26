@@ -24,11 +24,15 @@ const SelectField = ({
           <option value="" disabled>
             Select {label}
           </option>
-          {options.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
+          {options.map((opt, index) => {
+            const optionKey = typeof opt === 'object' ? opt.key : `${opt}-${index}`;
+            const optionValue = typeof opt === 'object' ? opt.value : opt;
+            return (
+              <option key={optionKey} value={optionValue}>
+                {optionValue}
+              </option>
+            );
+          })}
         </select>
 
         {error && <p className="text-red-500 text-xs mt-1">{error}</p>}

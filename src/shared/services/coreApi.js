@@ -55,4 +55,14 @@ export const coreApi = {
   // items
   getItems: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/items`),
+
+  getItemDetail: (companyId, itemId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/items/${itemId}`),
+
+  createItems: (companyId, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/items`, data),
+
+  downloadFile: (fsId) => api.get(`${ENDPOINTS.FILE_DOWNLOAD}?fsId=${fsId}`, {
+    responseType: "blob",
+  })
 };

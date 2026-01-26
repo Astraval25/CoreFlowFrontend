@@ -2,9 +2,6 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 api.interceptors.request.use((config) => {
@@ -29,13 +26,13 @@ api.interceptors.response.use(
 
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/auth/refresh-token`,
-          { refresh }   // send in body
+          { refreshToken }   // send in body
         );
 
         const newToken = res.data.token;
         localStorage.setItem("token", newToken);
 
-        originalRequest.headers.Authorization = Bearer`${newToken}`;
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return apiService(originalRequest);
       } catch (err) {
         console.error("Refresh failed", err);

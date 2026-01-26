@@ -8,5 +8,5 @@ export const ENDPOINTS = {
   
   CUSTOMERS: "/companies",
 
-
+  FILE_DOWNLOAD : "/file"
 };

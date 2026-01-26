@@ -52,6 +52,12 @@ const ItemsPage = () => {
     navigate("/admin/create/item");
   };
 
+  const handleViewItem = (item) => {
+    navigate("/admin/view/item", {
+      state: { itemId: item.itemId },
+    });
+  };
+
   return (
     <div className="px-6">
       <div className="flex items-center justify-between mb-4">
@@ -133,6 +139,7 @@ const ItemsPage = () => {
                   className="hover:bg-gray-50 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
+                    handleViewItem(row.original);
                   }}
                 >
                   <td className="px-6 py-4 text-gray-500 font-semibold text-left">
