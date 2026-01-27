@@ -1,21 +1,30 @@
-import { useCreateItemPage } from '../hooks/useCreateItemPage';
-import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import InputField from '../../../shared/components/InputField';
-import SelectField from '../../../shared/components/SelectField';
-import { itemNameRegex, priceRegex } from '../../../shared/utils/regex';
+import { useCreateItemPage } from "../hooks/useCreateItemPage";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import InputField from "../../../shared/components/InputField";
+import SelectField from "../../../shared/components/SelectField";
+import { itemNameRegex, priceRegex } from "../../../shared/utils/regex";
 
 const CreateItemPage = () => {
   const navigate = useNavigate();
+  const { itemId: paramItemId } = useParams();
+  const { state } = useLocation();
+
+  const itemId = paramItemId || state?.itemId;
+
   const {
     formData,
+    customers,
+    vendors,
     file,
     errors,
     loading,
+    isEditMode,
+    imageUrl,
     handleInputChange: originalHandleInputChange,
     handleFileChange,
-    createItem
-  } = useCreateItemPage();
+    saveItem,
+  } = useCreateItemPage(itemId);
 
   const [fieldErrors, setFieldErrors] = useState({});
 
@@ -32,53 +41,34 @@ const CreateItemPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validate required fields
-    const validationErrors = {};
-    if (!formData.itemName?.trim()) {
-      validationErrors.itemName = "Item name is required.";
-    }
-    if (!formData.itemType) {
-      validationErrors.itemType = "Item type is required.";
-    }
-    if (!formData.salesPrice?.trim() && !formData.purchasePrice?.trim()) {
-      validationErrors.salesPrice = "Either sales price or purchase price is required.";
-      validationErrors.purchasePrice = "Either sales price or purchase price is required.";
-    }
 
-    if (Object.keys(validationErrors).length > 0) {
-      setFieldErrors(validationErrors);
-      return;
-    }
+    const result = await saveItem();
 
-    const result = await createItem();
     if (result?.success) {
-      alert('Item created successfully!');
-      navigate('/admin/items');
+      alert(`Item ${isEditMode ? "updated" : "created"} successfully!`);
+      navigate("/admin/items");
     } else {
-      alert(result?.message || 'Failed to create item. Please try again.');
+      alert(result?.message || "Something went wrong");
     }
   };
 
   const itemTypeOptions = [
-    { key: 'goods', value: 'GOODS' },
-    { key: 'service', value: 'SERVICE' }
+    { key: "goods", value: "GOODS" },
+    { key: "service", value: "SERVICE" },
   ];
 
   const unitOptions = [
-    { key: 'pcs', value: 'PCS' },
-    { key: 'liter', value: 'LITER' },
-    { key: 'gram', value: 'GRAM' },
-    { key: 'meter', value: 'METER' },
-    { key: 'inch', value: 'INCH' },
-    { key: 'kg', value: 'KG' },
-    { key: 'milliliter', value: 'MILLILITER' }
+    { key: "pcs", value: "PCS" },
+    { key: "kg", value: "KG" },
+    { key: "ml", value: "ML" },
   ];
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Create New Item</h1>
-      
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        {isEditMode ? "Edit Item" : "Create New Item"}
+      </h1>
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InputField
@@ -155,28 +145,61 @@ const CreateItemPage = () => {
             placeholder="0.00"
           />
 
-          <InputField
-            label="Preferred Customer ID"
+          <SelectField
+            label="Preferred Customer"
             name="preferredCustomerId"
-            type="number"
-            value={formData.preferredCustomerId}
-            onChange={handleInputChange}
-            placeholder="Enter customer ID"
+            value={
+              customers.find(
+                (c) => c.customerId == formData.preferredCustomerId
+              )?.displayName || ""
+            }
+            onChange={(e) => {
+              const selectedCustomer = customers.find(
+                (c) => c.displayName === e.target.value
+              );
+              originalHandleInputChange({
+                target: {
+                  name: "preferredCustomerId",
+                  value: selectedCustomer ? selectedCustomer.customerId : "",
+                },
+              });
+            }}
+            options={customers.map((customer, index) => ({
+              key: `customer-${customer.customerId}-${index}`,
+              value: customer.displayName,
+            }))}
           />
 
-          <InputField
-            label="Preferred Vendor ID"
+          <SelectField
+            label="Preferred Vendor"
             name="preferredVendorId"
-            type="number"
-            value={formData.preferredVendorId}
-            onChange={handleInputChange}
-            placeholder="Enter vendor ID"
+            value={
+              vendors.find((v) => v.vendorId == formData.preferredVendorId)
+                ?.displayName || ""
+            }
+            onChange={(e) => {
+              const selectedVendor = vendors.find(
+                (v) => v.displayName === e.target.value
+              );
+              originalHandleInputChange({
+                target: {
+                  name: "preferredVendorId",
+                  value: selectedVendor ? selectedVendor.vendorId : "",
+                },
+              });
+            }}
+            options={vendors.map((vendor, index) => ({
+              key: `vendor-${vendor.vendorId}-${index}`,
+              value: vendor.displayName,
+            }))}
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="text-sm font-medium text-gray-700">Sales Description</label>
+            <label className="text-sm font-medium text-gray-700">
+              Sales Description
+            </label>
             <textarea
               name="salesDescription"
               value={formData.salesDescription}
@@ -188,7 +211,9 @@ const CreateItemPage = () => {
           </div>
 
           <div>
-            <label className="text-sm font-medium text-gray-700">Purchase Description</label>
+            <label className="text-sm font-medium text-gray-700">
+              Purchase Description
+            </label>
             <textarea
               name="purchaseDescription"
               value={formData.purchaseDescription}
@@ -200,29 +225,54 @@ const CreateItemPage = () => {
           </div>
         </div>
 
-        <div>
-          <label className="text-sm font-medium text-gray-700">Item Image</label>
+        <div className="space-y-4">
+          <label className="text-sm font-medium text-gray-700">
+            Item Image
+          </label>
+
+          {/* Display existing image if in edit mode */}
+          {isEditMode && imageUrl && (
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">Current Image:</p>
+              <img
+                src={imageUrl}
+                alt="Current item"
+                className="w-50 h-50 object-cover border border border-gray-300 rounded-lg"
+              />
+            </div>
+          )}
+
           <input
             type="file"
             onChange={handleFileChange}
             accept="image/*"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {file && <p className="text-sm text-gray-600 mt-1">Selected: {file.name}</p>}
+          {file && (
+            <p className="text-sm text-gray-600 mt-1">
+              New file selected: {file.name}
+            </p>
+          )}
+          {isEditMode && !file && (
+            <p className="text-sm text-gray-500 mt-1">
+              Select a new file to replace the current image
+            </p>
+          )}
         </div>
 
-        <div className="flex gap-4 pt-4">
+        <div className="flex gap-4">
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg disabled:opacity-50"
           >
-            {loading ? 'Creating...' : 'Create Item'}
+            {loading ? "Saving..." : isEditMode ? "Update Item" : "Create Item"}
           </button>
-          
+
           <button
             type="button"
-            className="border border-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-50"
+            onClick={() => navigate("/admin/items")}
+            className="border px-6 py-2 rounded-lg"
           >
             Cancel
           </button>
