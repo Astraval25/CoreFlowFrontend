@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import InputField from '../../../shared/components/InputField';
 import SelectField from '../../../shared/components/SelectField';
-import { nameRegex, priceRegex } from '../../../shared/utils/regex';
+import { itemNameRegex, priceRegex } from '../../../shared/utils/regex';
 
 const CreateItemPage = () => {
   const navigate = useNavigate();
@@ -87,8 +87,8 @@ const CreateItemPage = () => {
             value={formData.itemName}
             onChange={handleInputChange}
             onBlur={handleBlur}
-            regex={nameRegex}
-            regexError="Item name cannot contain numbers."
+            regex={itemNameRegex}
+            regexError="Item name can only contain letters, numbers, and underscores."
             placeholder="Enter item name"
             error={allErrors.itemName}
             required
