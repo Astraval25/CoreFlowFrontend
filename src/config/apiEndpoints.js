@@ -7,6 +7,7 @@ export const ENDPOINTS = {
   GET_COMPANY: "/companies/my-companies/active",
   
   CUSTOMERS: "/companies",
+  ITEMS: "/api/companies",
 
   FILE_DOWNLOAD : "/file"
 };
