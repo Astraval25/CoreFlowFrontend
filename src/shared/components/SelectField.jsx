@@ -10,7 +10,7 @@ const SelectField = ({
   return (
     <>
       <label className="text-sm font-medium text-gray-700">
-        {label} {required && "*"}
+        {label} {required && <span className="text-red-500 ml-1">*</span>}
       </label>
 
       <div>
@@ -25,8 +25,9 @@ const SelectField = ({
             Select {label}
           </option>
           {options.map((opt, index) => {
-            const optionKey = typeof opt === 'object' ? opt.key : `${opt}-${index}`;
-            const optionValue = typeof opt === 'object' ? opt.value : opt;
+            const optionKey =
+              typeof opt === "object" ? opt.key : `${opt}-${index}`;
+            const optionValue = typeof opt === "object" ? opt.value : opt;
             return (
               <option key={optionKey} value={optionValue}>
                 {optionValue}

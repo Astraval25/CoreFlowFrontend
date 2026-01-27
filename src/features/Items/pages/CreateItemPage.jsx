@@ -1,7 +1,9 @@
 import { useCreateItemPage } from '../hooks/useCreateItemPage';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import InputField from '../../../shared/components/InputField';
 import SelectField from '../../../shared/components/SelectField';
+import { nameRegex, priceRegex } from '../../../shared/utils/regex';
 
 const CreateItemPage = () => {
   const navigate = useNavigate();
@@ -10,13 +12,45 @@ const CreateItemPage = () => {
     file,
     errors,
     loading,
-    handleInputChange,
+    handleInputChange: originalHandleInputChange,
     handleFileChange,
     createItem
   } = useCreateItemPage();
 
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  const handleInputChange = (e) => {
+    originalHandleInputChange(e);
+    setFieldErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  };
+
+  const handleBlur = (name, errorMsg) => {
+    setFieldErrors((prev) => ({ ...prev, [name]: errorMsg }));
+  };
+
+  const allErrors = { ...errors, ...fieldErrors };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate required fields
+    const validationErrors = {};
+    if (!formData.itemName?.trim()) {
+      validationErrors.itemName = "Item name is required.";
+    }
+    if (!formData.itemType) {
+      validationErrors.itemType = "Item type is required.";
+    }
+    if (!formData.salesPrice?.trim() && !formData.purchasePrice?.trim()) {
+      validationErrors.salesPrice = "Either sales price or purchase price is required.";
+      validationErrors.purchasePrice = "Either sales price or purchase price is required.";
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setFieldErrors(validationErrors);
+      return;
+    }
+
     const result = await createItem();
     if (result?.success) {
       alert('Item created successfully!');
@@ -52,8 +86,11 @@ const CreateItemPage = () => {
             name="itemName"
             value={formData.itemName}
             onChange={handleInputChange}
+            onBlur={handleBlur}
+            regex={nameRegex}
+            regexError="Item name cannot contain numbers."
             placeholder="Enter item name"
-            error={errors.itemName}
+            error={allErrors.itemName}
             required
           />
 
@@ -63,6 +100,7 @@ const CreateItemPage = () => {
             value={formData.itemType}
             onChange={handleInputChange}
             options={itemTypeOptions}
+            error={allErrors.itemType}
             required
           />
 
@@ -72,7 +110,6 @@ const CreateItemPage = () => {
             value={formData.unit}
             onChange={handleInputChange}
             options={unitOptions}
-            required
           />
 
           <InputField
@@ -81,7 +118,11 @@ const CreateItemPage = () => {
             type="number"
             value={formData.salesPrice}
             onChange={handleInputChange}
+            onBlur={handleBlur}
+            regex={priceRegex}
+            regexError="Please enter a valid price."
             placeholder="0.00"
+            error={allErrors.salesPrice}
           />
 
           <InputField
@@ -90,7 +131,11 @@ const CreateItemPage = () => {
             type="number"
             value={formData.purchasePrice}
             onChange={handleInputChange}
+            onBlur={handleBlur}
+            regex={priceRegex}
+            regexError="Please enter a valid price."
             placeholder="0.00"
+            error={allErrors.purchasePrice}
           />
 
           <InputField
