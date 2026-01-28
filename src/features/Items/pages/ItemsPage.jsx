@@ -1,75 +1,84 @@
-import { MdAdd, MdChevronLeft, MdChevronRight, MdSearch } from "react-icons/md";
-import { flexRender } from "@tanstack/react-table";
-import { useCustomer } from "../hooks/useCustomer";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { MdAdd, MdSearch } from "react-icons/md";
+import { flexRender } from "@tanstack/react-table";
+import { useNavigate } from "react-router-dom";
+import useItemsPage from "../hooks/useItemsPage";
 import ActionMenu from "../../../shared/components/ActionMenu";
 
-const CustomerPage = () => {
+const ItemsPage = () => {
   const {
+    items,
+    setItems,
+    companyId,
+    activateItem,
+    deactivateItem,
     table,
     globalFilter,
     setGlobalFilter,
-    deactivateCustomer,
-    activateCustomer,
-    allCustomers,
-    setCustomers,
-  } = useCustomer();
+    allItems,
+  } = useItemsPage();
   const navigate = useNavigate();
 
-  const [customerType, setCustomerType] = useState("active");
+  const [ItemsType, setItemsType] = useState("active");
 
-  const handleCustomerTypeChange = (e) => {
+  const handleItemsTypeChange = (e) => {
     const value = e.target.value;
-    setCustomerType(value);
+    setItemsType(value);
 
     if (value === "active") {
-      setCustomers(allCustomers.filter((c) => c.isActive === true));
+      setItems(allItems.filter((c) => c.isActive === true));
     } else {
-      setCustomers(allCustomers.filter((c) => c.isActive === false));
+      setItems(allItems.filter((c) => c.isActive === false));
     }
   };
 
-  const handleNewCustomer = () => {
-    navigate("/admin/create/customer");
-  };
-
-  const handleEditCustomer = (customer) => {
-    navigate("/admin/create/customer", {
-      state: { customerId: customer.customerId },
+  const handleEditItem = (item) => {
+    navigate("/admin/create/item", {
+      state: { itemId: item.itemId },
     });
   };
 
-  const handleDeleteCustomer = (customer) => {
-    if (window.confirm("Are you sure you want to deactivate this customer?")) {
-      deactivateCustomer(customer.customerId);
+  const handleDeleteItem = async (item) => {
+    if (window.confirm("Are you sure you want to deactivate this item?")) {
+      try {
+        await deactivateItem(companyId, item.itemId);
+      } catch (error) {
+        alert("Failed to deactivate item. Item may not exist.");
+      }
     }
   };
 
-  const handleActivateCustomer = (customer) => {
-    if (window.confirm("Are you sure you want to activate this customer?")) {
-      activateCustomer(customer.customerId);
+  const handleActivateItem = async (item) => {
+    if (window.confirm("Are you sure you want to activate this item?")) {
+      try {
+        await activateItem(companyId, item.itemId);
+      } catch (error) {
+        alert("Failed to activate item. Item may not exist.");
+      }
     }
   };
 
-  const handleViewCustomer = (customer) => {
-    navigate("/admin/view/customer", {
-      state: { customerId: customer.customerId },
+  const handleNewItems = () => {
+    navigate("/admin/create/item");
+  };
+
+  const handleViewItem = (item) => {
+    navigate("/admin/view/item", {
+      state: { itemId: item.itemId },
     });
   };
 
   return (
     <div className="px-6">
-      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         {/* Left Dropdown */}
         <select
-          value={customerType}
-          onChange={handleCustomerTypeChange}
+          value={ItemsType}
+          onChange={handleItemsTypeChange}
           className="cursor-pointer text-sm font-medium text-gray-700 focus:outline-none focus:ring-0"
         >
-          <option value="active">Active Customers</option>
-          <option value="deleted">Deleted Customers</option>
+          <option value="active">Active Items</option>
+          <option value="deleted">Deleted Items</option>
         </select>
 
         {/* Right: Search + New button */}
@@ -85,21 +94,19 @@ const CustomerPage = () => {
               onChange={(e) => setGlobalFilter(e.target.value)}
               placeholder="Search customers..."
               className="w-full pl-14 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm
-        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
             />
           </div>
 
           <button
-            onClick={handleNewCustomer}
-            className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
+            onClick={handleNewItems}
+            className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition cursor-pointer"
           >
             New
             <MdAdd size={18} />
           </button>
         </div>
       </div>
-
-      {/* Table */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-100 text-xs uppercase text-gray-600">
@@ -132,7 +139,7 @@ const CustomerPage = () => {
                   colSpan={table.getAllColumns().length}
                   className="text-center py-12 text-gray-500"
                 >
-                  No customers found
+                  No Items found
                 </td>
               </tr>
             ) : (
@@ -142,30 +149,43 @@ const CustomerPage = () => {
                   className="hover:bg-gray-50 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleViewCustomer(row.original);
+                    handleViewItem(row.original);
                   }}
                 >
-                  {/* S.No */}
                   <td className="px-6 py-4 text-gray-500 font-semibold text-left">
                     {row.index + 1}
                   </td>
 
-                  {/* Name */}
                   <td className="px-6 py-4 text-blue-600 font-semibold text-left">
-                    {row.getValue("displayName")}
+                    {row.getValue("itemName")}
                   </td>
 
-                  {/* Email */}
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("email")}
+                    {row.getValue("itemType")}
+                  </td>
+
+                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                    {row.getValue("unit")}
+                  </td>
+                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                    {row.getValue("salesPrice")}
+                  </td>
+                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                    {row.getValue("preferredCustomerName")}
+                  </td>
+                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                    {row.getValue("purchasePrice")}
+                  </td>
+                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                    {row.getValue("preferredVendorName")}
                   </td>
 
                   <td className="px-6 py-3 text-left">
                     <ActionMenu
                       row={row}
-                      onEdit={handleEditCustomer}
-                      onDelete={handleDeleteCustomer}
-                      onActivate={handleActivateCustomer}
+                      onEdit={handleEditItem}
+                      onDelete={handleDeleteItem}
+                      onActivate={handleActivateItem}
                     />
                   </td>
                 </tr>
@@ -174,43 +194,8 @@ const CustomerPage = () => {
           </tbody>
         </table>
       </div>
-
-      {/* Pagination */}
-      <div className="flex justify-center items-center mt-5 text-sm text-gray-600">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="p-2 rounded-md hover:bg-gray-50 disabled:cursor-not-allowed"
-          >
-            <MdChevronLeft
-              size={18}
-              className={
-                table.getCanPreviousPage() ? "text-blue-600" : "text-gray-400"
-              }
-            />
-          </button>
-
-          <span className="font-medium px-3 py-1 bg-gray-200 rounded-full text-blue-600">
-            {table.getState().pagination.pageIndex + 1}
-          </span>
-
-          <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="p-2 rounded-md hover:bg-gray-50 disabled:cursor-not-allowed"
-          >
-            <MdChevronRight
-              size={18}
-              className={
-                table.getCanNextPage() ? "text-blue-600" : "text-gray-400"
-              }
-            />
-          </button>
-        </div>
-      </div>
     </div>
   );
 };
 
-export default CustomerPage;
+export default ItemsPage;

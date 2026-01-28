@@ -17,6 +17,9 @@ import ContactPage from "./pages/ContactPage";
 import VendorPage from "./features/vendors/pages/VendorPage";
 import CreateVendorPage from "./features/vendors/pages/CreateVendorPage";
 import ViewVendor from "./features/vendors/pages/ViewVendor";
+import ItemsPage from "./features/Items/pages/ItemsPage";
+import CreateItemPage from "./features/Items/pages/CreateItemPage";
+import ViewItemPage from "./features/Items/pages/ViewItemPage";
 
 export const router = createBrowserRouter([
   {
@@ -72,6 +75,7 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "dashboard", element: <Dashboard /> },
+
       { path: "customers", element: <CustomerPage /> },
       { path: "create/customer", element: <CreateCustomerPage /> },
       { path: "view/customer", element: <ViewCustomer /> },
@@ -79,6 +83,10 @@ export const router = createBrowserRouter([
       { path: "vendors", element: <VendorPage /> },
       { path: "create/vendor", element: <CreateVendorPage /> },
       { path: "view/vendor", element: <ViewVendor /> },
+
+      { path: "items", element: <ItemsPage /> },
+      { path: "create/item", element: <CreateItemPage /> },
+      { path: "view/item", element: <ViewItemPage /> },
     ],
   },
 ]);

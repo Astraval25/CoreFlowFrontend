@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import ListAllCustomer from "./ListAllCustomer";
-import ViewCustomerDetail from "./ViewCustomerDetail";
+import ListAllItems from "../components/ListAllItems";
+import ViewItemDetail from "../components/ViewItemDetail";
 import { useLocation } from "react-router-dom";
 
-const ViewCustomer = () => {
+const ViewItemPage = () => {
   const { state } = useLocation();
-  const [selectedCustomerId, setSelectedCustomerId] = useState(
-    state?.customerId || null
+  const [selectedItemId, setSelectedItemId] = useState(
+    state?.itemId || null
   );
   const [companyId, setCompanyId] = useState(null);
 
@@ -23,31 +23,31 @@ const ViewCustomer = () => {
     }
   }, []);
 
-  const handleSelectCustomer = (id) => {
-    setSelectedCustomerId(id);
+  const handleSelectItem = (id) => {
+    setSelectedItemId(id);
   };
 
   return (
     <div className="flex gap-4">
       <div className="w-[20%]">
-        <ListAllCustomer
-          selectedCustomerId={selectedCustomerId}
-          onSelectCustomer={handleSelectCustomer}
+        <ListAllItems
+          selectedItemId={selectedItemId}
+          onSelectItem={handleSelectItem}
         />
       </div>
 
       <div className="w-[80%]">
-        {selectedCustomerId && companyId ? (
-          <ViewCustomerDetail
+        {selectedItemId && companyId ? (
+          <ViewItemDetail
             companyId={companyId}
-            customerId={selectedCustomerId}
+            itemId={selectedItemId}
           />
         ) : (
-          <p className="p-6 text-gray-600">Select a customer to view details</p>
+          <p className="p-6 text-gray-600">Select an item to view details</p>
         )}
       </div>
     </div>
   );
 };
 
-export default ViewCustomer;
+export default ViewItemPage;
