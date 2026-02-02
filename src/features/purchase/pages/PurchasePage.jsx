@@ -16,11 +16,15 @@ const PurchasePage = () => {
     setGlobalFilter,
   } = usePurchasePage();
 
+  const navigate = useNavigate();
+
   const [OrderType, setOrderType] = useState("active");
 
   const handleViewOrder = (order) => {
-    // Navigate to order details
-    console.log("View", order);
+    navigate("/admin/view/purchase", {
+      state: { orderId: order.orderId },
+    });
+    console.log("View", order.orderId);
   };
 
   const handleEditOrder = (order) => {

@@ -91,7 +91,11 @@ export const coreApi = {
       `${ENDPOINTS.CUSTOMERS}/${companyId}/items/${itemId}/activate`
     ),
 
-  // purchase
+  // Purchase
   getAllPurchase: (companyId) =>
-    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/purchase/orders`)
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/purchase/orders`),
+
+  getPurchaseDetail: (companyId, orderId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}`),
+
 };
