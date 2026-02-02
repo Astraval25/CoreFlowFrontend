@@ -20,6 +20,7 @@ import ViewVendor from "./features/vendors/pages/ViewVendor";
 import ItemsPage from "./features/Items/pages/ItemsPage";
 import CreateItemPage from "./features/Items/pages/CreateItemPage";
 import ViewItemPage from "./features/Items/pages/ViewItemPage";
+import PurchasePage from "./features/purchase/pages/PurchasePage";
 
 export const router = createBrowserRouter([
   {
@@ -87,6 +88,8 @@ export const router = createBrowserRouter([
       { path: "items", element: <ItemsPage /> },
       { path: "create/item", element: <CreateItemPage /> },
       { path: "view/item", element: <ViewItemPage /> },
+
+      { path: "purchase", element: <PurchasePage /> },
     ],
   },
 ]);

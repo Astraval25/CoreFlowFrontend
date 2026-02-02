@@ -12,12 +12,6 @@ const Sidebar = () => {
   const [openManage, setOpenManage] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    if (location.pathname.startsWith("/admin")) {
-      setOpenManage(true);
-    }
-  }, [location.pathname]);
-
   const linkClass = ({ isActive }) =>
     `flex items-center gap-3 px-4 py-2 rounded-md transition
      ${isActive ? "bg-blue-600" : "hover:bg-gray-700"}`;
@@ -71,14 +65,14 @@ const Sidebar = () => {
               Vendors
             </NavLink>
 
-            <NavLink to="/admin/employees" className={linkClass}>
+            <NavLink to="/admin/purchase" className={linkClass}>
               {/* <FaUsers size={16} /> */}
-              Employees
+              Purchase
             </NavLink>
 
-            <NavLink to="/admin/payments" className={linkClass}>
+            <NavLink to="/admin/sales" className={linkClass}>
               {/* <MdPayments size={18} /> */}
-              Payments
+              Sales
             </NavLink>
           </div>
         </div>

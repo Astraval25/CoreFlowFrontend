@@ -90,4 +90,8 @@ export const coreApi = {
     api.patch(
       `${ENDPOINTS.CUSTOMERS}/${companyId}/items/${itemId}/activate`
     ),
+
+  // purchase
+  getAllPurchase: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/purchase/orders`)
 };
