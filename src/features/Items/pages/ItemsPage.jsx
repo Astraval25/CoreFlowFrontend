@@ -168,17 +168,17 @@ const ItemsPage = () => {
                     {row.getValue("unit")}
                   </td>
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("salesPrice")}
+                    {row.getValue("baseSalesPrice")}
                   </td>
-                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                  {/* <td className="px-6 py-4 text-gray-600 font-semibold text-left">
                     {row.getValue("preferredCustomerName")}
-                  </td>
+                  </td> */}
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("purchasePrice")}
+                    {row.getValue("basePurchasePrice")}
                   </td>
-                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                  {/* <td className="px-6 py-4 text-gray-600 font-semibold text-left">
                     {row.getValue("preferredVendorName")}
-                  </td>
+                  </td> */}
 
                   <td className="px-6 py-3 text-left">
                     <ActionMenu

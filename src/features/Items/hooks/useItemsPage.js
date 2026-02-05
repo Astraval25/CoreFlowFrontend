@@ -61,10 +61,10 @@ const useItemsPage = () => {
         columnHelper.accessor("itemName", { header: "Item Name" }),
         columnHelper.accessor("itemType", { header: "Item Type" }),
         columnHelper.accessor("unit", { header: "Unit" }),
-        columnHelper.accessor("salesPrice", { header: "Salse Price" }),
-        columnHelper.accessor("preferredCustomerName", { header: "Customer Name" }),
-        columnHelper.accessor("purchasePrice", { header: "Purchase Price" }),
-        columnHelper.accessor("preferredVendorName", { header: "Vendor Name" }),
+        columnHelper.accessor("baseSalesPrice", { header: "Sales Price" }),
+        // columnHelper.accessor("preferredCustomerName", { header: "Customer Name" }),
+        columnHelper.accessor("basePurchasePrice", { header: "Purchase Price" }),
+        // columnHelper.accessor("preferredVendorName", { header: "Vendor Name" }),
         columnHelper.accessor("action", { header: "Action" }),
     ];
 

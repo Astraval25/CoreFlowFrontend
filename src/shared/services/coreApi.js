@@ -98,4 +98,7 @@ export const coreApi = {
   getPurchaseDetail: (companyId, orderId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}`),
 
+  createPurchase: (companyId, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/purchase/orders`, data)
+
 };
