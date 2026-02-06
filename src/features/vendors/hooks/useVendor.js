@@ -84,6 +84,7 @@ export const useVendor = () => {
     deactivateVendor,
     getAllVendors,
     allVendors,
+    vendors,
     setVendors,
   };
 };

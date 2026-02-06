@@ -7,18 +7,14 @@ export const useCreateItemPage = (itemId = null) => {
     itemName: "",
     itemType: "GOODS",
     unit: "PCS",
-    salesDescription: "",
-    salesPrice: "",
-    preferredCustomerId: "",
-    purchaseDescription: "",
-    purchasePrice: "",
-    preferredVendorId: "",
+    baseSalesPrice: "",
+    basePurchasePrice: "",
     hsnCode: "",
-    taxRate: ""
+    taxRate: "",
+    salesDescription: "",
+    purchaseDescription: ""
   });
 
-  const [customers, setCustomers] = useState([]);
-  const [vendors, setVendors] = useState([]);
   const [file, setFile] = useState(null);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -33,18 +29,8 @@ export const useCreateItemPage = (itemId = null) => {
         const decode = jwtDecode(token);
         const companyId = decode.defaultComp[0];
 
-        const [customersRes, vendorsRes] = await Promise.all([
-          coreApi.getAllCustomerByCompanyId(companyId),
-          coreApi.getAllVendorByCompanyId(companyId)
-        ]);
-
-        setCustomers(customersRes.data.responseData || []);
-        setVendors(vendorsRes.data.responseData || []);
-
-        // fetch item details
         if (itemId) {
           setIsEditMode(true);
-
           const itemRes = await coreApi.getItemDetail(companyId, itemId);
           const item = itemRes.data.responseData;
 
@@ -52,15 +38,14 @@ export const useCreateItemPage = (itemId = null) => {
             itemName: item.itemName || "",
             itemType: item.itemType || "GOODS",
             unit: item.unit || "PCS",
-            salesDescription: item.salesDescription || "",
-            salesPrice: item.salesPrice || "",
-            preferredCustomerId: item.preferredCustomerId || "",
-            purchaseDescription: item.purchaseDescription || "",
-            purchasePrice: item.purchasePrice || "",
-            preferredVendorId: item.preferredVendorId || "",
+            baseSalesPrice: item.baseSalesPrice || "",
+            basePurchasePrice: item.basePurchasePrice || "",
             hsnCode: item.hsnCode || "",
             taxRate: item.taxRate || "",
+            salesDescription: item.salesDescription || "",
+            purchaseDescription: item.purchaseDescription || ""
           });
+          
           if (item.itemImage) {
             const imgRes = await coreApi.downloadFile(item.itemImage);
             const blobUrl = URL.createObjectURL(imgRes.data);
@@ -100,9 +85,9 @@ export const useCreateItemPage = (itemId = null) => {
       newErrors.itemName = "Item name is required";
     }
 
-    if (!formData.salesPrice && !formData.purchasePrice) {
-      newErrors.salesPrice = "Either sales or purchase price required";
-      newErrors.purchasePrice = "Either sales or purchase price required";
+    if (!formData.baseSalesPrice && !formData.basePurchasePrice) {
+      newErrors.baseSalesPrice = "Either sales or purchase price required";
+      newErrors.basePurchasePrice = "Either sales or purchase price required";
     }
 
     setErrors(newErrors);
@@ -123,7 +108,6 @@ export const useCreateItemPage = (itemId = null) => {
 
       const formDataToSend = new FormData();
 
-      // ONLY DTO fields
       formDataToSend.append("item", JSON.stringify(formData));
 
       if (file) {
@@ -153,8 +137,6 @@ export const useCreateItemPage = (itemId = null) => {
 
   return {
     formData,
-    customers,
-    vendors,
     file,
     errors,
     loading,

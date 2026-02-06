@@ -44,8 +44,8 @@ const ListAllItems = ({ onSelectItem, selectedItemId }) => {
           >
             <div className="font-medium mb-1">{item.itemName}</div>
             <div className="text-xs text-gray-500 flex justify-between">
-              <p>Buy {item.purchasePrice} </p>
-              <p>Sell {item.salesPrice}</p>
+              <p>Buy {item.basePurchasePrice} </p>
+              <p>Sell {item.baseSalesPrice}</p>
             </div>
           </div>
         ))}

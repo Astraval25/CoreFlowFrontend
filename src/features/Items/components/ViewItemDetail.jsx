@@ -67,15 +67,15 @@ const ViewItemDetail = ({ companyId, itemId }) => {
                   {item.unit}
                 </p>
               </div>
-              <Info label="Sales Price" value={`₹${item.salesPrice}`} />
-              <Info label="Purchase Price" value={`₹${item.purchasePrice}`} />
+              <Info label="Sales Price" value={`₹${item.baseSalesPrice}`} />
               <Info
-                label="Preferred Customer"
-                value={item.preferredCustomerDisplayName}
+                label="Purchase Price"
+                value={`₹${item.basePurchasePrice}`}
               />
+              <Info label="Sellable" value={item.isSellable ? "Yes" : "No"} />
               <Info
-                label="Preferred Vendor"
-                value={item.preferredVendorDisplayName}
+                label="Purchasable"
+                value={item.isPurchasable ? "Yes" : "No"}
               />
             </div>
           </div>
@@ -138,8 +138,8 @@ const ViewItemDetail = ({ companyId, itemId }) => {
               </p>
             </div>
             <hr className="border border-gray-300" />
-            <Info label="Sales Price" value={`₹${item.salesPrice}`} />
-            <Info label="Purchase Price" value={`₹${item.purchasePrice}`} />
+            <Info label="Sales Price" value={`₹${item.baseSalesPrice}`} />
+            <Info label="Purchase Price" value={`₹${item.basePurchasePrice}`} />
           </div>
         </div>
       </div>

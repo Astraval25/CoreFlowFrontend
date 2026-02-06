@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import InputField from "../../../shared/components/InputField";
 import SelectField from "../../../shared/components/SelectField";
-import { itemNameRegex, priceRegex } from "../../../shared/utils/regex";
+import { itemNameRegex, priceRegex, hsnRegex } from "../../../shared/utils/regex";
 
 const CreateItemPage = () => {
   const navigate = useNavigate();
@@ -14,8 +14,6 @@ const CreateItemPage = () => {
 
   const {
     formData,
-    customers,
-    vendors,
     file,
     errors,
     loading,
@@ -64,13 +62,13 @@ const CreateItemPage = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">
-        {isEditMode ? "Edit Item" : "Create New Item"}
+    <div className="p-6">
+      <h1 className="font-semibold text-lg mb-6">
+        {isEditMode ? "Edit Item" : "New Item"}
       </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-[180px_1fr] gap-4 max-w-3xl">
           <InputField
             label="Item Name"
             name="itemName"
@@ -79,7 +77,6 @@ const CreateItemPage = () => {
             onBlur={handleBlur}
             regex={itemNameRegex}
             regexError="Item name can only contain letters, numbers, and underscores."
-            placeholder="Enter item name"
             error={allErrors.itemName}
             required
           />
@@ -104,28 +101,26 @@ const CreateItemPage = () => {
 
           <InputField
             label="Sales Price"
-            name="salesPrice"
+            name="baseSalesPrice"
             type="number"
-            value={formData.salesPrice}
+            value={formData.baseSalesPrice}
             onChange={handleInputChange}
             onBlur={handleBlur}
             regex={priceRegex}
             regexError="Please enter a valid price."
-            placeholder="0.00"
-            error={allErrors.salesPrice}
+            error={allErrors.baseSalesPrice}
           />
 
           <InputField
             label="Purchase Price"
-            name="purchasePrice"
+            name="basePurchasePrice"
             type="number"
-            value={formData.purchasePrice}
+            value={formData.basePurchasePrice}
             onChange={handleInputChange}
             onBlur={handleBlur}
             regex={priceRegex}
             regexError="Please enter a valid price."
-            placeholder="0.00"
-            error={allErrors.purchasePrice}
+            error={allErrors.basePurchasePrice}
           />
 
           <InputField
@@ -133,7 +128,10 @@ const CreateItemPage = () => {
             name="hsnCode"
             value={formData.hsnCode}
             onChange={handleInputChange}
-            placeholder="Enter HSN code"
+            onBlur={handleBlur}
+            regex={hsnRegex}
+            regexError="HSN code must be 4, 6, or 8 digits."
+            error={allErrors.hsnCode}
           />
 
           <InputField
@@ -142,139 +140,89 @@ const CreateItemPage = () => {
             type="number"
             value={formData.taxRate}
             onChange={handleInputChange}
-            placeholder="0.00"
-          />
-
-          <SelectField
-            label="Preferred Customer"
-            name="preferredCustomerId"
-            value={
-              customers.find(
-                (c) => c.customerId == formData.preferredCustomerId
-              )?.displayName || ""
-            }
-            onChange={(e) => {
-              const selectedCustomer = customers.find(
-                (c) => c.displayName === e.target.value
-              );
-              originalHandleInputChange({
-                target: {
-                  name: "preferredCustomerId",
-                  value: selectedCustomer ? selectedCustomer.customerId : "",
-                },
-              });
-            }}
-            options={customers.map((customer, index) => ({
-              key: `customer-${customer.customerId}-${index}`,
-              value: customer.displayName,
-            }))}
-          />
-
-          <SelectField
-            label="Preferred Vendor"
-            name="preferredVendorId"
-            value={
-              vendors.find((v) => v.vendorId == formData.preferredVendorId)
-                ?.displayName || ""
-            }
-            onChange={(e) => {
-              const selectedVendor = vendors.find(
-                (v) => v.displayName === e.target.value
-              );
-              originalHandleInputChange({
-                target: {
-                  name: "preferredVendorId",
-                  value: selectedVendor ? selectedVendor.vendorId : "",
-                },
-              });
-            }}
-            options={vendors.map((vendor, index) => ({
-              key: `vendor-${vendor.vendorId}-${index}`,
-              value: vendor.displayName,
-            }))}
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-6">
           <div>
-            <label className="text-sm font-medium text-gray-700">
-              Sales Description
-            </label>
-            <textarea
-              name="salesDescription"
-              value={formData.salesDescription}
-              onChange={handleInputChange}
-              placeholder="Enter sales description"
-              rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+            <h3 className="text-blue-600 font-medium mb-4 text-base">Descriptions</h3>
+            <div className="grid grid-cols-[180px_1fr] gap-y-4">
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Sales Description
+                </label>
+                <textarea
+                  name="salesDescription"
+                  value={formData.salesDescription}
+                  onChange={handleInputChange}
+                  placeholder="Enter sales description"
+                  rows={3}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              Purchase Description
-            </label>
-            <textarea
-              name="purchaseDescription"
-              value={formData.purchaseDescription}
-              onChange={handleInputChange}
-              placeholder="Enter purchase description"
-              rows={3}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <label className="text-sm font-medium text-gray-700">
-            Item Image
-          </label>
-
-          {/* Display existing image if in edit mode */}
-          {isEditMode && imageUrl && (
-            <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-2">Current Image:</p>
-              <img
-                src={imageUrl}
-                alt="Current item"
-                className="w-50 h-50 object-cover border border border-gray-300 rounded-lg"
-              />
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Purchase Description
+                </label>
+                <textarea
+                  name="purchaseDescription"
+                  value={formData.purchaseDescription}
+                  onChange={handleInputChange}
+                  placeholder="Enter purchase description"
+                  rows={3}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
             </div>
-          )}
+          </div>
 
-          <input
-            type="file"
-            onChange={handleFileChange}
-            accept="image/*"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {file && (
-            <p className="text-sm text-gray-600 mt-1">
-              New file selected: {file.name}
-            </p>
-          )}
-          {isEditMode && !file && (
-            <p className="text-sm text-gray-500 mt-1">
-              Select a new file to replace the current image
-            </p>
-          )}
+          <div>
+            <h3 className="text-green-600 font-medium mb-4 text-base">Item Image</h3>
+            <div className="grid grid-cols-[180px_1fr] gap-y-4">
+              {isEditMode && imageUrl && (
+                <div className="col-span-2 mb-4">
+                  <p className="text-sm text-gray-600 mb-2">Current Image:</p>
+                  <img
+                    src={imageUrl}
+                    alt="Current item"
+                    className="w-32 h-32 object-cover border border-gray-300 rounded-lg"
+                  />
+                </div>
+              )}
+
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Upload Image
+                </label>
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {file && (
+                  <p className="text-sm text-gray-600 mt-1">
+                    New file selected: {file.name}
+                  </p>
+                )}
+                {isEditMode && !file && (
+                  <p className="text-sm text-gray-500 mt-1">
+                    Select a new file to replace the current image
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="flex gap-4">
+        <div className="mt-6 flex justify-end">
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg disabled:opacity-50"
+            className="bg-blue-600 text-white px-6 py-2 rounded cursor-pointer"
           >
             {loading ? "Saving..." : isEditMode ? "Update Item" : "Create Item"}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => navigate("/admin/items")}
-            className="border px-6 py-2 rounded-lg"
-          >
-            Cancel
           </button>
         </div>
       </form>

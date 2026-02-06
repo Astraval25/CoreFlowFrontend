@@ -1,71 +1,49 @@
-import { useState } from "react";
+import usePurchasePage from "../hooks/usePurchasePage";
 import { MdAdd, MdSearch } from "react-icons/md";
 import { flexRender } from "@tanstack/react-table";
 import { useNavigate } from "react-router-dom";
-import useItemsPage from "../hooks/useItemsPage";
 import ActionMenu from "../../../shared/components/ActionMenu";
+import { useState } from "react";
 
-const ItemsPage = () => {
+const PurchasePage = () => {
   const {
-    items,
-    setItems,
     companyId,
-    activateItem,
-    deactivateItem,
+    allOrder,
+    order,
+    setOrder,
     table,
     globalFilter,
     setGlobalFilter,
-    allItems,
-  } = useItemsPage();
+  } = usePurchasePage();
+
   const navigate = useNavigate();
 
-  const [ItemsType, setItemsType] = useState("active");
+  const [OrderType, setOrderType] = useState("active");
 
-  const handleItemsTypeChange = (e) => {
+  const handleViewOrder = (order) => {
+    navigate("/admin/view/purchase", {
+      state: { orderId: order.orderId },
+    });
+    console.log("View", order.orderId);
+  };
+
+  const handleEditOrder = (order) => {
+    console.log("Edit", order);
+  };
+
+  const handleDeleteOrder = (order) => {
+    console.log("Delete", order);
+  };
+
+  const handleOrderTypeChange = (e) => {
     const value = e.target.value;
-    setItemsType(value);
+    setOrderType(value);
 
     if (value === "active") {
-      setItems(allItems.filter((c) => c.isActive === true));
+      setOrder(allOrder.filter((c) => c.isActive === true));
     } else {
-      setItems(allItems.filter((c) => c.isActive === false));
+      setOrder(allOrder.filter((c) => c.isActive === false));
     }
-  };
-
-  const handleEditItem = (item) => {
-    navigate("/admin/create/item", {
-      state: { itemId: item.itemId },
-    });
-  };
-
-  const handleDeleteItem = async (item) => {
-    if (window.confirm("Are you sure you want to deactivate this item?")) {
-      try {
-        await deactivateItem(companyId, item.itemId);
-      } catch (error) {
-        alert("Failed to deactivate item. Item may not exist.");
-      }
-    }
-  };
-
-  const handleActivateItem = async (item) => {
-    if (window.confirm("Are you sure you want to activate this item?")) {
-      try {
-        await activateItem(companyId, item.itemId);
-      } catch (error) {
-        alert("Failed to activate item. Item may not exist.");
-      }
-    }
-  };
-
-  const handleNewItems = () => {
-    navigate("/admin/create/item");
-  };
-
-  const handleViewItem = (item) => {
-    navigate("/admin/view/item", {
-      state: { itemId: item.itemId },
-    });
   };
 
   return (
@@ -73,14 +51,13 @@ const ItemsPage = () => {
       <div className="flex items-center justify-between mb-4">
         {/* Left Dropdown */}
         <select
-          value={ItemsType}
-          onChange={handleItemsTypeChange}
+          value={OrderType}
+          onChange={handleOrderTypeChange}
           className="cursor-pointer text-sm font-medium text-gray-700 focus:outline-none focus:ring-0"
         >
           <option value="active">Active Items</option>
           <option value="deleted">Deleted Items</option>
         </select>
-
         {/* Right: Search + New button */}
         <div className="flex items-center gap-4">
           <div className="relative w-80">
@@ -92,16 +69,13 @@ const ItemsPage = () => {
             <input
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
-              placeholder="Search customers..."
+              placeholder="Search orders..."
               className="w-full pl-14 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm
               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
             />
           </div>
 
-          <button
-            onClick={handleNewItems}
-            className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition cursor-pointer"
-          >
+          <button className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition cursor-pointer">
             New
             <MdAdd size={18} />
           </button>
@@ -118,13 +92,11 @@ const ItemsPage = () => {
                     onClick={header.column.getToggleSortingHandler()}
                     className="px-6 py-4 text-left font-semibold cursor-pointer select-none"
                   >
-                    <div className="flex  gap-1">
+                    <div className="flex gap-1">
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
-                      {header.column.getIsSorted() === "asc"}
-                      {header.column.getIsSorted() === "desc"}
                     </div>
                   </th>
                 ))}
@@ -139,7 +111,7 @@ const ItemsPage = () => {
                   colSpan={table.getAllColumns().length}
                   className="text-center py-12 text-gray-500"
                 >
-                  No Items found
+                  No Orders found
                 </td>
               </tr>
             ) : (
@@ -149,7 +121,7 @@ const ItemsPage = () => {
                   className="hover:bg-gray-50 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleViewItem(row.original);
+                    handleViewOrder(row.original);
                   }}
                 >
                   <td className="px-6 py-4 text-gray-500 font-semibold text-left">
@@ -157,35 +129,38 @@ const ItemsPage = () => {
                   </td>
 
                   <td className="px-6 py-4 text-blue-600 font-semibold text-left">
-                    {row.getValue("itemName")}
+                    {row.getValue("orderNumber")}
                   </td>
 
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("itemType")}
+                    {row.getValue("orderDate")}
                   </td>
 
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("unit")}
+                    {row.getValue("sellerCompanyName")}
                   </td>
+
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("baseSalesPrice")}
+                    {row.getValue("customerName")}
                   </td>
-                  {/* <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("preferredCustomerName")}
-                  </td> */}
+
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("basePurchasePrice")}
+                    Rs.{row.getValue("totalAmount")}
                   </td>
-                  {/* <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("preferredVendorName")}
-                  </td> */}
+
+                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                    Rs.{row.getValue("paidAmount")}
+                  </td>
+
+                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                    {row.getValue("orderStatus")}
+                  </td>
 
                   <td className="px-6 py-3 text-left">
                     <ActionMenu
                       row={row}
-                      onEdit={handleEditItem}
-                      onDelete={handleDeleteItem}
-                      onActivate={handleActivateItem}
+                      onEdit={handleEditOrder}
+                      onDelete={handleDeleteOrder}
                     />
                   </td>
                 </tr>
@@ -197,5 +172,4 @@ const ItemsPage = () => {
     </div>
   );
 };
-
-export default ItemsPage;
+export default PurchasePage;
