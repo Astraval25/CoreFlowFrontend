@@ -177,7 +177,7 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
             {/* Company */}
             <span className="font-semibold">Company</span>
             <span className="font-medium text-purple-600">
-              {vendor.vendorCompany || "-"}
+              {vendor.vendorCompany?.companyName || "-"}
             </span>
 
             {/* Created Date */}
