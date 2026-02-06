@@ -16,6 +16,7 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
   );
   const navigate = useNavigate();
 
+  console.log("Customer", customer)
   if (!customerId)
     return (
       <p className="p-6 text-gray-600">Select a customer to view details</p>
@@ -183,7 +184,7 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
             {/* Company */}
             <span className="font-semibold">Company</span>
             <span className="font-medium text-purple-600">
-              {customer.customerCompany || "-"}
+              {customer.customerCompany?.companyName || "-"}
             </span>
 
             {/* Created Date */}
