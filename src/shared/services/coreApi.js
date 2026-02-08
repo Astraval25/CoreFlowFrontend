@@ -103,6 +103,13 @@ export const coreApi = {
 
 
   // Customer Items 
-  getCustomerItems: (companyId, customerId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items`),
+  getCustomerItems: (companyId, customerId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/active`),
+
   getCustomerMappedItems: (companyId, customerId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/mapped`),
+
+  createcustomerItem: (companyId, customerId, data) => api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items`, data),
+
+  deactivateCustomerItem: (companyId, customerId, itemId) => api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/${itemId}/deactivate`),
+
+  activateCustomerItem: (companyId, customerId, itemId) => api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/${itemId}/activate`),
 };

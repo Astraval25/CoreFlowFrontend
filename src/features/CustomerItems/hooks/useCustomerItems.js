@@ -8,6 +8,15 @@ const useCustomerItems = (customerId) => {
     const [companyId, setCompanyId] = useState("");
     const [items, setItems] = useState([]);
 
+    const fetchItems = (compId) => {
+        if (compId && customerId) {
+            coreApi.getCustomerMappedItems(compId, customerId)
+                .then((res) => {
+                    setItems(res.data.responseData || []);
+                });
+        }
+    };
+
     // Get companyId and fetch items
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -17,14 +26,14 @@ const useCustomerItems = (customerId) => {
         const compId = decoded?.defaultComp?.[0] || "";
         setCompanyId(compId);
 
-        coreApi.getCustomerMappedItems(compId, customerId)
-            .then((res) => {
-                setItems(res.data.responseData || []);
-            })
-
+        fetchItems(compId);
     }, [customerId]);
 
-    return { items, companyId };
+    const refetch = () => {
+        fetchItems(companyId);
+    };
+
+    return { items, companyId, refetch };
 }
 
 export default useCustomerItems;

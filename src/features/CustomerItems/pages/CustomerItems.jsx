@@ -1,13 +1,23 @@
 import useCustomerItems from "../hooks/useCustomerItems";
 import { MdCurrencyRupee, MdEditDocument, MdAdd } from "react-icons/md";
+import { useState } from "react";
+import CreateCustomerItem from "../components/CreateCustomerItems";
 
 const CustomerItems = ({ customerId }) => {
-  const { items } = useCustomerItems(customerId);
+  const { items, refetch } = useCustomerItems(customerId);
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleSuccess = () => {
+    refetch();
+  };
 
   return (
     <div className="p-4">
       <div className="flex justify-end mb-4">
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-1 cursor-pointer">
+        <button 
+          onClick={() => setShowPopup(true)}
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-1 cursor-pointer"
+        >
           Add Items
           <MdAdd size={14} />
         </button>
@@ -85,6 +95,14 @@ const CustomerItems = ({ customerId }) => {
             </div>
           ))}
         </div>
+      )}
+
+      {showPopup && (
+        <CreateCustomerItem
+          customerId={customerId}
+          onClose={() => setShowPopup(false)}
+          onSuccess={handleSuccess}
+        />
       )}
     </div>
   );
