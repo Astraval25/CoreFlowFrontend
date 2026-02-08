@@ -1,4 +1,4 @@
-import useCustomerItems from "./useCustomerItems";
+import useCustomerItems from "../hooks/useCustomerItems";
 import { MdCurrencyRupee, MdEditDocument, MdAdd } from "react-icons/md";
 
 const CustomerItems = ({ customerId }) => {

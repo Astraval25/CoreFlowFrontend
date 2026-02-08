@@ -22,7 +22,7 @@ import CreateItemPage from "./features/Items/pages/CreateItemPage";
 import ViewItemPage from "./features/Items/pages/ViewItemPage";
 import PurchasePage from "./features/purchase/pages/PurchasePage";
 import ViewPurchasePage from "./features/purchase/pages/ViewPurchasePage";
-import CustomerItems from "./features/CustomerItems/CustomerItems";
+import CustomerItems from "./features/CustomerItems/pages/CustomerItems";
 
 export const router = createBrowserRouter([
   {

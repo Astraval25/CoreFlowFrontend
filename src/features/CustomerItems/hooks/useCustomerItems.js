@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { coreApi } from "../../shared/services/coreApi"
+import { coreApi } from "../../../shared/services/coreApi"
 import { useState } from 'react'
 import { jwtDecode } from "jwt-decode"
 
@@ -17,7 +17,7 @@ const useCustomerItems = (customerId) => {
         const compId = decoded?.defaultComp?.[0] || "";
         setCompanyId(compId);
 
-        coreApi.getCustomerItems(compId, customerId)
+        coreApi.getCustomerMappedItems(compId, customerId)
             .then((res) => {
                 setItems(res.data.responseData || []);
             })

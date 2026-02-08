@@ -9,7 +9,7 @@ import {
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import CustomerItems from "../../CustomerItems/CustomerItems";
+import CustomerItems from "../../CustomerItems/pages/CustomerItems";
 
 const ViewCustomerDetail = ({ companyId, customerId }) => {
   const { customer, loading, error } = useViewCustomerDetail(
