@@ -2,10 +2,12 @@ import useCustomerItems from "../hooks/useCustomerItems";
 import { MdCurrencyRupee, MdEditDocument, MdAdd } from "react-icons/md";
 import { useState } from "react";
 import CreateCustomerItem from "../components/CreateCustomerItems";
+import EditCustomerItems from "../components/EditCustomerItems";
 
 const CustomerItems = ({ customerId }) => {
   const { items, refetch } = useCustomerItems(customerId);
   const [showPopup, setShowPopup] = useState(false);
+  const [editItem, setEditItem] = useState(null);
 
   const handleSuccess = () => {
     refetch();
@@ -87,6 +89,7 @@ const CustomerItems = ({ customerId }) => {
               </div>
 
               <button
+                onClick={() => setEditItem(item)}
                 className="absolute bottom-3 right-3 text-yellow-500 hover:text-yellow-400 cursor-pointer"
                 title="Edit"
               >
@@ -101,6 +104,15 @@ const CustomerItems = ({ customerId }) => {
         <CreateCustomerItem
           customerId={customerId}
           onClose={() => setShowPopup(false)}
+          onSuccess={handleSuccess}
+        />
+      )}
+
+      {editItem && (
+        <EditCustomerItems
+          customerId={customerId}
+          item={editItem}
+          onClose={() => setEditItem(null)}
           onSuccess={handleSuccess}
         />
       )}
