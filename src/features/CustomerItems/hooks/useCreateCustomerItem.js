@@ -20,7 +20,7 @@ const useCreateCustomerItem = (customerId) => {
     setCompanyId(compId);
 
     if (compId) {
-      coreApi.getCustomerItems(compId, customerId).then((res) => {
+      coreApi.getActiveItems(compId).then((res) => {
         setAllItems(res.data.responseData || []);
       });
     }

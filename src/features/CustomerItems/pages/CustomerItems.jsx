@@ -5,7 +5,7 @@ import CreateCustomerItem from "../components/CreateCustomerItems";
 import EditCustomerItems from "../components/EditCustomerItems";
 
 const CustomerItems = ({ customerId }) => {
-  const { items, refetch } = useCustomerItems(customerId);
+  const { items, refetch, itemImages } = useCustomerItems(customerId);
   const [showPopup, setShowPopup] = useState(false);
   const [editItem, setEditItem] = useState(null);
 
@@ -36,56 +36,76 @@ const CustomerItems = ({ customerId }) => {
               key={item.itemId}
               className="bg-white border border-gray-200 rounded-lg p-4 relative"
             >
-              <div className=" flex justify-between mb-3">
-                <h3 className="font-semibold text-gray-900 text-base mb-1">
-                  {item.itemName}
-                </h3>
-                <div className="flex gap-2 items-center">
-                  <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded">
-                    {item.itemType}
-                  </span>
-                  <span
-                    className={`text-xs px-2 py-1 rounded ${
-                      item.isActive
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
-                  >
-                    {item.isActive ? "Active" : "Inactive"}
-                  </span>
+              <div className="flex gap-4">
+                {/* Item Image */}
+                <div className="w-35 h-40 flex-shrink-0">
+                  {itemImages[item.itemId] ? (
+                    <img
+                      src={itemImages[item.itemId]}
+                      alt={item.itemName}
+                      className="w-full h-full object-cover rounded-lg border border-gray-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xl font-bold">
+                      {item.itemName.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                 </div>
-              </div>
 
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600 mb-3">
-                <span>
-                  <span className="font-medium">Unit:</span> {item.unit}
-                </span>
-                <span>
-                  <span className="font-medium">HSN:</span> {item.hsnCode}
-                </span>
-                <span>
-                  <span className="font-medium">Tax:</span> {item.taxRate}%
-                </span>
-                <span>
-                  <span className="font-medium">Source:</span> {item.source}
-                </span>
-              </div>
+                {/* Item Details */}
+                <div className="flex-1">
+                  <div className="flex justify-between mb-3">
+                    <h3 className="font-semibold text-gray-900 text-base mb-1">
+                      {item.itemName}
+                    </h3>
+                    <div className="flex gap-2 items-center">
+                      <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded">
+                        {item.itemType}
+                      </span>
+                      <span
+                        className={`text-xs px-2 py-1 rounded ${
+                          item.isActive
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {item.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+                  </div>
 
-              {item.salesDescription && (
-                <p className="mb-3 text-sm text-gray-600">
-                  <span className="font-medium">Description:</span>{" "}
-                  {item.salesDescription}
-                </p>
-              )}
+                  <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600 mb-3">
+                    <span>
+                      <span className="font-medium">Unit:</span> {item.unit}
+                    </span>
+                    <span>
+                      <span className="font-medium">HSN:</span> {item.hsnCode}
+                    </span>
+                    <span>
+                      <span className="font-medium">Tax:</span> {item.taxRate}%
+                    </span>
+                    <span>
+                      {/* <span className="font-medium">Source:</span> {item.source} */}
+                    </span>
+                  </div>
 
-              <div className="flex items-center pt-2">
-                <span className="text-sm font-medium text-gray-600 mr-2">
-                  Sales Price:
-                </span>
-                <span className="font-semibold text-blue-600 flex items-center text-base">
-                  <MdCurrencyRupee size={16} />
-                  {item.salesPrice}
-                </span>
+                  {item.salesDescription && (
+                    <p className="mb-3 text-sm text-gray-600">
+                      <span className="font-medium">Description:</span>{" "}
+                      {item.salesDescription}
+                    </p>
+                  )}
+
+                  <div className="flex items-center pt-2">
+                    <span className="text-sm font-medium text-gray-600 mr-2">
+                      Sales Price:
+                    </span>
+                    <span className="font-semibold text-blue-600 flex items-center text-base">
+                      <MdCurrencyRupee size={16} />
+                      {item.salesPrice}
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <button

@@ -42,12 +42,27 @@ const CreateCustomerItem = ({ customerId, onClose, onSuccess }) => {
                 value={allItems.find(i => i.itemId == formData.itemId)?.itemName || ""}
                 onChange={(e) => {
                   const selectedItem = allItems.find(i => i.itemName === e.target.value);
-                  handleChange({
-                    target: {
-                      name: "itemId",
-                      value: selectedItem ? selectedItem.itemId : "",
-                    },
-                  });
+                  if (selectedItem) {
+                    handleChange({
+                      target: {
+                        name: "itemId",
+                        value: selectedItem.itemId,
+                      },
+                    });
+                    // Prefill price and description
+                    handleChange({
+                      target: {
+                        name: "salesPrice",
+                        value: selectedItem.baseSalesPrice || "",
+                      },
+                    });
+                    handleChange({
+                      target: {
+                        name: "salesDescription",
+                        value: selectedItem.salesDescription || "",
+                      },
+                    });
+                  }
                   setErrors(prev => ({ ...prev, itemId: "" }));
                 }}
                 options={allItems.map(item => ({

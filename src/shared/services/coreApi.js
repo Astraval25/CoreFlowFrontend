@@ -68,6 +68,9 @@ export const coreApi = {
   getItems: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/items`),
 
+  getActiveItems: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/items/active`),
+
   getItemDetail: (companyId, itemId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/items/${itemId}`),
 

@@ -7,13 +7,39 @@ const useCustomerItems = (customerId) => {
 
     const [companyId, setCompanyId] = useState("");
     const [items, setItems] = useState([]);
+    const [itemImages, setItemImages] = useState({});
 
-    const fetchItems = (compId) => {
+    const fetchItems = async (compId) => {
         if (compId && customerId) {
-            coreApi.getCustomerMappedItems(compId, customerId)
-                .then((res) => {
-                    setItems(res.data.responseData || []);
+            try {
+                const res = await coreApi.getCustomerMappedItems(compId, customerId);
+                const itemsData = res.data.responseData || [];
+                setItems(itemsData);
+
+                // Fetch images for items that have fsId
+                const imagePromises = itemsData.map(async (item) => {
+                    if (item.fsId) {
+                        try {
+                            const imgRes = await coreApi.downloadFile(item.fsId);
+                            const blobUrl = URL.createObjectURL(imgRes.data);
+                            return { itemId: item.itemId, imageUrl: blobUrl };
+                        } catch (error) {
+                            console.error(`Error loading image for item ${item.itemId}:`, error);
+                            return null;
+                        }
+                    }
+                    return null;
                 });
+
+                const images = await Promise.all(imagePromises);
+                const imageMap = {};
+                images.forEach(img => {
+                    if (img) imageMap[img.itemId] = img.imageUrl;
+                });
+                setItemImages(imageMap);
+            } catch (error) {
+                console.error('Error fetching items:', error);
+            }
         }
     };
 
@@ -33,7 +59,7 @@ const useCustomerItems = (customerId) => {
         fetchItems(companyId);
     };
 
-    return { items, companyId, refetch };
+    return { items, companyId, refetch, itemImages };
 }
 
 export default useCustomerItems;
