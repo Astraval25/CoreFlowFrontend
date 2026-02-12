@@ -5,7 +5,8 @@ import CreateVendorItem from "../components/CreateVendorItem";
 import EditVendorItem from "../components/EditVendorItem";
 
 const VendorItems = ({ vendorId }) => {
-  const { items, refetch, itemImages, companyId } = useVendorItems(vendorId);
+  const { items, refetch, itemImages, toggleItemStatus } =
+    useVendorItems(vendorId);
   const [showPopup, setShowPopup] = useState(false);
   const [editItem, setEditItem] = useState(null);
 
@@ -13,10 +14,14 @@ const VendorItems = ({ vendorId }) => {
     refetch();
   };
 
+  const handleToggleActive = async (item) => {
+    await toggleItemStatus(item.itemId, item.isActive);
+  };
+
   return (
     <div className="p-4">
       <div className="flex justify-end mb-4">
-        <button 
+        <button
           onClick={() => setShowPopup(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-1 cursor-pointer"
         >
@@ -26,9 +31,7 @@ const VendorItems = ({ vendorId }) => {
       </div>
 
       {items.length === 0 ? (
-        <p className="text-gray-500 text-sm">
-          No items found for this vendor.
-        </p>
+        <p className="text-gray-500 text-sm">No items found for this vendor.</p>
       ) : (
         <div className="grid grid-cols-2 gap-4">
           {items.map((item) => (
@@ -62,15 +65,23 @@ const VendorItems = ({ vendorId }) => {
                       <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded">
                         {item.itemType}
                       </span>
-                      <span
-                        className={`text-xs px-2 py-1 rounded ${
-                          item.isActive
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
+                      <button
+                        onClick={() => handleToggleActive(item)}
+                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer ${
+                          item.isActive ? "bg-green-500" : "bg-gray-300"
                         }`}
+                        title={
+                          item.isActive
+                            ? "Click to deactivate"
+                            : "Click to activate"
+                        }
                       >
-                        {item.isActive ? "Active" : "Inactive"}
-                      </span>
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                            item.isActive ? "translate-x-5" : "translate-x-1"
+                          }`}
+                        />
+                      </button>
                     </div>
                   </div>
 
@@ -127,7 +138,6 @@ const VendorItems = ({ vendorId }) => {
 
       {editItem && (
         <EditVendorItem
-          companyId={companyId}
           vendorId={vendorId}
           item={editItem}
           onClose={() => setEditItem(null)}

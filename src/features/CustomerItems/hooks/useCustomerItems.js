@@ -14,10 +14,12 @@ const useCustomerItems = (customerId) => {
             try {
                 const res = await coreApi.getCustomerMappedItems(compId, customerId);
                 const itemsData = res.data.responseData || [];
-                setItems(itemsData);
 
-                // Fetch images for items that have fsId
-                const imagePromises = itemsData.map(async (item) => {
+                // Sort items by itemId to maintain order
+                const sortedItems = itemsData.sort((a, b) => a.itemId - b.itemId);
+                setItems(sortedItems);
+
+                const imagePromises = sortedItems.map(async (item) => {
                     if (item.fsId) {
                         try {
                             const imgRes = await coreApi.downloadFile(item.fsId);
@@ -59,7 +61,21 @@ const useCustomerItems = (customerId) => {
         fetchItems(companyId);
     };
 
-    return { items, companyId, refetch, itemImages };
+    const toggleItemStatus = async (itemId, isActive) => {
+        try {
+            if (isActive) {
+                await coreApi.deactivateCustomerItem(companyId, customerId, itemId);
+            } else {
+                await coreApi.activateCustomerItem(companyId, customerId, itemId);
+            }
+            refetch();
+        } catch (error) {
+            console.error("Error toggling item status:", error);
+            throw error;
+        }
+    };
+
+    return { items, companyId, refetch, itemImages, toggleItemStatus };
 }
 
 export default useCustomerItems;

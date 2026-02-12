@@ -5,7 +5,8 @@ import CreateCustomerItem from "../components/CreateCustomerItems";
 import EditCustomerItems from "../components/EditCustomerItems";
 
 const CustomerItems = ({ customerId }) => {
-  const { items, refetch, itemImages } = useCustomerItems(customerId);
+  const { items, refetch, itemImages, toggleItemStatus } =
+    useCustomerItems(customerId);
   const [showPopup, setShowPopup] = useState(false);
   const [editItem, setEditItem] = useState(null);
 
@@ -13,10 +14,14 @@ const CustomerItems = ({ customerId }) => {
     refetch();
   };
 
+  const handleToggleActive = async (item) => {
+    await toggleItemStatus(item.itemId, item.isActive);
+  };
+
   return (
     <div className="p-4">
       <div className="flex justify-end mb-4">
-        <button 
+        <button
           onClick={() => setShowPopup(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-1 cursor-pointer"
         >
@@ -62,15 +67,23 @@ const CustomerItems = ({ customerId }) => {
                       <span className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded">
                         {item.itemType}
                       </span>
-                      <span
-                        className={`text-xs px-2 py-1 rounded ${
-                          item.isActive
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
+                      <button
+                        onClick={() => handleToggleActive(item)}
+                        className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer ${
+                          item.isActive ? "bg-green-500" : "bg-gray-300"
                         }`}
+                        title={
+                          item.isActive
+                            ? "Click to deactivate"
+                            : "Click to activate"
+                        }
                       >
-                        {item.isActive ? "Active" : "Inactive"}
-                      </span>
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                            item.isActive ? "translate-x-5" : "translate-x-1"
+                          }`}
+                        />
+                      </button>
                     </div>
                   </div>
 

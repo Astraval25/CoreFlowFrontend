@@ -14,10 +14,13 @@ const useVendorItems = (vendorId) => {
             try {
                 const res = await coreApi.getVendorMappedItems(compId, vendorId);
                 const itemsData = res.data.responseData || [];
-                setItems(itemsData);
-                
+
+                // Sort items by itemId to maintain consistent order
+                const sortedItems = itemsData.sort((a, b) => a.itemId - b.itemId);
+                setItems(sortedItems);
+
                 // Fetch images for items that have fsId
-                const imagePromises = itemsData.map(async (item) => {
+                const imagePromises = sortedItems.map(async (item) => {
                     if (item.fsId) {
                         try {
                             const imgRes = await coreApi.downloadFile(item.fsId);
@@ -30,7 +33,7 @@ const useVendorItems = (vendorId) => {
                     }
                     return null;
                 });
-                
+
                 const images = await Promise.all(imagePromises);
                 const imageMap = {};
                 images.forEach(img => {
@@ -58,7 +61,21 @@ const useVendorItems = (vendorId) => {
         fetchItems(companyId);
     };
 
-    return { items, companyId, refetch, itemImages };
+    const toggleItemStatus = async (itemId, isActive) => {
+        try {
+            if (isActive) {
+                await coreApi.deactivateVendorItem(companyId, vendorId, itemId);
+            } else {
+                await coreApi.activateVendorItem(companyId, vendorId, itemId);
+            }
+            refetch();
+        } catch (error) {
+            console.error("Error toggling item status:", error);
+            throw error;
+        }
+    };
+
+    return { items, companyId, refetch, itemImages, toggleItemStatus };
 }
 
 export default useVendorItems;
