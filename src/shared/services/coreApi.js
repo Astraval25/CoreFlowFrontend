@@ -117,5 +117,18 @@ export const coreApi = {
   activateCustomerItem: (companyId, customerId, itemId) => api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/${itemId}/activate`),
 
   editCustomerItem: (companyId, customerId, itemId, data) => api.put(
-    `${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/${itemId}`, data)
+    `${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/${itemId}`, data),
+
+  // Vendor Items
+
+  getVendorMappedItems: (companyId, vendorId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/mapped`),
+
+  createVendorItem: (companyId, vendorId, data) => api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items`, data),
+
+  deactivateVendorItem: (companyId, vendorId, itemId) => api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/${itemId}/deactivate`),
+
+  activateVendorItem: (companyId, vendorId, itemId) => api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/${itemId}/activate`),
+
+  editVendorItem: (companyId, vendorId, itemId, data) => api.put(
+    `${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/${itemId}`, data)
 };
