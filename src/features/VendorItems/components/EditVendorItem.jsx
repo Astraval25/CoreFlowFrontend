@@ -2,8 +2,8 @@ import useEditVendorItem from "../hooks/useEditVendorItem";
 import InputField from "../../../shared/components/InputField";
 import { useState } from "react";
 
-const EditVendorItem = ({ companyId, vendorId, item, onClose, onSuccess }) => {
-  const { formData, handleChange, handleSubmit } = useEditVendorItem(companyId, vendorId, item);
+const EditVendorItem = ({ vendorId, item, onClose, onSuccess }) => {
+  const { formData, handleChange, handleSubmit } = useEditVendorItem(vendorId, item);
   const [errors, setErrors] = useState({});
 
   const handleFormSubmit = async (e) => {
