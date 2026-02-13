@@ -31,7 +31,6 @@ const usePurchasePage = () => {
             const data = res.data.responseData;
             setAllOrder(data)
             setOrder(data.filter((order) => order.isActive === true));
-            console.log(data);
         })
     }
 

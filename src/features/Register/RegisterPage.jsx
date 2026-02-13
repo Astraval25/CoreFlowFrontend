@@ -21,7 +21,6 @@ const RegisterPage = () => {
         });
       }
     } catch (err) {
-      console.log("Error caught:", err.message);
       setError(err.message);
     }
   };

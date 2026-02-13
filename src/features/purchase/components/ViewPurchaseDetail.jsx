@@ -6,13 +6,7 @@ import Info from "../../../shared/components/Info";
 const ViewPurchaseDetail = ({ companyId, orderId }) => {
   const { order, loading, error } = useViewPurchaseDetail(companyId, orderId);
   const navigate = useNavigate();
-
-  console.log("ViewPurchaseDetail - companyId:", companyId);
-  console.log("ViewPurchaseDetail - orderId:", orderId);
-  console.log("ViewPurchaseDetail - order:", order);
-  console.log("ViewPurchaseDetail - loading:", loading);
-  console.log("ViewPurchaseDetail - error:", error);
-
+  
   const orderDetails = order?.orderDetails;
   const orderItems = order?.orderItems;
 

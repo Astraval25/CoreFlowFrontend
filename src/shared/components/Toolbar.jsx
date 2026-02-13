@@ -17,7 +17,6 @@ const Toolbar = () => {
       const decode = jwtDecode(token);
       if (decode.defaultComp.length) {
         setCompanyName(decode.defaultComp[1]);
-        console.log(decode.defaultComp[1]);
       }
     }
   }, []);
@@ -47,12 +46,12 @@ const Toolbar = () => {
           <span className="h-6 w-px bg-gray-300"></span>
 
           <button className="relative p-2 rounded-lg">
-            <FaBell size={18} className="text-white"/>
+            <FaBell size={18} className="text-white" />
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
           <span className="h-6 w-px bg-gray-300"></span>
 
-          <MdExplore size={20} title="Other Products" className="text-white"/>
+          <MdExplore size={20} title="Other Products" className="text-white" />
 
           <span className="h-6 w-px bg-gray-300"></span>
           <button

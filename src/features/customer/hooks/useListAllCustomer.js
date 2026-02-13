@@ -27,7 +27,6 @@ const useListAllCustomer = () => {
     coreApi
       .getAllCustomerByCompanyId(companyId)
       .then((res) => {
-        console.log("Customers:", res.data.responseData);
         setCustomers(res.data.responseData);
       })
       .catch((err) => {
