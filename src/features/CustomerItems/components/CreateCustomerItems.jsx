@@ -1,25 +1,28 @@
 import useCreateCustomerItem from "../hooks/useCreateCustomerItem";
 import SelectField from "../../../shared/components/SelectField";
 import InputField from "../../../shared/components/InputField";
+import TextArea from "../../../shared/components/TextArea";
 import { useState } from "react";
 
 const CreateCustomerItem = ({ customerId, onClose, onSuccess }) => {
-  const { formData, allItems, handleChange, handleSubmit } = useCreateCustomerItem(customerId);
+  const { formData, allItems, handleChange, handleSubmit } =
+    useCreateCustomerItem(customerId);
   const [errors, setErrors] = useState({});
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    
+
     const newErrors = {};
     if (!formData.itemId) newErrors.itemId = "Please select an item";
     if (!formData.salesPrice) newErrors.salesPrice = "Please enter sales price";
-    if (!formData.salesDescription) newErrors.salesDescription = "Please enter sales description";
-    
+    if (!formData.salesDescription)
+      newErrors.salesDescription = "Please enter sales description";
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    
+
     setErrors({});
     const result = await handleSubmit();
     if (result.success) {
@@ -39,9 +42,14 @@ const CreateCustomerItem = ({ customerId, onClose, onSuccess }) => {
               <SelectField
                 label="Item"
                 name="itemId"
-                value={allItems.find(i => i.itemId == formData.itemId)?.itemName || ""}
+                value={
+                  allItems.find((i) => i.itemId == formData.itemId)?.itemName ||
+                  ""
+                }
                 onChange={(e) => {
-                  const selectedItem = allItems.find(i => i.itemName === e.target.value);
+                  const selectedItem = allItems.find(
+                    (i) => i.itemName === e.target.value
+                  );
                   if (selectedItem) {
                     handleChange({
                       target: {
@@ -63,15 +71,17 @@ const CreateCustomerItem = ({ customerId, onClose, onSuccess }) => {
                       },
                     });
                   }
-                  setErrors(prev => ({ ...prev, itemId: "" }));
+                  setErrors((prev) => ({ ...prev, itemId: "" }));
                 }}
-                options={allItems.map(item => ({
+                options={allItems.map((item) => ({
                   key: item.itemId,
                   value: item.itemName,
                 }))}
                 required
               />
-              {errors.itemId && <p className="text-red-500 text-xs mt-1">{errors.itemId}</p>}
+              {errors.itemId && (
+                <p className="text-red-500 text-xs mt-1">{errors.itemId}</p>
+              )}
             </div>
           </div>
 
@@ -84,31 +94,30 @@ const CreateCustomerItem = ({ customerId, onClose, onSuccess }) => {
                 value={formData.salesPrice}
                 onChange={(e) => {
                   handleChange(e);
-                  setErrors(prev => ({ ...prev, salesPrice: "" }));
+                  setErrors((prev) => ({ ...prev, salesPrice: "" }));
                 }}
                 required
               />
-              {errors.salesPrice && <p className="text-red-500 text-xs mt-1">{errors.salesPrice}</p>}
+              {errors.salesPrice && (
+                <p className="text-red-500 text-xs mt-1">{errors.salesPrice}</p>
+              )}
             </div>
           </div>
 
           <div className="flex justify-center">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Sales Description <span className="text-red-500 ml-1">*</span>
-              </label>
-              <textarea
+              <TextArea
+                label="Sales Description"
                 name="salesDescription"
                 value={formData.salesDescription}
                 onChange={(e) => {
                   handleChange(e);
-                  setErrors(prev => ({ ...prev, salesDescription: "" }));
+                  setErrors((prev) => ({ ...prev, salesDescription: "" }));
                 }}
                 rows={3}
-                className="w-90 px-4 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                error={errors.salesDescription}
                 required
               />
-              {errors.salesDescription && <p className="text-red-500 text-xs mt-1">{errors.salesDescription}</p>}
             </div>
           </div>
 

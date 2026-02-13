@@ -1,5 +1,6 @@
 import useEditVendorItem from "../hooks/useEditVendorItem";
 import InputField from "../../../shared/components/InputField";
+import TextArea from "../../../shared/components/TextArea";
 import { useState } from "react";
 
 const EditVendorItem = ({ vendorId, item, onClose, onSuccess }) => {
@@ -34,14 +35,13 @@ const EditVendorItem = ({ vendorId, item, onClose, onSuccess }) => {
         <form onSubmit={handleFormSubmit} className="space-y-4">
           <div className="flex justify-center">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Item Name
-              </label>
-              <input
-                type="text"
+              <InputField
+                label="Item Name"
+                name="itemName"
                 value={item.itemName}
+                onChange={() => {}}
+                className="bg-gray-100 cursor-not-allowed"
                 disabled
-                className="w-90 px-4 py-1.5 border border-gray-300 rounded-lg text-sm bg-gray-100 cursor-not-allowed"
               />
             </div>
           </div>
@@ -64,10 +64,8 @@ const EditVendorItem = ({ vendorId, item, onClose, onSuccess }) => {
 
           <div className="flex justify-center">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Purchase Description <span className="text-red-500 ml-1">*</span>
-              </label>
-              <textarea
+              <TextArea
+                label="Purchase Description"
                 name="purchaseDescription"
                 value={formData.purchaseDescription}
                 onChange={(e) => {
@@ -75,10 +73,9 @@ const EditVendorItem = ({ vendorId, item, onClose, onSuccess }) => {
                   setErrors(prev => ({ ...prev, purchaseDescription: "" }));
                 }}
                 rows={3}
-                className="w-90 px-4 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                error={errors.purchaseDescription}
                 required
               />
-              {errors.purchaseDescription && <p className="text-red-500 text-xs mt-1">{errors.purchaseDescription}</p>}
             </div>
           </div>
 

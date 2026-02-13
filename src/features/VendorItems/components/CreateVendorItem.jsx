@@ -1,6 +1,7 @@
 import useCreateVendorItem from "../hooks/useCreateVendorItem";
 import SelectField from "../../../shared/components/SelectField";
 import InputField from "../../../shared/components/InputField";
+import TextArea from "../../../shared/components/TextArea";
 import { useState } from "react";
 
 const CreateVendorItem = ({ vendorId, onClose, onSuccess }) => {
@@ -94,10 +95,8 @@ const CreateVendorItem = ({ vendorId, onClose, onSuccess }) => {
 
           <div className="flex justify-center">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Purchase Description <span className="text-red-500 ml-1">*</span>
-              </label>
-              <textarea
+              <TextArea
+                label="Purchase Description"
                 name="purchaseDescription"
                 value={formData.purchaseDescription}
                 onChange={(e) => {
@@ -105,10 +104,9 @@ const CreateVendorItem = ({ vendorId, onClose, onSuccess }) => {
                   setErrors(prev => ({ ...prev, purchaseDescription: "" }));
                 }}
                 rows={3}
-                className="w-90 px-4 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                error={errors.purchaseDescription}
                 required
               />
-              {errors.purchaseDescription && <p className="text-red-500 text-xs mt-1">{errors.purchaseDescription}</p>}
             </div>
           </div>
 
