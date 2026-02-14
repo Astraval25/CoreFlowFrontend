@@ -4,8 +4,9 @@ import {
   MdDashboard,
   MdKeyboardArrowDown,
   MdManageAccounts,
+  MdPayments,
 } from "react-icons/md";
-import { FaUsers } from "react-icons/fa";
+import { FaShoppingCart } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
 const Sidebar = () => {
@@ -45,7 +46,7 @@ const Sidebar = () => {
               }`}
             />
           </button>
-              
+
           <div
             className={`mt-2 ml-4 flex flex-col space-y-1 overflow-hidden transition-all duration-300
               ${openManage ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}`}
@@ -64,17 +65,17 @@ const Sidebar = () => {
               {/* <MdLocalShipping size={18} /> */}
               Vendors
             </NavLink>
-
-            <NavLink to="/admin/purchase" className={linkClass}>
-              {/* <FaUsers size={16} /> */}
-              Purchase
-            </NavLink>
-
-            <NavLink to="/admin/sales" className={linkClass}>
-              {/* <MdPayments size={18} /> */}
-              Sales
-            </NavLink>
           </div>
+
+          <NavLink to="/admin/purchase" className={linkClass}>
+            <FaShoppingCart size={16} />
+            Purchase
+          </NavLink>
+
+          <NavLink to="/admin/sales" className={linkClass}>
+            <MdPayments size={18} />
+            Sales
+          </NavLink>
         </div>
       </nav>
     </aside>

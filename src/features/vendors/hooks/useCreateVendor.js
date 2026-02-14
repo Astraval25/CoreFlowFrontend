@@ -139,7 +139,6 @@ const useCreateVendor = (vendorId = null) => {
   
   // create or update
   const submitVendor = async () => {
-    console.log("submitVendor called");
     
     if (!companyId) {
       console.error("Company ID not available");
@@ -151,7 +150,6 @@ const useCreateVendor = (vendorId = null) => {
 
     // If there are validation errors, set them in the state and stop submission
     if (Object.keys(validationErrors).length > 0) {
-      console.log("Validation errors:", validationErrors);
       setErrors(validationErrors);
       return;
     }
@@ -170,7 +168,6 @@ const useCreateVendor = (vendorId = null) => {
       ...(sameAsBilling ? {} : { shippingAddress: formData.shippingAddress }),
     });
 
-    console.log("Payload:", payload);
 
     setLoading(true);
     try {
@@ -178,7 +175,6 @@ const useCreateVendor = (vendorId = null) => {
         ? await coreApi.editVendor(companyId, vendorId, payload)
         : await coreApi.createVendor(companyId, payload);
 
-      console.log("API response:", res);
 
       if (!isEditMode) {
         setFormData(initialForm);

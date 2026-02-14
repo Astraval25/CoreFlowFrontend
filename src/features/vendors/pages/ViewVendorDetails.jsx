@@ -8,10 +8,13 @@ import {
   MdEdit,
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import VendorItems from "../../VendorItems/pages/VendorItems";
 
 const ViewVendorDetails = ({ companyId, vendorId }) => {
   const { vendor, loading, error } = useViewVendorDetail(companyId, vendorId);
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("overview");
 
   if (!vendorId)
     return <p className="p-6 text-gray-600">Select a vendor to view details</p>;
@@ -198,13 +201,61 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
           </div>
         </div>
       </div>
-      <div className="flex gap-30 w-full mt-5 mb-2">
-        <button className="font-semibold text-gray-600">OverView</button>
-        <button className="font-semibold text-gray-600">Statistics</button>
-        <button className="font-semibold text-gray-600">Order Track</button>
-        <button className="font-semibold text-gray-600">Transaction</button>
+      <div className="flex gap-30 w-full mt-5 mb-2 text-sm">
+        <button
+          className={`font-semibold cursor-pointer ${
+            activeTab === "overview" ? "text-blue-600" : "text-gray-600"
+          }`}
+          onClick={() => setActiveTab("overview")}
+        >
+          OverView
+        </button>
+        <button
+          className={`font-semibold cursor-pointer ${
+            activeTab === "items" ? "text-blue-600" : "text-gray-600"
+          }`}
+          onClick={() => setActiveTab("items")}
+        >
+          Items
+        </button>
+        <button
+          className={`font-semibold cursor-pointer ${
+            activeTab === "ordertrack" ? "text-blue-600" : "text-gray-600"
+          }`}
+          onClick={() => setActiveTab("ordertrack")}
+        >
+          Order Track
+        </button>
+        <button
+          className={`font-semibold cursor-pointer ${
+            activeTab === "transaction" ? "text-blue-600" : "text-gray-600"
+          }`}
+          onClick={() => setActiveTab("transaction")}
+        >
+          Transaction
+        </button>
       </div>
       <hr className="text-gray-300" />
+
+      {/* Tab Content */}
+      <div className="mt-4">
+        {activeTab === "items" && <VendorItems vendorId={vendorId} />}
+        {activeTab === "overview" && (
+          <div className="p-4 text-gray-600">
+            Overview content coming soon...
+          </div>
+        )}
+        {activeTab === "ordertrack" && (
+          <div className="p-4 text-gray-600">
+            Order Track content coming soon...
+          </div>
+        )}
+        {activeTab === "transaction" && (
+          <div className="p-4 text-gray-600">
+            Transaction content coming soon...
+          </div>
+        )}
+      </div>
     </div>
   );
 };

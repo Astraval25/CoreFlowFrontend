@@ -8,6 +8,8 @@ import {
   MdEdit,
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import CustomerItems from "../../CustomerItems/pages/CustomerItems";
 
 const ViewCustomerDetail = ({ companyId, customerId }) => {
   const { customer, loading, error } = useViewCustomerDetail(
@@ -15,6 +17,7 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
     customerId
   );
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("overview");
 
   if (!customerId)
     return (
@@ -53,12 +56,12 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
             <span className="text-blue-500 font-semibold">Edit</span>
             <MdEdit size={18} />
           </button>
-          
+
           {/* Display Name */}
           <h2 className="text-xl font-bold text-gray-900 mb-4">
             {customer.displayName}
           </h2>
-          
+
           {/* Flex layout with custom proportions */}
           <div className="flex gap-4">
             {/* Avatar - 1.5 parts */}
@@ -96,7 +99,7 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
         {/* Column 2: Addresses */}
         <div className="bg-[#E2E8F0] rounded-xl shadow-sm border border-gray-200 p-2">
           <h2 className="font-semibold text-base mb-2">Address</h2>
-          
+
           <div className="space-y-4">
             {/* Billing Address */}
             <div>
@@ -104,8 +107,14 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
               <div className="text-sm ml-8">
                 {billing ? (
                   <>
-                    <div>{billing.line1}{billing.line2 ? `, ${billing.line2}` : ""}, {billing.city}</div>
-                    <div>{billing.state} {billing.pincode}, {billing.country}</div>
+                    <div>
+                      {billing.line1}
+                      {billing.line2 ? `, ${billing.line2}` : ""},{" "}
+                      {billing.city}
+                    </div>
+                    <div>
+                      {billing.state} {billing.pincode}, {billing.country}
+                    </div>
                   </>
                 ) : (
                   "No billing address"
@@ -115,7 +124,8 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
                 <div className="flex gap-2 text-sm ml-8">
                   {billing.email && (
                     <div className="flex items-center gap-1">
-                      <MdOutlineMailOutline className="text-xs" /> {billing.email}
+                      <MdOutlineMailOutline className="text-xs" />{" "}
+                      {billing.email}
                     </div>
                   )}
                   {billing.phone && (
@@ -133,8 +143,14 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
               <div className="text-sm ml-8">
                 {shipping ? (
                   <>
-                    <div>{shipping.line1}{shipping.line2 ? `, ${shipping.line2}` : ""}, {shipping.city}</div>
-                    <div>{shipping.state} {shipping.pincode}, {shipping.country}</div>
+                    <div>
+                      {shipping.line1}
+                      {shipping.line2 ? `, ${shipping.line2}` : ""},{" "}
+                      {shipping.city}
+                    </div>
+                    <div>
+                      {shipping.state} {shipping.pincode}, {shipping.country}
+                    </div>
                   </>
                 ) : billing ? (
                   "Same as billing"
@@ -146,7 +162,8 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
                 <div className="flex gap-3 text-sm ml-8">
                   {shipping.email && (
                     <div className="flex items-center gap-1">
-                      <MdOutlineMailOutline className="text-xs" /> {shipping.email}
+                      <MdOutlineMailOutline className="text-xs" />{" "}
+                      {shipping.email}
                     </div>
                   )}
                   {shipping.phone && (
@@ -204,13 +221,61 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
           </div>
         </div>
       </div>
-      <div className="flex gap-30 w-full mt-5 mb-2">
-        <button className="font-semibold text-gray-600">OverView</button>
-        <button className="font-semibold text-gray-600">Statistics</button>
-        <button className="font-semibold text-gray-600">Order Track</button>
-        <button className="font-semibold text-gray-600">Transaction</button>
+      <div className="flex gap-30 w-full mt-5 mb-2 text-sm">
+        <button
+          className={`font-semibold cursor-pointer ${
+            activeTab === "overview" ? "text-blue-600" : "text-gray-600"
+          }`}
+          onClick={() => setActiveTab("overview")}
+        >
+          OverView
+        </button>
+        <button
+          className={`font-semibold cursor-pointer ${
+            activeTab === "items" ? "text-blue-600" : "text-gray-600"
+          }`}
+          onClick={() => setActiveTab("items")}
+        >
+          Items
+        </button>
+        <button
+          className={`font-semibold cursor-pointer ${
+            activeTab === "ordertrack" ? "text-blue-600" : "text-gray-600"
+          }`}
+          onClick={() => setActiveTab("ordertrack")}
+        >
+          Order Track
+        </button>
+        <button
+          className={`font-semibold cursor-pointer ${
+            activeTab === "transaction" ? "text-blue-600" : "text-gray-600"
+          }`}
+          onClick={() => setActiveTab("transaction")}
+        >
+          Transaction
+        </button>
       </div>
       <hr className="text-gray-300" />
+
+      {/* Tab Content */}
+      <div className="mt-4">
+        {activeTab === "items" && <CustomerItems customerId={customerId} />}
+        {activeTab === "overview" && (
+          <div className="p-4 text-gray-600">
+            Overview content coming soon...
+          </div>
+        )}
+        {activeTab === "ordertrack" && (
+          <div className="p-4 text-gray-600">
+            Order Track content coming soon...
+          </div>
+        )}
+        {activeTab === "transaction" && (
+          <div className="p-4 text-gray-600">
+            Transaction content coming soon...
+          </div>
+        )}
+      </div>
     </div>
   );
 };
