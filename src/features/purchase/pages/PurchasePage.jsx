@@ -27,8 +27,14 @@ const PurchasePage = () => {
     console.log("View", order.orderId);
   };
 
+  const handleNewPurchase = () => {
+    navigate("/admin/create/purchase");
+  };
+
   const handleEditOrder = (order) => {
-    console.log("Edit", order);
+    navigate("/admin/create/purchase", {
+      state: { orderId: order.orderId },
+    });
   };
 
   const handleDeleteOrder = (order) => {
@@ -75,7 +81,7 @@ const PurchasePage = () => {
             />
           </div>
 
-          <button className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition cursor-pointer">
+          <button className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition cursor-pointer" onClick={handleNewPurchase}>
             New
             <MdAdd size={18} />
           </button>
