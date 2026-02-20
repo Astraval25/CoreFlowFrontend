@@ -23,6 +23,7 @@ import ViewItemPage from "./features/Items/pages/ViewItemPage";
 import PurchasePage from "./features/purchase/pages/PurchasePage";
 import ViewPurchasePage from "./features/purchase/pages/ViewPurchasePage";
 import CreatePurchasePage from "./features/purchase/pages/CreatePurchasePage";
+import SalesPage from "./features/sales/pages/SalesPage";
 
 export const router = createBrowserRouter([
   {
@@ -94,6 +95,8 @@ export const router = createBrowserRouter([
       { path: "purchase", element: <PurchasePage /> },
       { path: "view/purchase", element: <ViewPurchasePage /> },
       { path: "create/purchase", element: <CreatePurchasePage /> },
+
+      { path: "sales", element: <SalesPage /> },
     ],
   },
 ]);
