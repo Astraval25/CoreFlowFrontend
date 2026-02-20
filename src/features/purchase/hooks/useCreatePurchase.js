@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { coreApi } from "../../../shared/services/coreApi";
 import useItemsPage from "../../Items/hooks/useItemsPage";
 import { useCustomer } from "../../customer/hooks/useCustomer";
 import { useVendor } from "../../vendors/hooks/useVendor";
 
-const useCreatePurchase = () => {
+const useCreatePurchase = (orderId = null) => {
   const { items } = useItemsPage();
   const { allCustomers } = useCustomer();
   const { allVendors } = useVendor();
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const [formData, setFormData] = useState({
     vendorId: "",
-    customerId: "",
     taxAmount: "",
     discountAmount: "",
     deliveryCharge: "",
@@ -21,7 +21,42 @@ const useCreatePurchase = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});  
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const fetchOrderDetails = async () => {
+      if (!orderId) return;
+
+      setIsEditMode(true);
+      try {
+        const token = localStorage.getItem("token");
+        const decode = jwtDecode(token);
+        const companyId = decode?.defaultComp?.[0];
+
+        const response = await coreApi.getPurchaseDetail(companyId, orderId);
+        const order = response.data.responseData;
+
+        setFormData({
+          vendorId: order.vendorId || "",
+          taxAmount: order.taxAmount || "",
+          discountAmount: order.discountAmount || "",
+          deliveryCharge: order.deliveryCharge || "",
+          hasBill: order.hasBill ?? true,
+          orderItems: order.orderItems?.map(item => ({
+            itemId: item.itemId || "",
+            itemName: item.itemName || "",
+            itemDescription: item.itemDescription || "",
+            quantity: item.quantity || "1",
+            updatedPrice: item.updatedPrice || "1",
+          })) || [],
+        });
+      } catch (error) {
+        console.error("Error fetching order details:", error);
+      }
+    };
+
+    fetchOrderDetails();
+  }, [orderId]);  
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -83,24 +118,20 @@ const useCreatePurchase = () => {
     let newErrors = {};
 
     if (!formData.vendorId) {
-        newErrors.vendorId = "Vendor is required";
-      }
+      newErrors.vendorId = "Vendor is required";
+    }
     
-      if (!formData.customerId) {
-        newErrors.customerId = "Customer is required";
-      }
+    if (!formData.orderItems.length) {
+      newErrors.orderItems = "Add at least one item";
+    }
     
-      if (!formData.orderItems.length) {
-        newErrors.orderItems = "Add at least one item";
-      }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setLoading(false);
+      return { success: false };
+    }
     
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-        setLoading(false);
-        return { success: false };
-      }
-    
-      setErrors({});
+    setErrors({});
 
     try {
       const token = localStorage.getItem("token");
@@ -109,7 +140,6 @@ const useCreatePurchase = () => {
 
       const payload = {
         vendorId: Number(formData.vendorId),
-        customerId: Number(formData.customerId),
         taxAmount: Number(formData.taxAmount || 0),
         discountAmount: Number(formData.discountAmount || 0),
         deliveryCharge: Number(formData.deliveryCharge || 0),
@@ -122,12 +152,16 @@ const useCreatePurchase = () => {
         })),
       };
 
-      await coreApi.createPurchase(companyId, payload);
+      if (isEditMode) {
+        await coreApi.editPurchase(companyId, orderId, payload);
+      } else {
+        await coreApi.createPurchase(companyId, payload);
+      }
       return { success: true };
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.responseMessage || "Failed to create purchase"
+        message: error.response?.data?.responseMessage || `Failed to ${isEditMode ? "update" : "create"} purchase`
       };
     } finally {
       setLoading(false);
@@ -141,6 +175,7 @@ const useCreatePurchase = () => {
     allVendors,
     loading,
     errors,
+    isEditMode,
     handleInputChange,
     addOrderItem,
     updateOrderItem,

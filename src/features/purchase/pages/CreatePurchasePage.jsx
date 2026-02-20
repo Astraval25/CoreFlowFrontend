@@ -1,23 +1,27 @@
 import InputField from "../../../shared/components/InputField";
 import SelectField from "../../../shared/components/SelectField";
 import useCreatePurchase from "../hooks/useCreatePurchase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 const CreatePurchasePage = () => {
   const navigate = useNavigate();
+  const { orderId: paramOrderId } = useParams();
+  const { state } = useLocation();
+  const orderId = paramOrderId || state?.orderId;
+
   const {
     formData,
     items,
-    allCustomers,
     allVendors,
     loading,
     errors,
+    isEditMode,
     handleInputChange,
     addOrderItem,
     updateOrderItem,
     removeOrderItem,
     submitPurchase,
-  } = useCreatePurchase();
+  } = useCreatePurchase(orderId);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,14 +29,14 @@ const CreatePurchasePage = () => {
     const result = await submitPurchase();
 
     if (result?.success) {
-      alert("Purchase created successfully!");
+      alert(`Purchase ${isEditMode ? "updated" : "created"} successfully!`);
       navigate("/admin/purchase");
     }
   };
 
   return (
     <div className="p-6">
-      <h1 className="font-semibold text-lg mb-6">New Purchase Order</h1>
+      <h1 className="font-semibold text-lg mb-6">{isEditMode ? "Edit Purchase Order" : "New Purchase Order"}</h1>
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-[180px_1fr] gap-4 max-w-3xl">
@@ -59,32 +63,6 @@ const CreatePurchasePage = () => {
               value: v.displayName,
             }))}
             error={errors.vendorId}
-            required
-          />
-
-          <SelectField
-            label="Customer"
-            name="customerId"
-            value={
-              allCustomers.find((c) => c.customerId == formData.customerId)
-                ?.displayName || ""
-            }
-            onChange={(e) => {
-              const selectedCustomer = allCustomers.find(
-                (c) => c.displayName === e.target.value
-              );
-              handleInputChange({
-                target: {
-                  name: "customerId",
-                  value: selectedCustomer ? selectedCustomer.customerId : "",
-                },
-              });
-            }}
-            options={allCustomers.map((c) => ({
-              key: c.customerId,
-              value: c.displayName,
-            }))}
-            error={errors.customerId}
             required
           />
 
@@ -195,7 +173,7 @@ const CreatePurchasePage = () => {
             disabled={loading}
             className="bg-blue-600 text-white px-6 py-2 rounded cursor-pointer"
           >
-            {loading ? "Saving..." : "Create Purchase"}
+            {loading ? "Saving..." : isEditMode ? "Update Purchase" : "Create Purchase"}
           </button>
         </div>
       </form>

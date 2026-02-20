@@ -38,12 +38,11 @@ const ViewPurchasePage = () => {
 
       <div className="w-[80%]">
         {selectedOrderId && companyId ? (
-          <ViewPurchaseDetail
-            companyId={companyId}
-            orderId={selectedOrderId}
-          />
+          <ViewPurchaseDetail companyId={companyId} orderId={selectedOrderId} />
         ) : (
-          <p className="p-6 text-gray-600">Select a purchase order to view details</p>
+          <p className="p-6 text-gray-600">
+            Select a purchase order to view details
+          </p>
         )}
       </div>
     </div>
