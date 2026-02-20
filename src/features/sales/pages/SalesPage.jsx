@@ -14,6 +14,8 @@ const SalesPage = () => {
     table,
     globalFilter,
     setGlobalFilter,
+    deactivateSalesOrder,
+    activateSalesOrder,
   } = useSalesPage();
 
   const navigate = useNavigate();
@@ -47,7 +49,15 @@ const SalesPage = () => {
   };
 
   const handleDeleteOrder = (order) => {
-    console.log("Delete", order);
+    if (window.confirm("Are you sure you want to deactivate this order?")) {
+      deactivateSalesOrder(order.orderId);
+    }
+  };
+
+  const handleActivateOrder = (order) => {
+    if (window.confirm("Are you sure you want to activate this order?")) {
+      activateSalesOrder(order.orderId);
+    }
   };
 
   return (
@@ -168,6 +178,7 @@ const SalesPage = () => {
                       row={row}
                       onEdit={handleEditOrder}
                       onDelete={handleDeleteOrder}
+                      onActivate={handleActivateOrder}
                     />
                   </td>
                 </tr>
