@@ -112,6 +112,9 @@ export const coreApi = {
     `${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/deactivate`),
 
   activateSales: (companyId, orderId) => api.put(
-    `${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/activate`)
+    `${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/activate`),
+
+  getSalesDetails: (companyId, orderId) => api.get(
+    `${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}`)
 
 };
