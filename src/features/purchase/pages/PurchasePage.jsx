@@ -1,5 +1,5 @@
 import usePurchasePage from "../hooks/usePurchasePage";
-import { MdAdd, MdSearch } from "react-icons/md";
+import { MdAdd, MdSearch, MdInbox } from "react-icons/md";
 import { flexRender } from "@tanstack/react-table";
 import { useNavigate } from "react-router-dom";
 import ActionMenu from "../../../shared/components/ActionMenu";
@@ -17,8 +17,26 @@ const PurchasePage = () => {
   } = usePurchasePage();
 
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("quotes");
 
-  const [OrderType, setOrderType] = useState("active");
+  const filterByStatus = (statuses) => {
+    return allOrder.filter((o) => statuses.includes(o.orderStatus));
+  };
+
+  const getFilteredOrders = () => {
+    switch (activeTab) {
+      case "quotes":
+        return filterByStatus(["QUOTATION", "QUOTATION_VIEWED", "QUOTATION_ACCEPTED", "QUOTATION_DECLINED"]);
+      case "purchaseOrder":
+        return filterByStatus(["ORDER", "ORDER_VIEWED"]);
+      case "bill":
+        return filterByStatus(["ORDER_INVOICED", "ORDER_PAYED"]);
+      default:
+        return [];
+    }
+  };
+
+  const filteredOrders = getFilteredOrders();
 
   const handleViewOrder = (order) => {
     navigate("/admin/view/purchase", {
@@ -41,30 +59,62 @@ const PurchasePage = () => {
     console.log("Delete", order);
   };
 
-  const handleOrderTypeChange = (e) => {
-    const value = e.target.value;
-    setOrderType(value);
-
-    if (value === "active") {
-      setOrder(allOrder.filter((c) => c.isActive === true));
-    } else {
-      setOrder(allOrder.filter((c) => c.isActive === false));
-    }
-  };
-
   return (
     <div className="px-6">
       <div className="flex items-center justify-between mb-4">
-        {/* Left Dropdown */}
-        <select
-          value={OrderType}
-          onChange={handleOrderTypeChange}
-          className="cursor-pointer text-sm font-medium text-gray-700 focus:outline-none focus:ring-0"
-        >
-          <option value="active">Active Items</option>
-          <option value="deleted">Deleted Items</option>
-        </select>
-        {/* Right: Search + New button */}
+        <div className="flex items-center gap-6">
+          <h1 className="text-lg font-semibold text-gray-700">Purchase</h1>
+          <div className="flex gap-10">
+            <button
+              onClick={() => setActiveTab("report")}
+              className={`text-base font-medium cursor-pointer ${
+                activeTab === "report" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+              }`}
+            >
+              Report
+            </button>
+            <button
+              onClick={() => setActiveTab("quotes")}
+              className={`text-base font-medium cursor-pointer ${
+                activeTab === "quotes" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+              }`}
+            >
+              Quotes
+            </button>
+            <button
+              onClick={() => setActiveTab("expenses")}
+              className={`text-base font-medium cursor-pointer ${
+                activeTab === "expenses" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+              }`}
+            >
+              Expenses
+            </button>
+            <button
+              onClick={() => setActiveTab("purchaseOrder")}
+              className={`text-base font-medium cursor-pointer ${
+                activeTab === "purchaseOrder" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+              }`}
+            >
+              Purchase Orders
+            </button>
+            <button
+              onClick={() => setActiveTab("bill")}
+              className={`text-base font-medium cursor-pointer ${
+                activeTab === "bill" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+              }`}
+            >
+              Bills
+            </button>
+            <button
+              onClick={() => setActiveTab("paymentMade")}
+              className={`text-base font-medium cursor-pointer ${
+                activeTab === "paymentMade" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+              }`}
+            >
+              Payment Made
+            </button>
+          </div>
+        </div>
         <div className="flex items-center gap-4">
           <div className="relative w-80">
             <MdSearch
@@ -111,60 +161,64 @@ const PurchasePage = () => {
           </thead>
 
           <tbody className="divide-y divide-gray-100">
-            {table.getRowModel().rows.length === 0 ? (
+            {filteredOrders.length === 0 ? (
               <tr>
                 <td
                   colSpan={table.getAllColumns().length}
-                  className="text-center py-12 text-gray-500"
+                  className="text-center py-12"
                 >
-                  No Orders found
+                  <div className="flex flex-col items-center justify-center text-gray-400">
+                    <MdInbox size={48} className="mb-2" />
+                    <p className="text-gray-500">No data found</p>
+                    <p className="text-sm text-gray-400 mt-1">This feature will be available soon</p>
+                  </div>
                 </td>
               </tr>
             ) : (
-              table.getRowModel().rows.map((row) => (
+              filteredOrders.map((order, index) => (
                 <tr
-                  key={row.id}
+                  key={order.orderId}
                   className="hover:bg-gray-50 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleViewOrder(row.original);
+                    handleViewOrder(order);
                   }}
                 >
                   <td className="px-6 py-4 text-gray-500 font-semibold text-left">
-                    {row.index + 1}
+                    {index + 1}
                   </td>
 
                   <td className="px-6 py-4 text-blue-600 font-semibold text-left">
-                    {row.getValue("orderNumber")}
+                    {order.orderNumber}
                   </td>
 
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("orderDate")}
+                    {order.orderDate}
                   </td>
 
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("sellerCompanyName")}
+                    {order.sellerCompanyName}
                   </td>
 
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("customerName")}
+                    {order.customerName}
                   </td>
 
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    Rs.{row.getValue("totalAmount")}
+                    Rs.{order.totalAmount}
                   </td>
 
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    Rs.{row.getValue("paidAmount")}
+                    Rs.{order.paidAmount}
                   </td>
 
                   <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("orderStatus")}
+                    {order.orderStatus}
                   </td>
 
                   <td className="px-6 py-3 text-left">
                     <ActionMenu
-                      row={row}
+                      row={{ original: order }}
                       onEdit={handleEditOrder}
                       onDelete={handleDeleteOrder}
                     />
