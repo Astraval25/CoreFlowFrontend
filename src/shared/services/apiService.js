@@ -47,7 +47,7 @@ api.interceptors.response.use(
 function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("refreshToken");
-  window.location.href = "/";
+  window.location.href = "/login";
 }
 
 export default api;
