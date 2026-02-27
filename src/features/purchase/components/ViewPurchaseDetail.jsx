@@ -9,9 +9,7 @@ const ViewPurchaseDetail = ({ companyId, orderId }) => {
 
   const order = orderData;
   const orderItems = orderData?.orderItems;
-  
   const orderDetails = order?.orderDetails;
-  const orderItems = order?.orderItems;
 
   if (!orderId)
     return <p className="p-6 text-gray-600">Select an order to view details</p>;
