@@ -104,6 +104,24 @@ export const coreApi = {
   createPurchase: (companyId, data) =>
     api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/purchase/orders`, data),
 
+  editPurchase: (companyId, orderId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/sales/orders/${orderId}`, data),
+
+  // sales
+  getAllSales: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/sales/orders`),
+
+  deactivateSales: (companyId, orderId) => api.put(
+    `${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/deactivate`),
+
+  activateSales: (companyId, orderId) => api.put(
+    `${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/activate`),
+
+  getSalesDetails: (companyId, orderId) => api.get(
+    `${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}`),
+  
+  createSales: (companyId, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/sales/orders`, data),
 
   // Customer Items 
   getCustomerItems: (companyId, customerId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/active`),

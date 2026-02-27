@@ -200,6 +200,7 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
             {/* Company */}
             <span className="font-semibold">Company</span>
             <span className="font-medium text-purple-600">
+              {customer.company.customerCompany || "-"}
               {customer.customerCompany?.companyName || "-"}
             </span>
 

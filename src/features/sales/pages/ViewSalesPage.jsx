@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import ViewPurchaseDetail from "../components/ViewPurchaseDetail";
-import ListAllPurchase from "../components/ListAllPurchase";
+import ListAllSales from "../components/ListAllSales";
+import ViewSalesDetail from "../components/ViewSalesDetail";
 import { useLocation } from "react-router-dom";
 
-const ViewPurchasePage = () => {
+const ViewSalesPage = () => {
   const { state } = useLocation();
-  const [selectedOrderId, setSelectedOrderId] = useState(
-    state?.orderId || null
-  );
+  const [selectedOrderId, setSelectedOrderId] = useState(state?.orderId || null);
   const [companyId, setCompanyId] = useState(null);
 
   useEffect(() => {
@@ -30,7 +28,7 @@ const ViewPurchasePage = () => {
   return (
     <div className="flex gap-4">
       <div className="w-[20%]">
-        <ListAllPurchase
+        <ListAllSales
           selectedOrderId={selectedOrderId}
           onSelectOrder={handleSelectOrder}
         />
@@ -38,15 +36,13 @@ const ViewPurchasePage = () => {
 
       <div className="w-[80%]">
         {selectedOrderId && companyId ? (
-          <ViewPurchaseDetail companyId={companyId} orderId={selectedOrderId} />
+          <ViewSalesDetail companyId={companyId} orderId={selectedOrderId} />
         ) : (
-          <p className="p-6 text-gray-600">
-            Select a purchase order to view details
-          </p>
+          <p className="p-6 text-gray-600">Select an order to view details</p>
         )}
       </div>
     </div>
   );
 };
 
-export default ViewPurchasePage;
+export default ViewSalesPage;

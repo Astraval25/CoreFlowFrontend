@@ -1,73 +1,90 @@
-import usePurchasePage from "../hooks/usePurchasePage";
+import useSalesPage from "../hooks/useSalesPage";
 import { MdAdd, MdSearch, MdInbox } from "react-icons/md";
 import { flexRender } from "@tanstack/react-table";
 import { useNavigate } from "react-router-dom";
 import ActionMenu from "../../../shared/components/ActionMenu";
 import { useState } from "react";
 
-const PurchasePage = () => {
+const SalesPage = () => {
   const {
     companyId,
-    allOrder,
-    order,
-    setOrder,
+    allSales,
+    sales,
+    setSales,
     table,
     globalFilter,
     setGlobalFilter,
-  } = usePurchasePage();
+    deactivateSalesOrder,
+    activateSalesOrder,
+  } = useSalesPage();
 
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("quotes");
 
   const filterByStatus = (statuses) => {
-    return allOrder.filter((o) => statuses.includes(o.orderStatus));
+    return allSales.filter((s) => statuses.includes(s.orderStatus));
   };
 
-  const getFilteredOrders = () => {
+  const getFilteredSales = () => {
     switch (activeTab) {
       case "quotes":
-        return filterByStatus(["QUOTATION", "QUOTATION_VIEWED", "QUOTATION_ACCEPTED", "QUOTATION_DECLINED"]);
-      case "purchaseOrder":
+        return filterByStatus([
+          "QUOTATION",
+          "QUOTATION_VIEWED",
+          "QUOTATION_ACCEPTED",
+          "QUOTATION_DECLINED",
+        ]);
+      case "salesOrder":
         return filterByStatus(["ORDER", "ORDER_VIEWED"]);
-      case "bill":
+      case "invoice":
         return filterByStatus(["ORDER_INVOICED", "ORDER_PAYED"]);
       default:
         return [];
     }
   };
 
-  const filteredOrders = getFilteredOrders();
+  const filteredSales = getFilteredSales();
+
+  const handleNewSales = () => {
+    navigate("/admin/create/sales");
+  };
 
   const handleViewOrder = (order) => {
-    navigate("/admin/view/purchase", {
+    navigate("/admin/view/sales", {
       state: { orderId: order.orderId },
     });
   };
 
-  const handleNewPurchase = () => {
-    navigate("/admin/create/purchase");
-  };
-
   const handleEditOrder = (order) => {
-    navigate("/admin/create/purchase", {
+    navigate("/admin/create/sales", {
       state: { orderId: order.orderId },
     });
   };
 
   const handleDeleteOrder = (order) => {
-    console.log("Delete", order);
+    if (window.confirm("Are you sure you want to deactivate this order?")) {
+      deactivateSalesOrder(order.orderId);
+    }
+  };
+
+  const handleActivateOrder = (order) => {
+    if (window.confirm("Are you sure you want to activate this order?")) {
+      activateSalesOrder(order.orderId);
+    }
   };
 
   return (
     <div className="px-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-6">
-          <h1 className="text-lg font-semibold text-gray-700">Purchase</h1>
+          <h1 className="text-lg font-semibold text-gray-700">Sales</h1>
           <div className="flex gap-10">
             <button
               onClick={() => setActiveTab("report")}
               className={`text-base font-medium cursor-pointer ${
-                activeTab === "report" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+                activeTab === "report"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600"
               }`}
             >
               Report
@@ -75,45 +92,46 @@ const PurchasePage = () => {
             <button
               onClick={() => setActiveTab("quotes")}
               className={`text-base font-medium cursor-pointer ${
-                activeTab === "quotes" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+                activeTab === "quotes"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600"
               }`}
             >
               Quotes
             </button>
             <button
-              onClick={() => setActiveTab("expenses")}
-              className={`text-base font-medium cursor-pointer ${
-                activeTab === "expenses" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+              onClick={() => setActiveTab("salesOrder")}
+              className={`text-base font-medium  cursor-pointer ${
+                activeTab === "salesOrder"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600"
               }`}
             >
-              Expenses
+              Sales Order
             </button>
             <button
-              onClick={() => setActiveTab("purchaseOrder")}
-              className={`text-base font-medium cursor-pointer ${
-                activeTab === "purchaseOrder" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+              onClick={() => setActiveTab("invoice")}
+              className={`text-base font-medium  cursor-pointer ${
+                activeTab === "invoice"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600"
               }`}
             >
-              Purchase Orders
+              Invoices
             </button>
             <button
-              onClick={() => setActiveTab("bill")}
-              className={`text-base font-medium cursor-pointer ${
-                activeTab === "bill" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
+              onClick={() => setActiveTab("payReceived")}
+              className={`text-base font-medium  cursor-pointer ${
+                activeTab === "payReceived"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-600"
               }`}
             >
-              Bills
-            </button>
-            <button
-              onClick={() => setActiveTab("paymentMade")}
-              className={`text-base font-medium cursor-pointer ${
-                activeTab === "paymentMade" ? "text-blue-600 border-b-2 border-blue-600" : "text-gray-600"
-              }`}
-            >
-              Payment Made
+              Pay Received
             </button>
           </div>
         </div>
+
         <div className="flex items-center gap-4">
           <div className="relative w-80">
             <MdSearch
@@ -130,12 +148,16 @@ const PurchasePage = () => {
             />
           </div>
 
-          <button className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition cursor-pointer" onClick={handleNewPurchase}>
+          <button
+            className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition cursor-pointer"
+            onClick={handleNewSales}
+          >
             New
             <MdAdd size={18} />
           </button>
         </div>
       </div>
+
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead className="bg-gray-100 text-xs uppercase text-gray-600">
@@ -160,7 +182,7 @@ const PurchasePage = () => {
           </thead>
 
           <tbody className="divide-y divide-gray-100">
-            {filteredOrders.length === 0 ? (
+            {filteredSales.length === 0 ? (
               <tr>
                 <td
                   colSpan={table.getAllColumns().length}
@@ -169,12 +191,14 @@ const PurchasePage = () => {
                   <div className="flex flex-col items-center justify-center text-gray-400">
                     <MdInbox size={48} className="mb-2" />
                     <p className="text-gray-500">No data found</p>
-                    <p className="text-sm text-gray-400 mt-1">This feature will be available soon</p>
+                    <p className="text-sm text-gray-400 mt-1">
+                      This feature will be available soon
+                    </p>
                   </div>
                 </td>
               </tr>
             ) : (
-              filteredOrders.map((order, index) => (
+              filteredSales.map((order, index) => (
                 <tr
                   key={order.orderId}
                   className="hover:bg-gray-50 cursor-pointer"
@@ -220,6 +244,7 @@ const PurchasePage = () => {
                       row={{ original: order }}
                       onEdit={handleEditOrder}
                       onDelete={handleDeleteOrder}
+                      onActivate={handleActivateOrder}
                     />
                   </td>
                 </tr>
@@ -231,4 +256,5 @@ const PurchasePage = () => {
     </div>
   );
 };
-export default PurchasePage;
+
+export default SalesPage;
