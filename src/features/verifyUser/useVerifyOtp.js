@@ -4,7 +4,6 @@ export const useVerifyOtp = () => {
   const verifyOtp = async (data) => {
     try {
       const res = await coreApi.verify_otp(data);
-      // console.log(res)
       return res.data;
     } catch (err) {
       throw new Error(

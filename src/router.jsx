@@ -26,6 +26,7 @@ import CreatePurchasePage from "./features/purchase/pages/CreatePurchasePage";
 import SalesPage from "./features/sales/pages/SalesPage";
 import ViewSalesPage from "./features/sales/pages/ViewSalesPage";
 import CreateSalesPage from "./features/sales/pages/CreateSalesPage";
+import CustomerItems from "./features/CustomerItems/pages/CustomerItems";
 
 export const router = createBrowserRouter([
   {
@@ -101,6 +102,8 @@ export const router = createBrowserRouter([
       { path: "sales", element: <SalesPage /> },
       { path: "view/sales", element: <ViewSalesPage /> },
       { path: "create/sales", element: <CreateSalesPage /> },
+
+      { path: "customer/items", element: <CustomerItems /> },
     ],
   },
 ]);

@@ -42,7 +42,6 @@ const PurchasePage = () => {
     navigate("/admin/view/purchase", {
       state: { orderId: order.orderId },
     });
-    console.log("View", order.orderId);
   };
 
   const handleNewPurchase = () => {

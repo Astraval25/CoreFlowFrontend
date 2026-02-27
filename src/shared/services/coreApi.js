@@ -68,6 +68,9 @@ export const coreApi = {
   getItems: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/items`),
 
+  getActiveItems: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/items/active`),
+
   getItemDetail: (companyId, itemId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/items/${itemId}`),
 
@@ -120,4 +123,30 @@ export const coreApi = {
   createSales: (companyId, data) =>
     api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/sales/orders`, data),
 
+  // Customer Items 
+  getCustomerItems: (companyId, customerId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/active`),
+
+  getCustomerMappedItems: (companyId, customerId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/mapped`),
+
+  createcustomerItem: (companyId, customerId, data) => api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items`, data),
+
+  deactivateCustomerItem: (companyId, customerId, itemId) => api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/${itemId}/deactivate`),
+
+  activateCustomerItem: (companyId, customerId, itemId) => api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/${itemId}/activate`),
+
+  editCustomerItem: (companyId, customerId, itemId, data) => api.put(
+    `${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/${itemId}`, data),
+
+  // Vendor Items
+
+  getVendorMappedItems: (companyId, vendorId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/mapped`),
+
+  createVendorItem: (companyId, vendorId, data) => api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items`, data),
+
+  deactivateVendorItem: (companyId, vendorId, itemId) => api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/${itemId}/deactivate`),
+
+  activateVendorItem: (companyId, vendorId, itemId) => api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/${itemId}/activate`),
+
+  editVendorItem: (companyId, vendorId, itemId, data) => api.put(
+    `${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/${itemId}`, data)
 };

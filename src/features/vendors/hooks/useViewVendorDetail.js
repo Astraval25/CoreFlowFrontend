@@ -15,7 +15,6 @@ const useViewVendorDetail = (companyId, vendorId) => {
         const res = await coreApi.getVendorDetail(companyId, vendorId);
         if (res.data.responseStatus) {
           setVendor(res.data.responseData);
-          console.log(res);
         } else {
           setError("Failed to fetch vendor details");
         }

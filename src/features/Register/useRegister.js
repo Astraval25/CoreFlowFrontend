@@ -15,7 +15,6 @@ export const useRegister = () => {
         return data;
       })
       .catch((err) => {
-        console.log(err);
         const message =
           err.response?.data?.responseMessage ||
           err.message ||

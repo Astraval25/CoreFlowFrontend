@@ -27,7 +27,6 @@ const useListAllVendor = () => {
     coreApi
       .getAllVendorByCompanyId(companyId)
       .then((res) => {
-        console.log("Vendors:", res.data.responseData);
         setVendors(res.data.responseData);
       })
       .catch((err) => {
