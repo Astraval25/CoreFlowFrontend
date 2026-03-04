@@ -1,37 +1,27 @@
-import useViewVendorDetail from "../hooks/useViewVendorDetail";
-import {
-  MdPhone,
-  MdEmail,
-  MdOutlineMailOutline,
-  MdLocationOn,
-  MdBusiness,
-  MdEdit,
-} from "react-icons/md";
+import { MdBusiness, MdEdit, MdEmail, MdLocationOn, MdPhone } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import VendorItems from "../../VendorItems/pages/VendorItems";
+import useViewVendorDetail from "../hooks/useViewVendorDetail";
+
+const formatAddress = (address) => {
+  if (!address) return "Not available";
+  const line = [address.line1, address.line2, address.city].filter(Boolean).join(", ");
+  const location = [address.state, address.pincode, address.country].filter(Boolean).join(", ");
+  return [line, location].filter(Boolean).join(" | ") || "Not available";
+};
 
 const ViewVendorDetails = ({ companyId, vendorId }) => {
   const { vendor, loading, error } = useViewVendorDetail(companyId, vendorId);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
 
-  if (!vendorId)
-    return <p className="p-6 text-gray-600">Select a vendor to view details</p>;
-  if (loading)
-    return <p className="p-6 text-gray-600">Loading vendor details...</p>;
-  if (error)
-    return <p className="p-6 text-red-600">Error loading vendor details</p>;
+  if (!vendorId) return <p className="p-6 text-gray-600">Select a vendor to view details</p>;
+  if (loading) return <p className="p-6 text-gray-600">Loading vendor details...</p>;
+  if (error) return <p className="p-6 text-red-600">Error loading vendor details</p>;
 
   const billing = vendor.billingAddrId;
   const shipping = vendor.shippingAddrId;
-
-  const initials = vendor.displayName
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
 
   const handleEdit = () => {
     navigate("/admin/create/vendor", {
@@ -40,222 +30,114 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
   };
 
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-        {/* Column 1: Basic Info */}
-        <div className="relative bg-[#E2E8F0] rounded-xl shadow-sm border border-gray-200 p-6">
+    <div className="w-full space-y-4">
+      <section className="rounded-2xl border border-[#d9e1d9] bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7b887b]">
+              Vendor Profile
+            </p>
+            <h2 className="text-2xl font-bold text-[#1f2b1f]">{vendor.displayName}</h2>
+            <p className="text-sm font-medium text-[#627062]">{vendor.vendorName || "No legal name"}</p>
+
+            <div className="flex flex-wrap gap-2 pt-1">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+                <MdPhone size={14} /> {vendor.phone || "No phone"}
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+                <MdEmail size={14} /> {vendor.email || "No email"}
+              </span>
+              <span
+                className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                  vendor.isActive ? "bg-[#e8f3ea] text-[#2f7a47]" : "bg-[#fbe9e9] text-[#9a3d3d]"
+                }`}
+              >
+                {vendor.isActive ? "Active" : "Inactive"}
+              </span>
+            </div>
+          </div>
+
           <button
-            className="absolute bottom-6 right-4 text-blue-500 hover:text-blue-600 cursor-pointer flex gap-2"
+            className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-4 py-2 text-sm font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
             onClick={handleEdit}
           >
-            <span className="text-blue-500 font-semibold">Edit</span>
-            <MdEdit size={18} />
+            <MdEdit size={17} />
+            Edit Vendor
           </button>
-          
-          {/* Display Name */}
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
-            {vendor.displayName}
-          </h2>
-          
-          {/* Flex layout with custom proportions */}
-          <div className="flex gap-4">
-            {/* Avatar - 1.5 parts */}
-            <div className="flex-[1.5] flex justify-center">
-              <div className="w-18 h-18 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-md">
-                {initials}
+        </div>
+
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+              <MdLocationOn size={18} />
+              Addresses
+            </h3>
+            <div className="space-y-3 text-sm text-[#4f5d4f]">
+              <div>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#758275]">Billing</p>
+                <p>{formatAddress(billing)}</p>
               </div>
-            </div>
-
-            {/* Details - 2.5 parts */}
-            <div className="flex-[2.5] flex flex-col">
-              <p className="text-base text-gray-500 font-semibold mb-2">
-                {vendor.vendorName}
-              </p>
-
-              {/* Phone */}
-              <div className="flex items-center gap-2 text-gray-700 mb-2">
-                <MdPhone className="text-sm text-gray-500" />
-                <span className="text-sm font-semibold text-gray-500">
-                  {vendor.phone || "No phone"}
-                </span>
-              </div>
-
-              {/* Email */}
-              <div className="flex items-center gap-2 text-gray-700">
-                <MdEmail className="text-sm text-gray-500" />
-                <span className="text-sm font-semibold text-gray-500">
-                  {vendor.email || "No email"}
-                </span>
+              <div>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#758275]">Shipping</p>
+                <p>{shipping ? formatAddress(shipping) : billing ? "Same as billing" : "Not available"}</p>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Column 2: Addresses */}
-        <div className="bg-[#E2E8F0] rounded-xl shadow-sm border border-gray-200 p-2">
-          <h2 className="font-semibold text-base mb-2">Address</h2>
-          
-          <div className="space-y-4">
-            {/* Billing Address */}
-            <div>
-              <h3 className="font-semibold mb-2 ml-4">Billing Address</h3>
-              <div className="text-sm ml-8">
-                {billing ? (
-                  <>
-                    <div>{billing.line1}{billing.line2 ? `, ${billing.line2}` : ""}, {billing.city}</div>
-                    <div>{billing.state} {billing.pincode}, {billing.country}</div>
-                  </>
-                ) : (
-                  "No billing address"
-                )}
-              </div>
-              {billing && (
-                <div className="flex gap-2 text-sm ml-8">
-                  {billing.email && (
-                    <div className="flex items-center gap-1">
-                      <MdOutlineMailOutline className="text-xs" /> {billing.email}
-                    </div>
-                  )}
-                  {billing.phone && (
-                    <div className="flex items-center gap-1">
-                      <MdPhone className="text-xs" /> {billing.phone}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+              <MdBusiness size={18} />
+              Business Details
+            </h3>
+            <div className="grid grid-cols-2 gap-y-3 text-sm">
+              <span className="text-[#748274]">GST</span>
+              <span className="font-semibold text-[#1f2b1f]">{vendor.gst || "-"}</span>
 
-            {/* Shipping Address */}
-            <div>
-              <h3 className="font-semibold mb-2 ml-4">Shipping Address</h3>
-              <div className="text-sm ml-8">
-                {shipping ? (
-                  <>
-                    <div>{shipping.line1}{shipping.line2 ? `, ${shipping.line2}` : ""}, {shipping.city}</div>
-                    <div>{shipping.state} {shipping.pincode}, {shipping.country}</div>
-                  </>
-                ) : billing ? (
-                  "Same as billing"
-                ) : (
-                  "No shipping address"
-                )}
-              </div>
-              {shipping && (
-                <div className="flex gap-3 text-sm ml-8">
-                  {shipping.email && (
-                    <div className="flex items-center gap-1">
-                      <MdOutlineMailOutline className="text-xs" /> {shipping.email}
-                    </div>
-                  )}
-                  {shipping.phone && (
-                    <div className="flex items-center gap-1">
-                      <MdPhone className="text-xs" /> {shipping.phone}
-                    </div>
-                  )}
-                </div>
-              )}
+              <span className="text-[#748274]">PAN</span>
+              <span className="font-semibold text-[#1f2b1f]">{vendor.pan || "-"}</span>
+
+              <span className="text-[#748274]">Company</span>
+              <span className="font-semibold text-[#2f7a47]">
+                {vendor.company?.vendorCompany || vendor.vendorCompany?.companyName || "-"}
+              </span>
+
+              <span className="text-[#748274]">Created</span>
+              <span className="font-semibold text-[#1f2b1f]">
+                {vendor.createdDt ? new Date(vendor.createdDt).toLocaleDateString() : "-"}
+              </span>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Column 3: Other Details */}
-        <div className="bg-[#E2E8F0] rounded-xl shadow-sm border border-gray-200 p-4">
-          <h3 className="flex items-center gap-2 font-semibold text-base mb-5">
-            Other Details
-          </h3>
-
-          <div className="grid grid-cols-2 gap-y-4 text-sm">
-            {/* GST */}
-            <span className="font-semibold">GST</span>
-            <span className="font-medium text-gray-800">
-              {vendor.gst || "-"}
-            </span>
-
-            {/* PAN */}
-            <span className="font-semibold">PAN</span>
-            <span className="font-medium text-gray-800">
-              {vendor.pan || "-"}
-            </span>
-
-            {/* Company */}
-            <span className="font-semibold">Company</span>
-            <span className="font-medium text-purple-600">
-              {vendor.company.vendorCompany || "-"}
-              {vendor.vendorCompany?.companyName || "-"}
-            </span>
-
-            {/* Created Date */}
-            <span className="font-semibold">Created</span>
-            <span className="text-gray-700">
-              {new Date(vendor.createdDt).toLocaleDateString()}
-            </span>
-
-            {/* Status */}
-            <span className="font-semibold">Status</span>
-            <span
-              className={`font-semibold ${
-                vendor.isActive ? "text-green-500" : "text-red-600"
+      <section className="rounded-2xl border border-[#d9e1d9] bg-white p-3 shadow-sm">
+        <div className="flex flex-wrap gap-2">
+          {[
+            { key: "overview", label: "Overview" },
+            { key: "items", label: "Items" },
+            { key: "ordertrack", label: "Order Track" },
+            { key: "transaction", label: "Transaction" },
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              className={`rounded-lg px-4 py-2 text-sm font-semibold cursor-pointer transition ${
+                activeTab === tab.key
+                  ? "bg-[#e8f3ea] text-[#2f7a47]"
+                  : "text-[#596759] hover:bg-[#f2f5f2]"
               }`}
+              onClick={() => setActiveTab(tab.key)}
             >
-              {vendor.isActive ? "Active" : "Inactive"}
-            </span>
-          </div>
+              {tab.label}
+            </button>
+          ))}
         </div>
-      </div>
-      <div className="flex gap-30 w-full mt-5 mb-2 text-sm">
-        <button
-          className={`font-semibold cursor-pointer ${
-            activeTab === "overview" ? "text-blue-600" : "text-gray-600"
-          }`}
-          onClick={() => setActiveTab("overview")}
-        >
-          OverView
-        </button>
-        <button
-          className={`font-semibold cursor-pointer ${
-            activeTab === "items" ? "text-blue-600" : "text-gray-600"
-          }`}
-          onClick={() => setActiveTab("items")}
-        >
-          Items
-        </button>
-        <button
-          className={`font-semibold cursor-pointer ${
-            activeTab === "ordertrack" ? "text-blue-600" : "text-gray-600"
-          }`}
-          onClick={() => setActiveTab("ordertrack")}
-        >
-          Order Track
-        </button>
-        <button
-          className={`font-semibold cursor-pointer ${
-            activeTab === "transaction" ? "text-blue-600" : "text-gray-600"
-          }`}
-          onClick={() => setActiveTab("transaction")}
-        >
-          Transaction
-        </button>
-      </div>
-      <hr className="text-gray-300" />
+      </section>
 
-      {/* Tab Content */}
-      <div className="mt-4">
+      <div className="rounded-2xl border border-[#d9e1d9] bg-white p-4 shadow-sm">
         {activeTab === "items" && <VendorItems vendorId={vendorId} />}
-        {activeTab === "overview" && (
-          <div className="p-4 text-gray-600">
-            Overview content coming soon...
-          </div>
-        )}
-        {activeTab === "ordertrack" && (
-          <div className="p-4 text-gray-600">
-            Order Track content coming soon...
-          </div>
-        )}
-        {activeTab === "transaction" && (
-          <div className="p-4 text-gray-600">
-            Transaction content coming soon...
-          </div>
-        )}
+        {activeTab === "overview" && <div className="text-gray-600">Overview content coming soon...</div>}
+        {activeTab === "ordertrack" && <div className="text-gray-600">Order Track content coming soon...</div>}
+        {activeTab === "transaction" && <div className="text-gray-600">Transaction content coming soon...</div>}
       </div>
     </div>
   );

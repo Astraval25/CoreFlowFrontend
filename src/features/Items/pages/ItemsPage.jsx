@@ -69,7 +69,7 @@ const ItemsPage = () => {
   };
 
   return (
-    <div className="px-6">
+    <div>
       <div className="flex items-center justify-between mb-4">
         {/* Left Dropdown */}
         <select

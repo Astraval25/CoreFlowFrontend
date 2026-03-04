@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+﻿import { useNavigate } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
 import { FaBell } from "react-icons/fa";
 import { jwtDecode } from "jwt-decode";
@@ -33,32 +33,39 @@ const Toolbar = () => {
 
   return (
     <>
-      <header className="h-14 bg-gray-900 flex items-center justify-between px-6 shadow-sm sticky top-0 z-50">
-        <h1 className="text-lg font-semibold text-white">CoreFlow</h1>
+      <header className="h-full flex items-center justify-between px-6">
+        <div>
+          <h1 className="text-lg font-bold text-[#1d2c1d]">Operations</h1>
+          <p className="text-xs text-[#6c7a6c] -mt-0.5">Auto-updates in 2 min</p>
+        </div>
 
         <div className="flex items-center gap-4">
           <button
             onClick={handleCompanyClick}
-            className="text-sm font-medium px-3 py-1 text-blue-500 hover:underline"
+            className="text-sm font-semibold px-3 py-2 rounded-lg text-[#355835] hover:bg-[#ebf1eb]"
           >
             {companyName || "Select Company"}
           </button>
-          <span className="h-6 w-px bg-gray-300"></span>
+          <span className="h-6 w-px bg-[#d4ddd4]"></span>
 
-          <button className="relative p-2 rounded-lg">
-            <FaBell size={18} className="text-white" />
+          <button className="relative p-2 rounded-lg text-[#556555] hover:bg-[#ebf1eb]">
+            <FaBell size={17} />
             <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
-          <span className="h-6 w-px bg-gray-300"></span>
+          <span className="h-6 w-px bg-[#d4ddd4]"></span>
 
-          <MdExplore size={20} title="Other Products" className="text-white" />
+          <MdExplore
+            size={19}
+            title="Other Products"
+            className="text-[#556555]"
+          />
 
-          <span className="h-6 w-px bg-gray-300"></span>
+          <span className="h-6 w-px bg-[#d4ddd4]"></span>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 text-red-600 hover:text-red-700 transition text-sm font-medium"
+            className="flex items-center gap-2 text-[#7a4545] hover:text-[#a13a3a] transition text-sm font-semibold"
           >
-            <FiLogOut size={18} />
+            <FiLogOut size={16} />
             Logout
           </button>
         </div>
@@ -73,3 +80,4 @@ const Toolbar = () => {
 };
 
 export default Toolbar;
+

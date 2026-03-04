@@ -28,15 +28,15 @@ const ViewItemPage = () => {
   };
 
   return (
-    <div className="flex gap-4">
-      <div className="w-[20%]">
+    <div className="flex gap-2">
+      <div className="w-[22%]">
         <ListAllItems
           selectedItemId={selectedItemId}
           onSelectItem={handleSelectItem}
         />
       </div>
 
-      <div className="w-[80%]">
+      <div className="w-[78%]">
         {selectedItemId && companyId ? (
           <ViewItemDetail
             companyId={companyId}

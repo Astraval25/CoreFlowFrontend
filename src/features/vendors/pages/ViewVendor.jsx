@@ -28,15 +28,15 @@ const ViewVendor = () => {
   };
 
   return (
-    <div className="flex gap-4">
-      <div className="w-[20%]">
+    <div className="flex gap-2">
+      <div className="w-[22%]">
         <ListAllVendor
           selectedVendorId={selectedVendorId}
           onSelectVendor={handleSelectVendor}
         />
       </div>
 
-      <div className="w-[80%]">
+      <div className="w-[78%]">
         {selectedVendorId && companyId ? (
           <ViewVendorDetails companyId={companyId} vendorId={selectedVendorId} />
         ) : (

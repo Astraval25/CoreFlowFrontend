@@ -30,11 +30,15 @@ const CreateSalesPage = () => {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="font-semibold text-lg mb-6">New Sales Order</h1>
+    <div className="rounded-2xl border border-[#d9e1d9] bg-white p-5 shadow-sm">
+      <h1 className="mb-6 text-lg font-bold text-[#1f2b1f]">New Sales Order</h1>
 
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-[180px_1fr] gap-4 max-w-3xl">
+      <form onSubmit={handleSubmit} className="space-y-7">
+        <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-[#738173]">
+            Sales Details
+          </p>
+          <div className="grid max-w-3xl grid-cols-[180px_1fr] gap-4">
           <SelectField
             label="Customer"
             name="customerId"
@@ -99,15 +103,16 @@ const CreateSalesPage = () => {
               Has Bill
             </label>
           </div>
+          </div>
         </div>
 
-        <div className="mt-8">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-blue-600 font-medium text-base">Order Items</h3>
+        <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-base font-semibold text-[#2f7a47]">Order Items</h3>
             <button
               type="button"
               onClick={addOrderItem}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
+              className="cursor-pointer rounded-lg bg-[#3f9f5f] px-4 py-2 text-white transition hover:bg-[#2f8d4f]"
             >
               Add Item
             </button>
@@ -181,11 +186,11 @@ const CreateSalesPage = () => {
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="flex justify-end">
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 text-white px-6 py-2 rounded cursor-pointer"
+            className="cursor-pointer rounded-lg bg-[#3f9f5f] px-6 py-2 text-white transition hover:bg-[#2f8d4f]"
           >
             {loading ? "Saving..." : "Create Sales Order"}
           </button>

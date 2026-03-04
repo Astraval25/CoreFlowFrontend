@@ -1,21 +1,16 @@
-import useViewItemDetail from "../hooks/useViewItemDetail";
-import { MdEdit } from "react-icons/md";
+import { MdEdit, MdInventory2 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import Info from "../../../shared/components/Info";
+import useViewItemDetail from "../hooks/useViewItemDetail";
+
+const money = (value) => `Rs. ${Number(value || 0).toLocaleString()}`;
 
 const ViewItemDetail = ({ companyId, itemId }) => {
-  const { item, loading, imageUrl, error } = useViewItemDetail(
-    companyId,
-    itemId
-  );
+  const { item, loading, imageUrl, error } = useViewItemDetail(companyId, itemId);
   const navigate = useNavigate();
 
-  if (!itemId)
-    return <p className="p-6 text-gray-600">Select an item to view details</p>;
-  if (loading)
-    return <p className="p-6 text-gray-600">Loading item details...</p>;
-  if (error)
-    return <p className="p-6 text-red-600">Error loading item details</p>;
+  if (!itemId) return <p className="p-6 text-gray-600">Select an item to view details</p>;
+  if (loading) return <p className="p-6 text-gray-600">Loading item details...</p>;
+  if (error) return <p className="p-6 text-red-600">Error loading item details</p>;
 
   const handleEdit = () => {
     navigate("/admin/create/item", {
@@ -24,125 +19,104 @@ const ViewItemDetail = ({ companyId, itemId }) => {
   };
 
   return (
-    <div className="w-full">
-      {/* 70 / 30 layout */}
-      <div className="flex gap-4">
-        <div className="w-[70%] bg-[#E2E8F0] rounded-xl shadow-sm p-3 relative">
-          <button
-            className="absolute bottom-6 right-4 text-blue-500 hover:text-blue-600 flex gap-2"
-            onClick={handleEdit}
-          >
-            <span className="font-semibold">Edit</span>
-            <MdEdit size={18} />
-          </button>
-
-          {/* Header */}
-          <h2 className="text-xl font-bold mb-3">{item.itemName}</h2>
-
-          <div className="flex gap-6">
-            {/* Image */}
-            <div className="w-50 h-50 shrink-0">
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt={item.itemName}
-                  className="w-full h-full object-cover rounded-xl shadow"
-                />
-              ) : (
-                <div className="w-full h-full rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold">
-                  {item.itemName.charAt(0).toUpperCase()}
-                </div>
-              )}
-            </div>
-
-            {/* Details using Info */}
-            <div className="flex flex-col gap-3 w-full">
-              <p className="font-semibold text-base">{item.itemName}</p>
-              <div className="flex gap-2">
-                <p className="font-semibold text-sm text-gray-600">
-                  {item.itemType}
-                </p>{" "}
-                |{" "}
-                <p className="font-semibold text-sm text-gray-600">
-                  {item.unit}
-                </p>
-              </div>
-              <Info label="Sales Price" value={`₹${item.baseSalesPrice}`} />
-              <Info
-                label="Purchase Price"
-                value={`₹${item.basePurchasePrice}`}
-              />
-              <Info label="Sellable" value={item.isSellable ? "Yes" : "No"} />
-              <Info
-                label="Purchasable"
-                value={item.isPurchasable ? "Yes" : "No"}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="w-[30%] bg-[#E2E8F0] rounded-xl shadow-sm p-6">
-          <h1 className="font-semibold text-base mb-2">Item Details</h1>
-          <div className="flex flex-col gap-3">
-            <Info label="Unit" value={item.unit} />
-            <Info label="HSN Code" value={item.hsnCode} />
-            <Info label="Tax Rate" value={`${item.taxRate}%`} />
-            <div className="flex items-start">
-              <span className="w-35 text-sm text-gray-500">Status</span>
+    <div className="w-full space-y-4">
+      <section className="rounded-2xl border border-[#d9e1d9] bg-white p-5 shadow-sm">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div className="space-y-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7b887b]">Item Profile</p>
+            <h2 className="text-2xl font-bold text-[#1f2b1f]">{item.itemName}</h2>
+            <div className="flex flex-wrap gap-2 pt-1">
+              <span className="inline-flex rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+                {item.itemType || "Type not set"}
+              </span>
+              <span className="inline-flex rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+                Unit: {item.unit || "-"}
+              </span>
               <span
-                className={`font-medium ${
-                  item.isActive ? "text-green-500" : "text-red-500"
+                className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                  item.isActive ? "bg-[#e8f3ea] text-[#2f7a47]" : "bg-[#fbe9e9] text-[#9a3d3d]"
                 }`}
               >
-                : {item.isActive ? "Active" : "Inactive"}
+                {item.isActive ? "Active" : "Inactive"}
               </span>
             </div>
-            <Info
-              label="Last Update"
-              value={new Date(item.lastModifiedDt).toLocaleDateString()}
-            />
-            <Info
-              label="Update Time"
-              value={new Date(item.lastModifiedDt).toLocaleTimeString()}
-            />
           </div>
 
-          {/* Descriptions */}
-          {/* <div className="mt-6 border-t pt-4 flex flex-col gap-3">
-            <Info label="Sales Desc" value={item.salesDescription} />
-            <Info label="Purchase Desc" value={item.purchaseDescription} />
-          </div> */}
+          <button
+            className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-4 py-2 text-sm font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+            onClick={handleEdit}
+          >
+            <MdEdit size={17} />
+            Edit Item
+          </button>
         </div>
-      </div>
 
-      <div className="flex gap-4 mt-6">
-        <div className="w-[70%]">
-          <div className="flex gap-10 mb-2 text-gray-600 font-semibold">
-            <button>Overview</button>
-            <button>Statistics</button>
-            <button>Stock Track</button>
-            <button>Transaction</button>
+        <div className="mt-5 grid gap-4 md:grid-cols-[220px_1fr]">
+          <div className="overflow-hidden rounded-xl border border-[#dce4dc] bg-[#f8faf8]">
+            {imageUrl ? (
+              <img src={imageUrl} alt={item.itemName} className="h-52 w-full object-cover" />
+            ) : (
+              <div className="flex h-52 items-center justify-center bg-gradient-to-br from-[#4ca567] to-[#2f7a47] text-white">
+                <MdInventory2 size={56} />
+              </div>
+            )}
           </div>
-          <hr className="text-gray-300" />
-        </div>
 
-        <div className="w-[30%] bg-[#E2E8F0] rounded-xl shadow-sm p-3">
-          <h1 className="font-semibold text-base mb-2">Pricing</h1>
-          <div className="flex flex-col gap-3">
-            <div className="border border-gray-300 px-3 py-1 bg-gray-100">
-              <span className="text-sm text-gray-500 font-medium">
-                Sales Description:
-              </span>
-              <p className="text-gray-900 font-medium mt-1">
-                {item.salesDescription || "N/A"}
-              </p>
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+              <h3 className="mb-3 text-sm font-semibold text-[#2d3b2d]">Pricing</h3>
+              <dl className="space-y-2 text-sm">
+                <div className="flex items-center justify-between">
+                  <dt className="text-[#748274]">Sales Price</dt>
+                  <dd className="font-semibold text-[#1f2b1f]">{money(item.baseSalesPrice)}</dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-[#748274]">Purchase Price</dt>
+                  <dd className="font-semibold text-[#1f2b1f]">{money(item.basePurchasePrice)}</dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-[#748274]">Tax Rate</dt>
+                  <dd className="font-semibold text-[#1f2b1f]">{item.taxRate ?? 0}%</dd>
+                </div>
+              </dl>
             </div>
-            <hr className="border border-gray-300" />
-            <Info label="Sales Price" value={`₹${item.baseSalesPrice}`} />
-            <Info label="Purchase Price" value={`₹${item.basePurchasePrice}`} />
+
+            <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+              <h3 className="mb-3 text-sm font-semibold text-[#2d3b2d]">Configuration</h3>
+              <dl className="space-y-2 text-sm">
+                <div className="flex items-center justify-between">
+                  <dt className="text-[#748274]">HSN Code</dt>
+                  <dd className="font-semibold text-[#1f2b1f]">{item.hsnCode || "-"}</dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-[#748274]">Sellable</dt>
+                  <dd className="font-semibold text-[#1f2b1f]">{item.isSellable ? "Yes" : "No"}</dd>
+                </div>
+                <div className="flex items-center justify-between">
+                  <dt className="text-[#748274]">Purchasable</dt>
+                  <dd className="font-semibold text-[#1f2b1f]">{item.isPurchasable ? "Yes" : "No"}</dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </div>
-      </div>
+
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#758275]">Sales Description</p>
+            <p className="text-sm text-[#445244]">{item.salesDescription || "No sales description."}</p>
+          </div>
+          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#758275]">Purchase Description</p>
+            <p className="text-sm text-[#445244]">{item.purchaseDescription || "No purchase description."}</p>
+          </div>
+        </div>
+
+        <p className="mt-4 text-xs font-medium text-[#7a877a]">
+          Last updated on {new Date(item.lastModifiedDt).toLocaleDateString()} at{" "}
+          {new Date(item.lastModifiedDt).toLocaleTimeString()}
+        </p>
+      </section>
     </div>
   );
 };
