@@ -19,8 +19,8 @@ const ViewItemDetail = ({ companyId, itemId }) => {
   };
 
   return (
-    <div className="w-full space-y-4">
-      <section className="rounded-2xl border border-[#d9e1d9] bg-white p-5 shadow-sm">
+    <div className="w-full">
+      <section className="p-5">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7b887b]">Item Profile</p>
@@ -63,7 +63,7 @@ const ViewItemDetail = ({ companyId, itemId }) => {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+            <div className="rounded-lg bg-[#f8faf8] p-4">
               <h3 className="mb-3 text-sm font-semibold text-[#2d3b2d]">Pricing</h3>
               <dl className="space-y-2 text-sm">
                 <div className="flex items-center justify-between">
@@ -81,7 +81,7 @@ const ViewItemDetail = ({ companyId, itemId }) => {
               </dl>
             </div>
 
-            <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+            <div className="rounded-lg bg-[#f8faf8] p-4">
               <h3 className="mb-3 text-sm font-semibold text-[#2d3b2d]">Configuration</h3>
               <dl className="space-y-2 text-sm">
                 <div className="flex items-center justify-between">
@@ -102,11 +102,11 @@ const ViewItemDetail = ({ companyId, itemId }) => {
         </div>
 
         <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+          <div className="rounded-lg bg-[#f8faf8] p-4">
             <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#758275]">Sales Description</p>
             <p className="text-sm text-[#445244]">{item.salesDescription || "No sales description."}</p>
           </div>
-          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+          <div className="rounded-lg bg-[#f8faf8] p-4">
             <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#758275]">Purchase Description</p>
             <p className="text-sm text-[#445244]">{item.purchaseDescription || "No purchase description."}</p>
           </div>

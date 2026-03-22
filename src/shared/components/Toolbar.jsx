@@ -33,12 +33,7 @@ const Toolbar = () => {
 
   return (
     <>
-      <header className="h-full flex items-center justify-between px-6">
-        <div>
-          <h1 className="text-lg font-bold text-[#1d2c1d]">Operations</h1>
-          <p className="text-xs text-[#6c7a6c] -mt-0.5">Auto-updates in 2 min</p>
-        </div>
-
+      <header className="h-full flex items-center justify-end px-6">
         <div className="flex items-center gap-4">
           <button
             onClick={handleCompanyClick}
@@ -80,4 +75,3 @@ const Toolbar = () => {
 };
 
 export default Toolbar;
-

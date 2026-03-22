@@ -15,7 +15,7 @@ const ListAllSales = ({ onSelectOrder, selectedOrderId }) => {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="thin-scroll h-[calc(100vh-108px)] overflow-y-auto rounded-2xl border border-[#d9e1d9] bg-white p-3 shadow-sm">
+    <div className="thin-scroll h-[calc(100vh-108px)] overflow-y-auto rounded-2xl border-r border-[#d9e1d9] bg-white p-3 shadow-sm">
       <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-[#7b887b]">
         Sales Orders
       </p>

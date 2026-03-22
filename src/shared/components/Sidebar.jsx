@@ -35,9 +35,6 @@ const Sidebar = () => {
       </div>
 
       <nav className="mt-4 md:mt-6 space-y-2">
-        <p className="px-2 mb-1 text-[11px] font-semibold tracking-wide text-[#859285] uppercase">
-          Daily Operation
-        </p>
         <NavLink to="/admin/dashboard" className={linkClass}>
           <MdDashboard size={18} />
           <span>Dashboard</span>

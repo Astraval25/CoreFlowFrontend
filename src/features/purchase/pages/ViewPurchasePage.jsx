@@ -28,22 +28,24 @@ const ViewPurchasePage = () => {
   };
 
   return (
-    <div className="flex gap-2">
-      <div className="w-[22%]">
+    <div className="rounded-2xl border border-[#d9e1d9] bg-white shadow-sm">
+      <div className="flex">
+        <div className="w-[22%]">
         <ListAllPurchase
           selectedOrderId={selectedOrderId}
           onSelectOrder={handleSelectOrder}
         />
-      </div>
+        </div>
 
-      <div className="w-[78%]">
-        {selectedOrderId && companyId ? (
-          <ViewPurchaseDetail companyId={companyId} orderId={selectedOrderId} />
-        ) : (
-          <p className="p-6 text-gray-600">
-            Select a purchase order to view details
-          </p>
-        )}
+        <div className="w-[78%] p-2">
+          {selectedOrderId && companyId ? (
+            <ViewPurchaseDetail companyId={companyId} orderId={selectedOrderId} />
+          ) : (
+            <p className="p-6 text-gray-600">
+              Select a purchase order to view details
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );

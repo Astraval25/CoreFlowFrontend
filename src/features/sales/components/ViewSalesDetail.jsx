@@ -22,8 +22,8 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
   };
 
   return (
-    <div className="w-full space-y-4">
-      <section className="rounded-2xl border border-[#d9e1d9] bg-white p-5 shadow-sm">
+    <div className="w-full">
+      <section className="p-5 space-y-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7b887b]">Sales Order</p>
@@ -55,7 +55,7 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
-          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+          <div className="rounded-lg bg-[#f8faf8] p-4">
             <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
               <MdPointOfSale size={18} />
               Parties
@@ -76,7 +76,7 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
             </dl>
           </div>
 
-          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+          <div className="rounded-lg bg-[#f8faf8] p-4">
             <h3 className="mb-3 text-sm font-semibold text-[#2d3b2d]">Amount Summary</h3>
             <dl className="space-y-2 text-sm">
               <div className="flex items-center justify-between">
@@ -110,39 +110,38 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
             </dl>
           </div>
         </div>
-      </section>
-
-      <section className="rounded-2xl border border-[#d9e1d9] bg-white p-5 shadow-sm">
-        <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+        <div className="border-t border-[#e3e9e3] pt-4">
+          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
           <MdInventory2 size={18} />
           Sales Items
-        </h3>
-        {items.length === 0 ? (
-          <p className="text-sm text-gray-600">No items available for this order.</p>
-        ) : (
-          <div className="overflow-x-auto rounded-xl border border-[#e2e8e2]">
-            <table className="min-w-full text-sm">
-              <thead className="bg-[#f2f6f2] text-[#617061]">
-                <tr>
-                  <th className="px-4 py-3 text-left font-semibold">Item</th>
-                  <th className="px-4 py-3 text-left font-semibold">Qty</th>
-                  <th className="px-4 py-3 text-left font-semibold">Price</th>
-                  <th className="px-4 py-3 text-left font-semibold">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => (
-                  <tr key={item.orderItemId} className="border-t border-[#e4ebe4]">
-                    <td className="px-4 py-3 font-medium text-[#1f2b1f]">{item.itemName || item.itemId?.itemName || "-"}</td>
-                    <td className="px-4 py-3 text-[#4f5d4f]">{item.quantity ?? 0}</td>
-                    <td className="px-4 py-3 text-[#4f5d4f]">{money(item.updatedPrice)}</td>
-                    <td className="px-4 py-3 font-semibold text-[#1f2b1f]">{money(item.itemTotal)}</td>
+          </h3>
+          {items.length === 0 ? (
+            <p className="text-sm text-gray-600">No items available for this order.</p>
+          ) : (
+            <div className="overflow-x-auto rounded-lg border border-[#e2e8e2]">
+              <table className="min-w-full text-sm">
+                <thead className="bg-[#f2f6f2] text-[#617061]">
+                  <tr>
+                    <th className="px-4 py-3 text-left font-semibold">Item</th>
+                    <th className="px-4 py-3 text-left font-semibold">Qty</th>
+                    <th className="px-4 py-3 text-left font-semibold">Price</th>
+                    <th className="px-4 py-3 text-left font-semibold">Total</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody>
+                  {items.map((item) => (
+                    <tr key={item.orderItemId} className="border-t border-[#e4ebe4]">
+                      <td className="px-4 py-3 font-medium text-[#1f2b1f]">{item.itemName || item.itemId?.itemName || "-"}</td>
+                      <td className="px-4 py-3 text-[#4f5d4f]">{item.quantity ?? 0}</td>
+                      <td className="px-4 py-3 text-[#4f5d4f]">{money(item.updatedPrice)}</td>
+                      <td className="px-4 py-3 font-semibold text-[#1f2b1f]">{money(item.itemTotal)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </section>
     </div>
   );

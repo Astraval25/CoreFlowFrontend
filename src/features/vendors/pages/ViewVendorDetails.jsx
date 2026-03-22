@@ -30,8 +30,8 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
   };
 
   return (
-    <div className="w-full space-y-4">
-      <section className="rounded-2xl border border-[#d9e1d9] bg-white p-5 shadow-sm">
+    <div className="w-full">
+      <section className="p-5 space-y-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7b887b]">
@@ -67,7 +67,7 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
-          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+          <div className="rounded-lg bg-[#f8faf8] p-4">
             <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
               <MdLocationOn size={18} />
               Addresses
@@ -84,7 +84,7 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
             </div>
           </div>
 
-          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+          <div className="rounded-lg bg-[#f8faf8] p-4">
             <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
               <MdBusiness size={18} />
               Business Details
@@ -108,10 +108,8 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
             </div>
           </div>
         </div>
-      </section>
-
-      <section className="rounded-2xl border border-[#d9e1d9] bg-white p-3 shadow-sm">
-        <div className="flex flex-wrap gap-2">
+        <div className="border-t border-[#e3e9e3] pt-2">
+          <div className="flex flex-wrap gap-2">
           {[
             { key: "overview", label: "Overview" },
             { key: "items", label: "Items" },
@@ -130,15 +128,16 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
               {tab.label}
             </button>
           ))}
+          </div>
+        </div>
+
+        <div className="rounded-lg bg-[#f8faf8] p-4">
+          {activeTab === "items" && <VendorItems vendorId={vendorId} />}
+          {activeTab === "overview" && <div className="text-gray-600">Overview content coming soon...</div>}
+          {activeTab === "ordertrack" && <div className="text-gray-600">Order Track content coming soon...</div>}
+          {activeTab === "transaction" && <div className="text-gray-600">Transaction content coming soon...</div>}
         </div>
       </section>
-
-      <div className="rounded-2xl border border-[#d9e1d9] bg-white p-4 shadow-sm">
-        {activeTab === "items" && <VendorItems vendorId={vendorId} />}
-        {activeTab === "overview" && <div className="text-gray-600">Overview content coming soon...</div>}
-        {activeTab === "ordertrack" && <div className="text-gray-600">Order Track content coming soon...</div>}
-        {activeTab === "transaction" && <div className="text-gray-600">Transaction content coming soon...</div>}
-      </div>
     </div>
   );
 };
