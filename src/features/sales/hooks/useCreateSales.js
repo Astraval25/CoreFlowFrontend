@@ -8,10 +8,14 @@ const useCreateSales = () => {
   const { items } = useItemsPage();
   const { allCustomers } = useCustomer();
 
+  const today = new Date().toISOString().split("T")[0];
+
   const [formData, setFormData] = useState({
     customerId: "",
+    orderDate: today,
     taxAmount: "",
     discountAmount: "",
+    discountType: "percent",   // "percent" | "flat"
     deliveryCharge: "",
     hasBill: true,
     orderItems: [],
@@ -116,10 +120,20 @@ const useCreateSales = () => {
       const decode = jwtDecode(token);
       const companyId = decode?.defaultComp?.[0];
 
+      const subTotal = formData.orderItems.reduce(
+        (s, i) => s + Number(i.quantity || 0) * Number(i.updatedPrice || 0),
+        0
+      );
+      const discountAmount =
+        formData.discountType === "percent"
+          ? subTotal * (Number(formData.discountAmount || 0) / 100)
+          : Number(formData.discountAmount || 0);
+
       const payload = {
         customerId: Number(formData.customerId),
+        orderDate: formData.orderDate,
         taxAmount: Number(formData.taxAmount || 0),
-        discountAmount: Number(formData.discountAmount || 0),
+        discountAmount,
         deliveryCharge: Number(formData.deliveryCharge || 0),
         hasBill: formData.hasBill,
         orderItems: formData.orderItems.map((item) => ({
@@ -142,12 +156,29 @@ const useCreateSales = () => {
     }
   };
 
+  const subTotal = formData.orderItems.reduce(
+    (s, i) => s + Number(i.quantity || 0) * Number(i.updatedPrice || 0),
+    0
+  );
+  const discountVal =
+    formData.discountType === "percent"
+      ? subTotal * (Number(formData.discountAmount || 0) / 100)
+      : Number(formData.discountAmount || 0);
+  const taxVal = Number(formData.taxAmount || 0);
+  const adjustmentVal = Number(formData.deliveryCharge || 0);
+  const grandTotal = subTotal - discountVal + taxVal + adjustmentVal;
+
   return {
     formData,
     items,
     allCustomers,
     loading,
     errors,
+    subTotal,
+    discountVal,
+    taxVal,
+    adjustmentVal,
+    grandTotal,
     handleInputChange,
     addOrderItem,
     updateOrderItem,

@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import ListAllVendor from "./ListAllVendor";
 import ViewVendorDetails from "./ViewVendorDetails";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const ViewVendor = () => {
-  const { state } = useLocation();
+  const { vendorId: paramVendorId } = useParams();
   const [selectedVendorId, setSelectedVendorId] = useState(
-    state?.vendorId || null
+    paramVendorId ? Number(paramVendorId) : null
   );
   const [companyId, setCompanyId] = useState(null);
 

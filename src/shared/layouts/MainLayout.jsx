@@ -15,7 +15,7 @@ const MainLayout = () => {
             <Toolbar />
           </div>
 
-          <main className="admin-main px-4 pb-5 pt-3 md:mt-20 md:px-6 md:pb-6 md:pt-0 min-h-screen">
+          <main className="admin-main px-2 pb-2 pt-3 md:mt-17 md:px-2 md:pb-6 md:pt-0 min-h-screen">
             <Outlet />
           </main>
         </div>

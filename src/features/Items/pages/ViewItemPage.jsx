@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import ListAllItems from "../components/ListAllItems";
 import ViewItemDetail from "../components/ViewItemDetail";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const ViewItemPage = () => {
-  const { state } = useLocation();
+  const { itemId: paramItemId } = useParams();
   const [selectedItemId, setSelectedItemId] = useState(
-    state?.itemId || null
+    paramItemId ? Number(paramItemId) : null
   );
   const [companyId, setCompanyId] = useState(null);
 

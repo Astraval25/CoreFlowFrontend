@@ -7,185 +7,128 @@ import ActionMenu from "../../../shared/components/ActionMenu";
 
 const ItemsPage = () => {
   const {
-    items,
-    setItems,
-    companyId,
-    activateItem,
-    deactivateItem,
-    table,
-    globalFilter,
-    setGlobalFilter,
-    allItems,
+    items, setItems, companyId,
+    activateItem, deactivateItem,
+    table, globalFilter, setGlobalFilter, allItems,
   } = useItemsPage();
-  const navigate = useNavigate();
 
-  const [ItemsType, setItemsType] = useState("active");
+  const navigate = useNavigate();
+  const [itemsType, setItemsType] = useState("active");
 
   const handleItemsTypeChange = (e) => {
     const value = e.target.value;
     setItemsType(value);
-
-    if (value === "active") {
-      setItems(allItems.filter((c) => c.isActive === true));
-    } else {
-      setItems(allItems.filter((c) => c.isActive === false));
-    }
-  };
-
-  const handleEditItem = (item) => {
-    navigate("/admin/create/item", {
-      state: { itemId: item.itemId },
-    });
-  };
-
-  const handleDeleteItem = async (item) => {
-    if (window.confirm("Are you sure you want to deactivate this item?")) {
-      try {
-        await deactivateItem(companyId, item.itemId);
-      } catch (error) {
-        alert("Failed to deactivate item. Item may not exist.");
-      }
-    }
-  };
-
-  const handleActivateItem = async (item) => {
-    if (window.confirm("Are you sure you want to activate this item?")) {
-      try {
-        await activateItem(companyId, item.itemId);
-      } catch (error) {
-        alert("Failed to activate item. Item may not exist.");
-      }
-    }
-  };
-
-  const handleNewItems = () => {
-    navigate("/admin/create/item");
-  };
-
-  const handleViewItem = (item) => {
-    navigate("/admin/view/item", {
-      state: { itemId: item.itemId },
-    });
+    setItems(allItems.filter((i) => (value === "active" ? i.isActive : !i.isActive)));
   };
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        {/* Left Dropdown */}
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between mb-5">
         <select
-          value={ItemsType}
+          value={itemsType}
           onChange={handleItemsTypeChange}
-          className="cursor-pointer text-sm font-medium text-gray-700 focus:outline-none focus:ring-0"
+          className="text-sm font-semibold focus:outline-none bg-transparent cursor-pointer"
+          style={{ color: "var(--text-main)" }}
         >
           <option value="active">Active Items</option>
           <option value="deleted">Deleted Items</option>
         </select>
 
-        {/* Right: Search + New button */}
-        <div className="flex items-center gap-4">
-          <div className="relative w-80">
+        <div className="flex items-center gap-3">
+          <div className="relative">
             <MdSearch
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={18}
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              style={{ color: "var(--text-muted)" }}
             />
-            <div className="absolute left-10 top-1/2 -translate-y-1/2 h-6 w-px bg-gray-300"></div>
             <input
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
-              placeholder="Search customers..."
-              className="w-full pl-14 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm
-              focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
+              placeholder="Search items…"
+              className="form-input pl-8 text-xs py-1.5"
+              style={{ width: 220 }}
             />
           </div>
-
           <button
-            onClick={handleNewItems}
-            className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition cursor-pointer"
+            onClick={() => navigate(`/items/${companyId}/add`)}
+            className="btn-primary text-xs"
           >
-            New
-            <MdAdd size={18} />
+            <MdAdd size={15} /> New
           </button>
         </div>
       </div>
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
-        <table className="min-w-full text-sm">
-          <thead className="bg-gray-100 text-xs uppercase text-gray-600">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
+
+      {/* ── Table ── */}
+      <div className="card overflow-hidden">
+        <table className="w-full" style={{ borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ background: "var(--surface-soft)", borderBottom: "1px solid var(--line)" }}>
+              {table.getHeaderGroups().map((hg) =>
+                hg.headers.map((header) => (
                   <th
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
-                    className="px-6 py-4 text-left font-semibold cursor-pointer select-none"
+                    className="px-5 py-3 text-left cursor-pointer select-none"
+                    style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)" }}
                   >
-                    <div className="flex  gap-1">
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {header.column.getIsSorted() === "asc"}
-                      {header.column.getIsSorted() === "desc"}
+                    <div className="flex gap-1">
+                      {flexRender(header.column.columnDef.header, header.getContext())}
                     </div>
                   </th>
-                ))}
-              </tr>
-            ))}
+                ))
+              )}
+            </tr>
           </thead>
-
-          <tbody className="divide-y divide-gray-100">
+          <tbody>
             {table.getRowModel().rows.length === 0 ? (
               <tr>
-                <td
-                  colSpan={table.getAllColumns().length}
-                  className="text-center py-12 text-gray-500"
-                >
-                  No Items found
+                <td colSpan={table.getAllColumns().length} className="py-16 text-center">
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>No items found</p>
                 </td>
               </tr>
             ) : (
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="hover:bg-gray-50 cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleViewItem(row.original);
-                  }}
+                  className="cursor-pointer"
+                  style={{ borderBottom: "1px solid var(--line)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  onClick={() => navigate(`/items/${companyId}/${row.original.itemId}`)}
                 >
-                  <td className="px-6 py-4 text-gray-500 font-semibold text-left">
-                    {row.index + 1}
-                  </td>
-
-                  <td className="px-6 py-4 text-blue-600 font-semibold text-left">
+                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-muted)" }}>{row.index + 1}</td>
+                  <td className="px-5 py-3 text-xs font-semibold" style={{ color: "var(--accent)" }}>
                     {row.getValue("itemName")}
                   </td>
-
-                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-sub)" }}>
                     {row.getValue("itemType")}
                   </td>
-
-                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-sub)" }}>
                     {row.getValue("unit")}
                   </td>
-                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                  <td className="px-5 py-3 text-xs tabular-nums font-semibold" style={{ color: "var(--text-main)" }}>
                     {row.getValue("baseSalesPrice")}
                   </td>
-                  {/* <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("preferredCustomerName")}
-                  </td> */}
-                  <td className="px-6 py-4 text-gray-600 font-semibold text-left">
+                  <td className="px-5 py-3 text-xs tabular-nums font-semibold" style={{ color: "var(--text-main)" }}>
                     {row.getValue("basePurchasePrice")}
                   </td>
-                  {/* <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                    {row.getValue("preferredVendorName")}
-                  </td> */}
-
-                  <td className="px-6 py-3 text-left">
+                  <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                     <ActionMenu
                       row={row}
-                      onEdit={handleEditItem}
-                      onDelete={handleDeleteItem}
-                      onActivate={handleActivateItem}
+                      onEdit={() => navigate(`/items/${companyId}/${row.original.itemId}/edit`)}
+                      onDelete={async () => {
+                        if (window.confirm("Deactivate this item?")) {
+                          try { await deactivateItem(companyId, row.original.itemId); }
+                          catch { alert("Failed to deactivate item."); }
+                        }
+                      }}
+                      onActivate={async () => {
+                        if (window.confirm("Activate this item?")) {
+                          try { await activateItem(companyId, row.original.itemId); }
+                          catch { alert("Failed to activate item."); }
+                        }
+                      }}
                     />
                   </td>
                 </tr>

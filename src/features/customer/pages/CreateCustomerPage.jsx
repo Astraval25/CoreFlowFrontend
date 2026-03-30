@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useState } from "react";
 import useCreateCustomer from "../hooks/useCreateCustomer";
 
@@ -15,8 +15,9 @@ import {
 } from "../../../shared/utils/regex";
 
 const CreateCustomerPage = () => {
+  const { companyId, customerId: paramCustomerId } = useParams();
   const { state } = useLocation();
-  const customerId = state?.customerId;
+  const customerId = paramCustomerId || state?.customerId;
   const isEditMode = !!customerId;
   const navigate = useNavigate();
 
@@ -46,7 +47,7 @@ const CreateCustomerPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await submitCustomer();
-    if (success) navigate("/admin/customers");
+    if (success) navigate(`/customers/${companyId}`);
   };
 
   const languageOptions = ["English", "Tamil", "Hindi", "Malayalam", "Telugu"];

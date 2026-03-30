@@ -7,7 +7,7 @@ import { itemNameRegex, priceRegex, hsnRegex } from "../../../shared/utils/regex
 
 const CreateItemPage = () => {
   const navigate = useNavigate();
-  const { itemId: paramItemId } = useParams();
+  const { companyId, itemId: paramItemId } = useParams();
   const { state } = useLocation();
 
   const itemId = paramItemId || state?.itemId;
@@ -44,7 +44,7 @@ const CreateItemPage = () => {
 
     if (result?.success) {
       alert(`Item ${isEditMode ? "updated" : "created"} successfully!`);
-      navigate("/admin/items");
+      navigate(`/items/${companyId}`);
     } else {
       alert(result?.message || "Something went wrong");
     }

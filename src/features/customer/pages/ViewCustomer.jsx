@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import ListAllCustomer from "./ListAllCustomer";
 import ViewCustomerDetail from "./ViewCustomerDetail";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const ViewCustomer = () => {
-  const { state } = useLocation();
+  const { customerId: paramCustomerId } = useParams();
   const [selectedCustomerId, setSelectedCustomerId] = useState(
-    state?.customerId || null
+    paramCustomerId ? Number(paramCustomerId) : null
   );
   const [companyId, setCompanyId] = useState(null);
 

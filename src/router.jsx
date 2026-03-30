@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "./features/Login/LoginPage";
+import { DashboardPage as Dashboard } from "./features/dashboard/DashboardPage";
 import ProtectedRoute from "./features/Login/routes/ProtectedRoute";
 import RedirectIfLoggedIn from "./features/Login/routes/RedirectIfLoggedIn";
 import RegisterPage from "./features/Register/RegisterPage";
@@ -26,84 +27,67 @@ import SalesPage from "./features/sales/pages/SalesPage";
 import ViewSalesPage from "./features/sales/pages/ViewSalesPage";
 import CreateSalesPage from "./features/sales/pages/CreateSalesPage";
 import CustomerItems from "./features/CustomerItems/pages/CustomerItems";
-import { DashboardPage } from "./features/dashboard/dashboardPage";
 
 export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <ProductLandingPage />,
-  },
-  {
-    path: "/features",
-    element: <FeaturesPage />,
-  },
-  {
-    path: "/pricing",
-    element: <PricingPage />,
-  },
-  {
-    path: "/about",
-    element: <AboutPage />,
-  },
-  {
-    path: "/contact",
-    element: <ContactPage />,
-  },
+  // ── Public pages ──
+  { path: "/", element: <ProductLandingPage /> },
+  { path: "/features", element: <FeaturesPage /> },
+  { path: "/pricing", element: <PricingPage /> },
+  { path: "/about", element: <AboutPage /> },
+  { path: "/contact", element: <ContactPage /> },
   {
     path: "/login",
-    element: (
-      <RedirectIfLoggedIn>
-        <LoginPage />
-      </RedirectIfLoggedIn>
-    ),
+    element: <RedirectIfLoggedIn><LoginPage /></RedirectIfLoggedIn>,
   },
   {
-    path: "/signup",
-    element: (
-      <RedirectIfLoggedIn>
-        <RegisterPage />
-      </RedirectIfLoggedIn>
-    ),
+    path: "/register",
+    element: <RedirectIfLoggedIn><RegisterPage /></RedirectIfLoggedIn>,
   },
   {
-    path: "/verify/user",
-    element: (
-      <RedirectIfLoggedIn>
-        <VerifyOtpPage />
-      </RedirectIfLoggedIn>
-    ),
+    path: "/verify/:userPath",
+    element: <RedirectIfLoggedIn><VerifyOtpPage /></RedirectIfLoggedIn>,
   },
+
+  // ── Shell (ProtectedRoute + MainLayout) ──
   {
-    path: "/admin",
     element: (
       <ProtectedRoute>
         <MainLayout />
       </ProtectedRoute>
     ),
     children: [
-      { path: "dashboard", element: <DashboardPage /> },
+      { path: "/dashboard", element: <Dashboard /> },
 
-      { path: "customers", element: <CustomerPage /> },
-      { path: "create/customer", element: <CreateCustomerPage /> },
-      { path: "view/customer", element: <ViewCustomer /> },
+      // Sales  (/sales/:companyId/create  |  /sales/:companyId/:orderId  |  …/edit)
+      { path: "/sales",                                 element: <SalesPage /> },
+      { path: "/sales/:companyId/create",               element: <CreateSalesPage /> },
+      { path: "/sales/:companyId/:orderId",             element: <ViewSalesPage /> },
+      { path: "/sales/:companyId/:orderId/edit",        element: <CreateSalesPage /> },
 
-      { path: "vendors", element: <VendorPage /> },
-      { path: "create/vendor", element: <CreateVendorPage /> },
-      { path: "view/vendor", element: <ViewVendor /> },
+      // Purchase
+      { path: "/purchase",                              element: <PurchasePage /> },
+      { path: "/purchase/:companyId/create",            element: <CreatePurchasePage /> },
+      { path: "/purchase/:companyId/:orderId",          element: <ViewPurchasePage /> },
+      { path: "/purchase/:companyId/:orderId/edit",     element: <CreatePurchasePage /> },
 
-      { path: "items", element: <ItemsPage /> },
-      { path: "create/item", element: <CreateItemPage /> },
-      { path: "view/item", element: <ViewItemPage /> },
+      // Customers  (/customers/:companyId  |  …/add  |  …/:customerId  |  …/edit  |  …/items)
+      { path: "/customers/:companyId",                         element: <CustomerPage /> },
+      { path: "/customers/:companyId/add",                     element: <CreateCustomerPage /> },
+      { path: "/customers/:companyId/:customerId",             element: <ViewCustomer /> },
+      { path: "/customers/:companyId/:customerId/edit",        element: <CreateCustomerPage /> },
+      { path: "/customers/:companyId/:customerId/items",       element: <CustomerItems /> },
 
-      { path: "purchase", element: <PurchasePage /> },
-      { path: "view/purchase", element: <ViewPurchasePage /> },
-      { path: "create/purchase", element: <CreatePurchasePage /> },
+      // Vendors
+      { path: "/vendors/:companyId",                    element: <VendorPage /> },
+      { path: "/vendors/:companyId/add",                element: <CreateVendorPage /> },
+      { path: "/vendors/:companyId/:vendorId",          element: <ViewVendor /> },
+      { path: "/vendors/:companyId/:vendorId/edit",     element: <CreateVendorPage /> },
 
-      { path: "sales", element: <SalesPage /> },
-      { path: "view/sales", element: <ViewSalesPage /> },
-      { path: "create/sales", element: <CreateSalesPage /> },
-
-      { path: "customer/items", element: <CustomerItems /> },
+      // Items
+      { path: "/items/:companyId",                      element: <ItemsPage /> },
+      { path: "/items/:companyId/add",                  element: <CreateItemPage /> },
+      { path: "/items/:companyId/:itemId",              element: <ViewItemPage /> },
+      { path: "/items/:companyId/:itemId/edit",         element: <CreateItemPage /> },
     ],
   },
 ]);

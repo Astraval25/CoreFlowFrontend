@@ -11,85 +11,48 @@ import {
 } from "react-icons/md";
 import { FaShoppingCart } from "react-icons/fa";
 import { useState, useEffect } from "react";
-
-const NAV = [
-  {
-    type: "link",
-    to: "/admin/dashboard",
-    icon: <MdDashboard size={17} />,
-    label: "Home",
-  },
-  {
-    type: "group",
-    icon: <MdManageAccounts size={17} />,
-    label: "Manage",
-    key: "manage",
-    paths: ["/admin/customers", "/admin/items", "/admin/vendors"],
-    children: [
-      { to: "/admin/customers", label: "Customers" },
-      { to: "/admin/items",     label: "Items" },
-      { to: "/admin/vendors",   label: "Vendors" },
-    ],
-  },
-  {
-    type: "link",
-    to: "/admin/sales",
-    icon: <MdPayments size={17} />,
-    label: "Sales",
-  },
-  {
-    type: "link",
-    to: "/admin/purchase",
-    icon: <FaShoppingCart size={15} />,
-    label: "Purchases",
-  },
-  {
-    type: "link",
-    to: "/admin/banking",
-    icon: <MdAccountBalance size={17} />,
-    label: "Banking",
-    disabled: true,
-  },
-  {
-    type: "link",
-    to: "/admin/reports",
-    icon: <MdAssessment size={17} />,
-    label: "Reports",
-    disabled: true,
-  },
-  {
-    type: "link",
-    to: "/admin/documents",
-    icon: <MdDescription size={17} />,
-    label: "Documents",
-    disabled: true,
-  },
-];
+import { jwtDecode } from "jwt-decode";
 
 const Sidebar = () => {
   const [openGroups, setOpenGroups] = useState({});
+  const [companyId, setCompanyId] = useState("");
   const location = useLocation();
 
   useEffect(() => {
-    const path = location.pathname;
-    NAV.forEach((item) => {
-      if (item.type === "group") {
-        if (item.paths.some((p) => path.startsWith(p))) {
-          setOpenGroups((prev) => ({ ...prev, [item.key]: true }));
-        }
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decode = jwtDecode(token);
+        setCompanyId(decode.defaultComp?.[0] ?? "");
+      } catch {
+        // ignore
       }
-    });
+    }
+  }, []);
+
+  // Auto-open the group when a child path is active
+  useEffect(() => {
+    const path = location.pathname;
+    if (
+      path.startsWith("/customers") ||
+      path.startsWith("/items") ||
+      path.startsWith("/vendors")
+    ) {
+      setOpenGroups((prev) => ({ ...prev, manage: true }));
+    }
   }, [location.pathname]);
 
   const toggle = (key) =>
     setOpenGroups((prev) => ({ ...prev, [key]: !prev[key] }));
 
-  const activeLink =
-    "flex items-center gap-2.5 px-3 py-2 rounded-lg font-semibold text-white bg-[var(--sidebar-active-bg)] text-sm";
-  const baseLink =
-    "flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)] text-sm transition-colors";
-  const disabledLink =
-    "flex items-center gap-2.5 px-3 py-2 rounded-lg font-medium text-[var(--sidebar-text)] opacity-40 cursor-not-allowed text-sm";
+  const active =
+    "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold text-white bg-[var(--sidebar-active-bg)]";
+  const base =
+    "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)] transition-colors";
+  const disabled =
+    "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-[var(--sidebar-text)] opacity-40 cursor-not-allowed";
+
+  const cid = companyId;
 
   return (
     <aside
@@ -119,85 +82,100 @@ const Sidebar = () => {
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5">
-        {NAV.map((item) => {
-          if (item.type === "link") {
-            if (item.disabled) {
-              return (
-                <div key={item.to} className={disabledLink}>
-                  {item.icon}
-                  <span>{item.label}</span>
-                </div>
-              );
-            }
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) => (isActive ? activeLink : baseLink)}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </NavLink>
-            );
-          }
 
-          if (item.type === "group") {
-            const isOpen = !!openGroups[item.key];
-            const isGroupActive = item.paths.some((p) =>
-              location.pathname.startsWith(p)
-            );
+        <NavLink to="/dashboard" className={({ isActive }) => isActive ? active : base}>
+          <MdDashboard size={17} />
+          <span>Home</span>
+        </NavLink>
 
-            return (
-              <div key={item.key}>
-                <button
-                  onClick={() => toggle(item.key)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    isGroupActive
-                      ? "text-[var(--sidebar-text-bright)] bg-[var(--sidebar-hover)]"
-                      : "text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)]"
-                  }`}
-                >
-                  <span className="flex items-center gap-2.5">
-                    {item.icon}
-                    {item.label}
-                  </span>
-                  <MdKeyboardArrowDown
-                    size={18}
-                    className={`transition-transform shrink-0 ${isOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
+        {/* Manage group */}
+        <div>
+          <button
+            onClick={() => toggle("manage")}
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              location.pathname.startsWith("/customers") ||
+              location.pathname.startsWith("/items") ||
+              location.pathname.startsWith("/vendors")
+                ? "text-[var(--sidebar-text-bright)] bg-[var(--sidebar-hover)]"
+                : "text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)]"
+            }`}
+          >
+            <span className="flex items-center gap-2.5">
+              <MdManageAccounts size={17} />
+              Manage
+            </span>
+            <MdKeyboardArrowDown
+              size={18}
+              className={`transition-transform shrink-0 ${openGroups.manage ? "rotate-180" : ""}`}
+            />
+          </button>
 
-                <div
-                  className={`overflow-hidden transition-all duration-200 ${
-                    isOpen ? "max-h-52 mt-0.5" : "max-h-0"
-                  }`}
-                >
-                  <div className="ml-4 pl-3 py-0.5 space-y-0.5" style={{ borderLeft: "1px solid var(--sidebar-border)" }}>
-                    {item.children.map((child) => (
-                      <NavLink
-                        key={child.to}
-                        to={child.to}
-                        className={({ isActive }) =>
-                          isActive
-                            ? "block px-3 py-2 rounded-lg text-sm font-semibold text-white bg-[var(--sidebar-active-bg)]"
-                            : "block px-3 py-2 rounded-lg text-sm font-medium text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)] transition-colors"
-                        }
-                      >
-                        {child.label}
-                      </NavLink>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          }
+          <div
+            className={`overflow-hidden transition-all duration-200 ${
+              openGroups.manage ? "max-h-40 mt-0.5" : "max-h-0"
+            }`}
+          >
+            <div
+              className="ml-4 pl-3 py-0.5 space-y-0.5"
+              style={{ borderLeft: "1px solid var(--sidebar-border)" }}
+            >
+              {cid && (
+                <>
+                  <NavLink
+                    to={`/customers/${cid}`}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "block px-3 py-2 rounded-lg text-sm font-semibold text-white bg-[var(--sidebar-active-bg)]"
+                        : "block px-3 py-2 rounded-lg text-sm font-medium text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)] transition-colors"
+                    }
+                  >
+                    Customers
+                  </NavLink>
+                  <NavLink
+                    to={`/items/${cid}`}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "block px-3 py-2 rounded-lg text-sm font-semibold text-white bg-[var(--sidebar-active-bg)]"
+                        : "block px-3 py-2 rounded-lg text-sm font-medium text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)] transition-colors"
+                    }
+                  >
+                    Items
+                  </NavLink>
+                  <NavLink
+                    to={`/vendors/${cid}`}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "block px-3 py-2 rounded-lg text-sm font-semibold text-white bg-[var(--sidebar-active-bg)]"
+                        : "block px-3 py-2 rounded-lg text-sm font-medium text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)] transition-colors"
+                    }
+                  >
+                    Vendors
+                  </NavLink>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
 
-          return null;
-        })}
+        <NavLink to="/sales" className={({ isActive }) => isActive ? active : base}>
+          <MdPayments size={17} />
+          <span>Sales</span>
+        </NavLink>
+
+        <NavLink to="/purchase" className={({ isActive }) => isActive ? active : base}>
+          <FaShoppingCart size={15} />
+          <span>Purchases</span>
+        </NavLink>
+
+        <div className={disabled}><MdAccountBalance size={17} /><span>Banking</span></div>
+        <div className={disabled}><MdAssessment size={17} /><span>Reports</span></div>
+        <div className={disabled}><MdDescription size={17} /><span>Documents</span></div>
       </nav>
 
-      {/* Bottom label */}
-      <div className="px-4 py-3 text-[10px]" style={{ color: "var(--sidebar-text)", borderTop: "1px solid var(--sidebar-border)" }}>
+      <div
+        className="px-4 py-3 text-[10px]"
+        style={{ color: "var(--sidebar-text)", borderTop: "1px solid var(--sidebar-border)" }}
+      >
         © 2026 CoreFlow
       </div>
     </aside>

@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useState } from "react";
 import useCreateVendor from "../hooks/useCreateVendor";
 
@@ -15,8 +15,9 @@ import {
 } from "../../../shared/utils/regex";
 
 const CreateVendorPage = () => {
+  const { companyId, vendorId: paramVendorId } = useParams();
   const { state } = useLocation();
-  const vendorId = state?.vendorId;
+  const vendorId = paramVendorId || state?.vendorId;
   const isEditMode = !!vendorId;
   const navigate = useNavigate();
 
@@ -46,7 +47,7 @@ const CreateVendorPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await submitVendor();
-    if (success) navigate("/admin/vendors");
+    if (success) navigate(`/vendors/${companyId}`);
   };
 
   const languageOptions = ["English", "Tamil", "Hindi", "Malayalam", "Telugu"];

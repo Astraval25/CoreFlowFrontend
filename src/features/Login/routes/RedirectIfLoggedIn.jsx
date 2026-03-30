@@ -4,7 +4,7 @@ const RedirectIfLoggedIn = ({ children }) => {
   const token = localStorage.getItem("token");
   
   if (token) {
-    return <Navigate to="/admin/dashboard" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
   
   return children;

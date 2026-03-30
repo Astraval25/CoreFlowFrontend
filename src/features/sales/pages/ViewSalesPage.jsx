@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import ListAllSales from "../components/ListAllSales";
 import ViewSalesDetail from "../components/ViewSalesDetail";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const ViewSalesPage = () => {
-  const { state } = useLocation();
-  const [selectedOrderId, setSelectedOrderId] = useState(state?.orderId || null);
+  const { orderId: paramOrderId } = useParams();
+  const [selectedOrderId, setSelectedOrderId] = useState(
+    paramOrderId ? Number(paramOrderId) : null
+  );
   const [companyId, setCompanyId] = useState(null);
 
   useEffect(() => {
