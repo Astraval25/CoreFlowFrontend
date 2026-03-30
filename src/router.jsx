@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "./features/Login/LoginPage";
-import { Dashboard } from "./features/dashboard/dashboard";
 import ProtectedRoute from "./features/Login/routes/ProtectedRoute";
 import RedirectIfLoggedIn from "./features/Login/routes/RedirectIfLoggedIn";
 import RegisterPage from "./features/Register/RegisterPage";
@@ -27,6 +26,7 @@ import SalesPage from "./features/sales/pages/SalesPage";
 import ViewSalesPage from "./features/sales/pages/ViewSalesPage";
 import CreateSalesPage from "./features/sales/pages/CreateSalesPage";
 import CustomerItems from "./features/CustomerItems/pages/CustomerItems";
+import { DashboardPage } from "./features/dashboard/dashboardPage";
 
 export const router = createBrowserRouter([
   {
@@ -81,7 +81,7 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { path: "dashboard", element: <Dashboard /> },
+      { path: "dashboard", element: <DashboardPage /> },
 
       { path: "customers", element: <CustomerPage /> },
       { path: "create/customer", element: <CreateCustomerPage /> },

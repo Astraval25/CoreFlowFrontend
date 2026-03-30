@@ -9,5 +9,9 @@ export const ENDPOINTS = {
   CUSTOMERS: "/companies",
   ITEMS: "/api/companies",
 
-  FILE_DOWNLOAD : "/file"
+  FILE_DOWNLOAD : "/file",
+
+  DASHBOARD_KPI: "/companies",
+  DASHBOARD_CASH_FLOW: "/companies",
+  DASHBOARD_REVENUE_EXPENSE: "/companies",
 };
