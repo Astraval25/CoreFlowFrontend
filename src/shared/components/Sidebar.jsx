@@ -49,10 +49,8 @@ const Sidebar = () => {
     "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-semibold text-white bg-[var(--sidebar-active-bg)]";
   const base =
     "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)] transition-colors";
-  const disabled =
-    "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-[var(--sidebar-text)] opacity-40 cursor-not-allowed";
 
-  const cid = companyId;
+    const cid = companyId;
 
   return (
     <aside
@@ -62,7 +60,7 @@ const Sidebar = () => {
       {/* Logo */}
       <div
         className="flex items-center gap-2.5 h-16 px-4 shrink-0"
-        style={{ borderBottom: "1px solid var(--sidebar-border)" }}
+        style={{ borderBottom: "0.4px solid var(--sidebar-border)" }}
       >
         <div
           className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
@@ -117,7 +115,6 @@ const Sidebar = () => {
           >
             <div
               className="ml-4 pl-3 py-0.5 space-y-0.5"
-              style={{ borderLeft: "1px solid var(--sidebar-border)" }}
             >
               {cid && (
                 <>
@@ -167,9 +164,6 @@ const Sidebar = () => {
           <span>Purchases</span>
         </NavLink>
 
-        <div className={disabled}><MdAccountBalance size={17} /><span>Banking</span></div>
-        <div className={disabled}><MdAssessment size={17} /><span>Reports</span></div>
-        <div className={disabled}><MdDescription size={17} /><span>Documents</span></div>
       </nav>
 
       <div

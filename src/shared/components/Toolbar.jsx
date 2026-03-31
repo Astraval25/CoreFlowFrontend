@@ -137,19 +137,7 @@ const Toolbar = () => {
 
         {/* Avatar + logout */}
         <div className="flex items-center gap-2">
-          <div
-            className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
-            style={{ background: "var(--accent)" }}
-            title={userName}
-          >
-            {initials || "U"}
-          </div>
-          <span
-            className="hidden lg:block text-xs font-semibold max-w-[100px] truncate"
-            style={{ color: "var(--text-main)" }}
-          >
-            {userName}
-          </span>
+          
           <button
             onClick={handleLogout}
             className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"

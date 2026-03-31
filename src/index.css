@@ -24,13 +24,13 @@
   --accent-light: #ffffff;
 
   /* ── Sidebar ── */
-  --sidebar-bg: #1c2e21;
-  --sidebar-hover: #253829;
+  --sidebar-bg: #ffffff;
+  --sidebar-hover: #ffffff;
   --sidebar-active-bg: var(--accent-hover);
   --sidebar-active-text: #ffffff;
-  --sidebar-text: #ffffff;
-  --sidebar-text-bright: #ffffff;
-  --sidebar-border: #27382c;
+  --sidebar-text: #000000;
+  --sidebar-text-bright: #1f1f1f;
+  --sidebar-border: #383b39;
   --sidebar-logo-bg: #162419;
 
   /* ── Status colors ── */
