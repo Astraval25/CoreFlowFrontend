@@ -4,21 +4,21 @@ import Toolbar from "../components/Toolbar";
 
 const MainLayout = () => {
   return (
-    <div className="flex">
-      {/* Fixed Sidebar */}
-      <div className="fixed top-0 left-0 h-screen w-52 bg-white z-20">
-        <Sidebar />
-      </div>
-
-      {/* Main content area */}
-      <div className="flex-1 ml-52">
-        <div className="fixed top-0 left-52 right-0 h-16 bg-white z-10">
-          <Toolbar />
+    <div className="admin-shell">
+      <div className="admin-frame flex flex-col md:flex-row">
+        <div className="admin-sidebar w-full md:fixed md:top-0 md:left-0 md:h-screen md:w-64 z-20">
+          <Sidebar />
         </div>
 
-        <main className="mt-16 px-6 pb-6 min-h-screen">
-          <Outlet />
-        </main>
+        <div className="flex-1 md:ml-64">
+          <div className="admin-topbar h-16 md:fixed md:top-0 md:left-64 md:right-0 z-10">
+            <Toolbar />
+          </div>
+
+          <main className="admin-main px-2 pb-2 pt-3 md:mt-17 md:px-2 md:pb-6 md:pt-0 min-h-screen">
+            <Outlet />
+          </main>
+        </div>
       </div>
     </div>
   );

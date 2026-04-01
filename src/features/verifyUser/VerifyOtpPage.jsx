@@ -19,7 +19,7 @@ const VerifyOtpPage = () => {
 
       // Check if verification was successful
       if (result.responseStatus) {
-        const landingUrl = result.responseData?.landingUrl || "/";
+        const landingUrl = result.responseData?.landingUrl || "/cf/auth/login";
         navigate(landingUrl);
       } else {
         setError(result.responseMessage || "Verification failed");
@@ -68,7 +68,7 @@ const VerifyOtpPage = () => {
         <p className="text-center mt-5 text-sm">
           Back to{" "}
           <span
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/cf/auth/login")}
             className="text-blue-600 cursor-pointer font-medium"
           >
             Login

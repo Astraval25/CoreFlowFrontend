@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import ListAllVendor from "./ListAllVendor";
 import ViewVendorDetails from "./ViewVendorDetails";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const ViewVendor = () => {
-  const { state } = useLocation();
+  const { vendorId: paramVendorId } = useParams();
   const [selectedVendorId, setSelectedVendorId] = useState(
-    state?.vendorId || null
+    paramVendorId ? Number(paramVendorId) : null
   );
   const [companyId, setCompanyId] = useState(null);
 
@@ -28,20 +28,22 @@ const ViewVendor = () => {
   };
 
   return (
-    <div className="flex gap-4">
-      <div className="w-[20%]">
+    <div className="rounded-2xl border border-[#d9e1d9] bg-white shadow-sm">
+      <div className="flex">
+        <div className="w-[22%]">
         <ListAllVendor
           selectedVendorId={selectedVendorId}
           onSelectVendor={handleSelectVendor}
         />
-      </div>
+        </div>
 
-      <div className="w-[80%]">
-        {selectedVendorId && companyId ? (
-          <ViewVendorDetails companyId={companyId} vendorId={selectedVendorId} />
-        ) : (
-          <p className="p-6 text-gray-600">Select a vendor to view details</p>
-        )}
+        <div className="w-[78%] p-2">
+          {selectedVendorId && companyId ? (
+            <ViewVendorDetails companyId={companyId} vendorId={selectedVendorId} />
+          ) : (
+            <p className="p-6 text-gray-600">Select a vendor to view details</p>
+          )}
+        </div>
       </div>
     </div>
   );

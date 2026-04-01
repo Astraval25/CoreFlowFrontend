@@ -148,5 +148,15 @@ export const coreApi = {
   activateVendorItem: (companyId, vendorId, itemId) => api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/${itemId}/activate`),
 
   editVendorItem: (companyId, vendorId, itemId, data) => api.put(
-    `${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/${itemId}`, data)
+    `${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/${itemId}`, data),
+
+  // Dashboard Analytics
+  getDashboardKpi: (companyId, startDate, endDate) =>
+    api.get(`${ENDPOINTS.DASHBOARD_KPI}/${companyId}/analytics/dashboard/kpi?startDate=${startDate}&endDate=${endDate}`),
+
+  getDashboardCashFlow: (companyId, startDate, endDate) =>
+    api.get(`${ENDPOINTS.DASHBOARD_CASH_FLOW}/${companyId}/analytics/dashboard/cash-flow?startDate=${startDate}&endDate=${endDate}`),
+
+  getDashboardRevenueExpense: (companyId, startDate, endDate) =>
+    api.get(`${ENDPOINTS.DASHBOARD_REVENUE_EXPENSE}/${companyId}/analytics/dashboard/revenue-expense?startDate=${startDate}&endDate=${endDate}`),
 };

@@ -47,7 +47,7 @@ api.interceptors.response.use(
 function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("refreshToken");
-  window.location.href = "/login";
+  window.location.href = "/cf/auth/login";
 }
 
 export default api;

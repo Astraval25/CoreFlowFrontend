@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useState } from "react";
 import useCreateVendor from "../hooks/useCreateVendor";
 
@@ -15,8 +15,9 @@ import {
 } from "../../../shared/utils/regex";
 
 const CreateVendorPage = () => {
+  const { companyId, vendorId: paramVendorId } = useParams();
   const { state } = useLocation();
-  const vendorId = state?.vendorId;
+  const vendorId = paramVendorId || state?.vendorId;
   const isEditMode = !!vendorId;
   const navigate = useNavigate();
 
@@ -46,7 +47,7 @@ const CreateVendorPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await submitVendor();
-    if (success) navigate("/admin/vendors");
+    if (success) navigate(`/cf/company/${companyId}/vendors`);
   };
 
   const languageOptions = ["English", "Tamil", "Hindi", "Malayalam", "Telugu"];
@@ -59,14 +60,18 @@ const CreateVendorPage = () => {
   ];
 
   return (
-    <div className="p-6">
-      <h1 className="font-semibold text-lg mb-6">
+    <div className="rounded-2xl border border-[#d9e1d9] bg-white p-5 shadow-sm">
+      <h1 className="mb-6 text-lg font-bold text-[#1f2b1f]">
         {isEditMode ? "Edit vendor" : "New vendor"}
       </h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-7">
         {/* ================= vendor ================= */}
-        <div className="grid grid-cols-[180px_1fr] gap-4 max-w-3xl">
+        <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-[#738173]">
+            Vendor Details
+          </p>
+          <div className="grid max-w-3xl grid-cols-[180px_1fr] gap-4">
           <InputField
             label="Vendor Name"
             name="vendorName"
@@ -142,13 +147,14 @@ const CreateVendorPage = () => {
             regexError="Invalid GST."
             error={allErrors.gst}
           />
+          </div>
         </div>
 
         {/* ================= ADDRESSES ================= */}
-        <div className="mt-10 grid grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* BILLING */}
-          <div>
-            <h3 className="text-blue-600 font-medium mb-4 text-base">
+          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+            <h3 className="mb-4 text-base font-semibold text-[#2f7a47]">
               Billing Address
             </h3>
             <div className="grid grid-cols-[180px_1fr] gap-4">
@@ -235,9 +241,9 @@ const CreateVendorPage = () => {
           </div>
 
           {/* SHIPPING */}
-          <div>
-            <div className="flex justify-between mb-4">
-              <h3 className="text-green-600 font-medium text-base">
+          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+            <div className="mb-4 flex justify-between">
+              <h3 className="text-base font-semibold text-[#2f7a47]">
                 Shipping Address
               </h3>
               <label className="flex gap-2 text-sm">
@@ -305,11 +311,11 @@ const CreateVendorPage = () => {
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="flex justify-end">
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 text-white px-6 py-2 rounded cursor-pointer"
+            className="cursor-pointer rounded-lg bg-[#3f9f5f] px-6 py-2 text-white transition hover:bg-[#2f8d4f]"
           >
             {loading
               ? "Saving..."

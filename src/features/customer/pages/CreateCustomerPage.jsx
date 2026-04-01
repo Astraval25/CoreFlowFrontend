@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useState } from "react";
 import useCreateCustomer from "../hooks/useCreateCustomer";
 
@@ -15,8 +15,9 @@ import {
 } from "../../../shared/utils/regex";
 
 const CreateCustomerPage = () => {
+  const { companyId, customerId: paramCustomerId } = useParams();
   const { state } = useLocation();
-  const customerId = state?.customerId;
+  const customerId = paramCustomerId || state?.customerId;
   const isEditMode = !!customerId;
   const navigate = useNavigate();
 
@@ -46,7 +47,7 @@ const CreateCustomerPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await submitCustomer();
-    if (success) navigate("/admin/customers");
+    if (success) navigate(`/cf/company/${companyId}/customers`);
   };
 
   const languageOptions = ["English", "Tamil", "Hindi", "Malayalam", "Telugu"];
@@ -59,14 +60,18 @@ const CreateCustomerPage = () => {
   ];
 
   return (
-    <div className="p-6">
-      <h1 className="font-semibold text-lg mb-6">
+    <div className="rounded-2xl border border-[#d9e1d9] bg-white p-5 shadow-sm">
+      <h1 className="mb-6 text-lg font-bold text-[#1f2b1f]">
         {isEditMode ? "Edit Customer" : "New Customer"}
       </h1>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-7">
         {/* ================= CUSTOMER ================= */}
-        <div className="grid grid-cols-[180px_1fr] gap-4 max-w-3xl">
+        <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-[#738173]">
+            Customer Details
+          </p>
+          <div className="grid max-w-3xl grid-cols-[180px_1fr] gap-4">
           <InputField
             label="Customer Name"
             name="customerName"
@@ -142,13 +147,14 @@ const CreateCustomerPage = () => {
             regexError="Invalid GST."
             error={allErrors.gst}
           />
+          </div>
         </div>
 
         {/* ================= ADDRESSES ================= */}
-        <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* BILLING */}
-          <div>
-            <h3 className="text-blue-600 font-medium mb-4 text-base">Billing Address</h3>
+          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+            <h3 className="mb-4 text-base font-semibold text-[#2f7a47]">Billing Address</h3>
             <div className="grid grid-cols-[180px_1fr] gap-y-4">
               <InputField
                 label="Attention Name"
@@ -233,9 +239,9 @@ const CreateCustomerPage = () => {
           </div>
 
           {/* SHIPPING */}
-          <div>
-            <div className="flex justify-between mb-4">
-              <h3 className="text-green-600 font-medium text-base">Shipping Address</h3>
+          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+            <div className="mb-4 flex justify-between">
+              <h3 className="text-base font-semibold text-[#2f7a47]">Shipping Address</h3>
               <label className="flex gap-2 text-sm">
                 <input
                   type="checkbox"
@@ -301,11 +307,11 @@ const CreateCustomerPage = () => {
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="flex justify-end">
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 text-white px-6 py-2 rounded cursor-pointer"
+            className="cursor-pointer rounded-lg bg-[#3f9f5f] px-6 py-2 text-white transition hover:bg-[#2f8d4f]"
           >
             {loading
               ? "Saving..."

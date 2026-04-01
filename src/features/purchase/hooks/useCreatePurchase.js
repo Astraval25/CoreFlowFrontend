@@ -11,10 +11,14 @@ const useCreatePurchase = (orderId = null) => {
   const { allVendors } = useVendor();
   const [isEditMode, setIsEditMode] = useState(false);
 
+  const today = new Date().toISOString().split("T")[0];
+
   const [formData, setFormData] = useState({
     vendorId: "",
+    orderDate: today,
     taxAmount: "",
     discountAmount: "",
+    discountType: "percent",
     deliveryCharge: "",
     hasBill: true,
     orderItems: [],
@@ -168,6 +172,18 @@ const useCreatePurchase = (orderId = null) => {
     }
   };
 
+  const subTotal = formData.orderItems.reduce(
+    (s, i) => s + Number(i.quantity || 0) * Number(i.updatedPrice || 0),
+    0
+  );
+  const discountVal =
+    formData.discountType === "percent"
+      ? subTotal * (Number(formData.discountAmount || 0) / 100)
+      : Number(formData.discountAmount || 0);
+  const taxVal = Number(formData.taxAmount || 0);
+  const adjustmentVal = Number(formData.deliveryCharge || 0);
+  const grandTotal = subTotal - discountVal + taxVal + adjustmentVal;
+
   return {
     formData,
     items,
@@ -176,6 +192,11 @@ const useCreatePurchase = (orderId = null) => {
     loading,
     errors,
     isEditMode,
+    subTotal,
+    discountVal,
+    taxVal,
+    adjustmentVal,
+    grandTotal,
     handleInputChange,
     addOrderItem,
     updateOrderItem,

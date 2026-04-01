@@ -1,222 +1,159 @@
-import {
-  MdAdd,
-  MdChevronLeft,
-  MdChevronRight,
-  MdSearch,
-} from "react-icons/md";
+import { MdAdd, MdChevronLeft, MdChevronRight, MdSearch } from "react-icons/md";
 import { flexRender } from "@tanstack/react-table";
 import { useVendor } from "../hooks/useVendor";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 import ActionMenu from "../../../shared/components/ActionMenu";
 
 const VendorPage = () => {
   const {
-    table,
-    globalFilter,
-    setGlobalFilter,
-    deactivateVendor,
-    activateVendor,
-    allVendors,
-    setVendors,
+    table, globalFilter, setGlobalFilter,
+    deactivateVendor, activateVendor,
+    allVendors, setVendors,
   } = useVendor();
+
   const navigate = useNavigate();
+  const [companyId, setCompanyId] = useState("");
+  const [vendorType, setVendorType] = useState("active");
 
-  const [vendorType, setvendorType] = useState("active");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) setCompanyId(jwtDecode(token).defaultComp?.[0] ?? "");
+  }, []);
 
-  const handlevendorTypeChange = (e) => {
+  const handleVendorTypeChange = (e) => {
     const value = e.target.value;
-    setvendorType(value);
-
-    if (value === "active") {
-      setVendors(allVendors.filter((c) => c.isActive === true));
-    } else {
-      setVendors(allVendors.filter((c) => c.isActive === false));
-    }
+    setVendorType(value);
+    setVendors(allVendors.filter((v) => (value === "active" ? v.isActive : !v.isActive)));
   };
 
-  const handleNewvendor = () => {
-    navigate("/admin/create/vendor");
-  };
+  return (
+    <div>
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between mb-5">
+        <select
+          value={vendorType}
+          onChange={handleVendorTypeChange}
+          className="text-sm font-semibold focus:outline-none bg-transparent cursor-pointer"
+          style={{ color: "var(--text-main)" }}
+        >
+          <option value="active">Active Vendors</option>
+          <option value="deleted">Deleted Vendors</option>
+        </select>
 
-  const handleEditvendor = (vendor) => {
-    navigate("/admin/create/vendor", {
-      state: { vendorId: vendor.vendorId }
-    });
-  };
-
-  const handleDeletevendor = (vendor) => {
-    if (window.confirm("Are you sure you want to deactivate this vendor?")) {
-      deactivateVendor(vendor.vendorId);
-    }
-  };
-
-  const handleactivateVendor = (vendor) => {
-    if (window.confirm("Are you sure you want to activate this vendor?")) {
-      activateVendor(vendor.vendorId);
-    }
-  };
-
-  const handleViewvendor = (vendor) => {
-    navigate("/admin/view/vendor", {
-      state: { vendorId: vendor.vendorId }
-    });
-  };
-  
-    return (
-      <div className="px-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          {/* Left Dropdown */}
-          <select
-            value={vendorType}
-            onChange={handlevendorTypeChange}
-            className="cursor-pointer text-sm font-medium text-gray-700 focus:outline-none focus:ring-0"
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <MdSearch
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              style={{ color: "var(--text-muted)" }}
+            />
+            <input
+              value={globalFilter ?? ""}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              placeholder="Search vendors…"
+              className="form-input pl-8 text-xs py-1.5"
+              style={{ width: 220 }}
+            />
+          </div>
+          <button
+            onClick={() => navigate(`/cf/company/${companyId}/vendors/create`)}
+            className="btn-primary text-xs"
           >
-            <option value="active">Active vendors</option>
-            <option value="deleted">Deleted vendors</option>
-          </select>
-  
-          {/* Right: Search + New button */}
-          <div className="flex items-center gap-4">
-            <div className="relative w-80">
-              <MdSearch
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-                size={18}
-              />
-              <div className="absolute left-10 top-1/2 -translate-y-1/2 h-6 w-px bg-gray-300"></div>
-              <input
-                value={globalFilter ?? ""}
-                onChange={(e) => setGlobalFilter(e.target.value)}
-                placeholder="Search vendors..."
-                className="w-full pl-14 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
-              />
-            </div>
-  
-            <button
-              onClick={handleNewvendor}
-              className="flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition"
-            >
-              New
-              <MdAdd size={18} />
-            </button>
-          </div>
-        </div>
-  
-        {/* Table */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-x-auto">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-100 text-xs uppercase text-gray-600">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      onClick={header.column.getToggleSortingHandler()}
-                      className="px-6 py-4 text-left font-semibold cursor-pointer select-none"
-                    >
-                      <div className="flex  gap-1">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {header.column.getIsSorted() === "asc"}
-                        {header.column.getIsSorted() === "desc"}
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-  
-            <tbody className="divide-y divide-gray-100">
-              {table.getRowModel().rows.length === 0 ? (
-                <tr>
-                  <td
-                    colSpan={table.getAllColumns().length}
-                    className="text-center py-12 text-gray-500"
-                  >
-                    No vendors found
-                  </td>
-                </tr>
-              ) : (
-                table.getRowModel().rows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="hover:bg-gray-50 cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleViewvendor(row.original);
-                    }}
-                  >
-                    {/* S.No */}
-                    <td className="px-6 py-4 text-gray-500 font-semibold text-left">
-                      {row.index + 1}
-                    </td>
-  
-                    {/* Name */}
-                    <td className="px-6 py-4 text-blue-600 font-semibold text-left">
-                      {row.getValue("displayName")}
-                    </td>
-  
-                    {/* Email */}
-                    <td className="px-6 py-4 text-gray-600 font-semibold text-left">
-                      {row.getValue("email")}
-                    </td>
-  
-                    <td className="px-6 py-3 text-left">
-                      <ActionMenu 
-                        row={row} 
-                        onEdit={handleEditvendor}
-                        onDelete={handleDeletevendor}
-                        onActivate={handleactivateVendor}
-                      />
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-  
-        {/* Pagination */}
-        <div className="flex justify-center items-center mt-5 text-sm text-gray-600">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-              className="p-2 rounded-md hover:bg-gray-50 disabled:cursor-not-allowed"
-            >
-              <MdChevronLeft
-                size={18}
-                className={
-                  table.getCanPreviousPage() ? "text-blue-600" : "text-gray-400"
-                }
-              />
-            </button>
-  
-            <span className="font-medium px-3 py-1 bg-gray-200 rounded-full text-blue-600">
-              {table.getState().pagination.pageIndex + 1}
-            </span>
-  
-            <button
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-              className="p-2 rounded-md hover:bg-gray-50 disabled:cursor-not-allowed"
-            >
-              <MdChevronRight
-                size={18}
-                className={
-                  table.getCanNextPage() ? "text-blue-600" : "text-gray-400"
-                }
-              />
-            </button>
-          </div>
+            <MdAdd size={15} /> New
+          </button>
         </div>
       </div>
-    );
-  };
-  
-  export default VendorPage;
-  
+
+      {/* ── Table ── */}
+      <div className="card overflow-hidden">
+        <table className="w-full" style={{ borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ background: "var(--surface-soft)", borderBottom: "1px solid var(--line)" }}>
+              {table.getHeaderGroups().map((hg) =>
+                hg.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    onClick={header.column.getToggleSortingHandler()}
+                    className="px-5 py-3 text-left cursor-pointer select-none"
+                    style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)" }}
+                  >
+                    <div className="flex gap-1">
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                    </div>
+                  </th>
+                ))
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {table.getRowModel().rows.length === 0 ? (
+              <tr>
+                <td colSpan={table.getAllColumns().length} className="py-16 text-center">
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>No vendors found</p>
+                </td>
+              </tr>
+            ) : (
+              table.getRowModel().rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className="cursor-pointer"
+                  style={{ borderBottom: "1px solid var(--line)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  onClick={() => navigate(`/cf/company/${companyId}/vendors/${row.original.vendorId}/detail`)}
+                >
+                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-muted)" }}>{row.index + 1}</td>
+                  <td className="px-5 py-3 text-xs font-semibold" style={{ color: "var(--accent)" }}>
+                    {row.getValue("displayName")}
+                  </td>
+                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-sub)" }}>
+                    {row.getValue("email")}
+                  </td>
+                  <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
+                    <ActionMenu
+                      row={row}
+                      onEdit={() => navigate(`/cf/company/${companyId}/vendors/${row.original.vendorId}/update`)}
+                      onDelete={() => { if (window.confirm("Deactivate this vendor?")) deactivateVendor(row.original.vendorId); }}
+                      onActivate={() => { if (window.confirm("Activate this vendor?")) activateVendor(row.original.vendorId); }}
+                    />
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* ── Pagination ── */}
+      <div className="flex justify-center items-center gap-4 mt-5">
+        <button
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+          className="p-1.5 rounded-md disabled:opacity-30"
+          style={{ color: "var(--accent)" }}
+          onMouseEnter={(e) => { if (table.getCanPreviousPage()) e.currentTarget.style.background = "var(--surface-soft)"; }}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+        >
+          <MdChevronLeft size={18} />
+        </button>
+        <span className="text-xs font-semibold px-3 py-1 rounded-full" style={{ background: "var(--surface-soft)", color: "var(--accent)" }}>
+          {table.getState().pagination.pageIndex + 1}
+        </span>
+        <button
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+          className="p-1.5 rounded-md disabled:opacity-30"
+          style={{ color: "var(--accent)" }}
+          onMouseEnter={(e) => { if (table.getCanNextPage()) e.currentTarget.style.background = "var(--surface-soft)"; }}
+          onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+        >
+          <MdChevronRight size={18} />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default VendorPage;

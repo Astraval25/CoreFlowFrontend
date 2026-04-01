@@ -9,8 +9,8 @@ const SelectField = ({
 }) => {
   return (
     <>
-      <label className="text-sm font-medium text-gray-700">
-        {label} {required && <span className="text-red-500 ml-1">*</span>}
+      <label className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
+        {label}{required && <span style={{ color: "var(--red)" }}> *</span>}
       </label>
 
       <div>
@@ -18,15 +18,12 @@ const SelectField = ({
           name={name}
           value={value}
           onChange={onChange}
-          className={`w-90 px-4 py-1.5 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500
-              ${error ? "border-red-500" : "border-gray-300"}`}
+          className="form-input text-xs py-1.5"
+          style={{ borderColor: error ? "var(--red)" : undefined }}
         >
-          <option value="" disabled>
-            Select {label}
-          </option>
+          <option value="" disabled>Select {label}</option>
           {options.map((opt, index) => {
-            const optionKey =
-              typeof opt === "object" ? opt.key : `${opt}-${index}`;
+            const optionKey = typeof opt === "object" ? opt.key : `${opt}-${index}`;
             const optionValue = typeof opt === "object" ? opt.value : opt;
             return (
               <option key={optionKey} value={optionValue}>
@@ -35,8 +32,7 @@ const SelectField = ({
             );
           })}
         </select>
-
-        {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+        {error && <p className="text-[10px] mt-0.5" style={{ color: "var(--red)" }}>{error}</p>}
       </div>
     </>
   );

@@ -7,7 +7,7 @@ import { itemNameRegex, priceRegex, hsnRegex } from "../../../shared/utils/regex
 
 const CreateItemPage = () => {
   const navigate = useNavigate();
-  const { itemId: paramItemId } = useParams();
+  const { companyId, itemId: paramItemId } = useParams();
   const { state } = useLocation();
 
   const itemId = paramItemId || state?.itemId;
@@ -44,7 +44,7 @@ const CreateItemPage = () => {
 
     if (result?.success) {
       alert(`Item ${isEditMode ? "updated" : "created"} successfully!`);
-      navigate("/admin/items");
+      navigate(`/cf/company/${companyId}/items`);
     } else {
       alert(result?.message || "Something went wrong");
     }
@@ -62,13 +62,17 @@ const CreateItemPage = () => {
   ];
 
   return (
-    <div className="p-6">
-      <h1 className="font-semibold text-lg mb-6">
+    <div className="rounded-2xl border border-[#d9e1d9] bg-white p-5 shadow-sm">
+      <h1 className="mb-6 text-lg font-bold text-[#1f2b1f]">
         {isEditMode ? "Edit Item" : "New Item"}
       </h1>
 
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-[180px_1fr] gap-4 max-w-3xl">
+      <form onSubmit={handleSubmit} className="space-y-7">
+        <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-[#738173]">
+            Item Details
+          </p>
+          <div className="grid max-w-3xl grid-cols-[180px_1fr] gap-4">
           <InputField
             label="Item Name"
             name="itemName"
@@ -141,11 +145,12 @@ const CreateItemPage = () => {
             value={formData.taxRate}
             onChange={handleInputChange}
           />
+          </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-x-8 gap-y-6">
-          <div>
-            <h3 className="text-blue-600 font-medium mb-4 text-base">Descriptions</h3>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+            <h3 className="mb-4 text-base font-semibold text-[#2f7a47]">Descriptions</h3>
             <div className="grid grid-cols-[180px_1fr] gap-y-4">
               <div className="col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -157,7 +162,7 @@ const CreateItemPage = () => {
                   onChange={handleInputChange}
                   placeholder="Enter sales description"
                   rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#8fc39f]"
                 />
               </div>
 
@@ -171,14 +176,14 @@ const CreateItemPage = () => {
                   onChange={handleInputChange}
                   placeholder="Enter purchase description"
                   rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#8fc39f]"
                 />
               </div>
             </div>
           </div>
 
-          <div>
-            <h3 className="text-green-600 font-medium mb-4 text-base">Item Image</h3>
+          <div className="rounded-xl border border-[#e2e8e2] bg-[#f8faf8] p-4">
+            <h3 className="mb-4 text-base font-semibold text-[#2f7a47]">Item Image</h3>
             <div className="grid grid-cols-[180px_1fr] gap-y-4">
               {isEditMode && imageUrl && (
                 <div className="col-span-2 mb-4">
@@ -199,7 +204,7 @@ const CreateItemPage = () => {
                   type="file"
                   onChange={handleFileChange}
                   accept="image/*"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#8fc39f]"
                 />
                 {file && (
                   <p className="text-sm text-gray-600 mt-1">
@@ -216,11 +221,11 @@ const CreateItemPage = () => {
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="flex justify-end">
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-600 text-white px-6 py-2 rounded cursor-pointer"
+            className="cursor-pointer rounded-lg bg-[#3f9f5f] px-6 py-2 text-white transition hover:bg-[#2f8d4f]"
           >
             {loading ? "Saving..." : isEditMode ? "Update Item" : "Create Item"}
           </button>
