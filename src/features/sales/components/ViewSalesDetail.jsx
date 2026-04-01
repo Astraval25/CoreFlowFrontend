@@ -16,9 +16,7 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
   const items = orderItems || [];
 
   const handleEdit = () => {
-    navigate("/admin/create/sales", {
-      state: { orderId: order.orderId },
-    });
+    navigate(`/cf/company/${companyId}/sales/${order.orderId}/update`);
   };
 
   return (

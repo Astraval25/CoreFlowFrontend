@@ -34,9 +34,9 @@ const Sidebar = () => {
   useEffect(() => {
     const path = location.pathname;
     if (
-      path.startsWith("/customers") ||
-      path.startsWith("/items") ||
-      path.startsWith("/vendors")
+      path.includes("/customers") ||
+      path.includes("/items") ||
+      path.includes("/vendors")
     ) {
       setOpenGroups((prev) => ({ ...prev, manage: true }));
     }
@@ -50,7 +50,11 @@ const Sidebar = () => {
   const base =
     "flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)] transition-colors";
 
-    const cid = companyId;
+  const cid = companyId;
+  const companyRoot = cid ? `/cf/company/${cid}` : "/cf/company";
+  const homePath = cid ? `${companyRoot}/dashboard` : "/cf/company/list";
+  const salesPath = cid ? `${companyRoot}/sales` : "/cf/company/list";
+  const purchasePath = cid ? `${companyRoot}/purchase/list` : "/cf/company/list";
 
   return (
     <aside
@@ -81,7 +85,7 @@ const Sidebar = () => {
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5">
 
-        <NavLink to="/dashboard" className={({ isActive }) => isActive ? active : base}>
+        <NavLink to={homePath} className={({ isActive }) => isActive ? active : base}>
           <MdDashboard size={17} />
           <span>Home</span>
         </NavLink>
@@ -91,9 +95,9 @@ const Sidebar = () => {
           <button
             onClick={() => toggle("manage")}
             className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-              location.pathname.startsWith("/customers") ||
-              location.pathname.startsWith("/items") ||
-              location.pathname.startsWith("/vendors")
+              location.pathname.includes("/customers") ||
+              location.pathname.includes("/items") ||
+              location.pathname.includes("/vendors")
                 ? "text-[var(--sidebar-text-bright)] bg-[var(--sidebar-hover)]"
                 : "text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)]"
             }`}
@@ -119,7 +123,7 @@ const Sidebar = () => {
               {cid && (
                 <>
                   <NavLink
-                    to={`/customers/${cid}`}
+                    to={`${companyRoot}/customers`}
                     className={({ isActive }) =>
                       isActive
                         ? "block px-3 py-2 rounded-lg text-sm font-semibold text-white bg-[var(--sidebar-active-bg)]"
@@ -129,7 +133,7 @@ const Sidebar = () => {
                     Customers
                   </NavLink>
                   <NavLink
-                    to={`/items/${cid}`}
+                    to={`${companyRoot}/items`}
                     className={({ isActive }) =>
                       isActive
                         ? "block px-3 py-2 rounded-lg text-sm font-semibold text-white bg-[var(--sidebar-active-bg)]"
@@ -139,7 +143,7 @@ const Sidebar = () => {
                     Items
                   </NavLink>
                   <NavLink
-                    to={`/vendors/${cid}`}
+                    to={`${companyRoot}/vendors`}
                     className={({ isActive }) =>
                       isActive
                         ? "block px-3 py-2 rounded-lg text-sm font-semibold text-white bg-[var(--sidebar-active-bg)]"
@@ -154,12 +158,12 @@ const Sidebar = () => {
           </div>
         </div>
 
-        <NavLink to="/sales" className={({ isActive }) => isActive ? active : base}>
+        <NavLink to={salesPath} className={({ isActive }) => isActive ? active : base}>
           <MdPayments size={17} />
           <span>Sales</span>
         </NavLink>
 
-        <NavLink to="/purchase" className={({ isActive }) => isActive ? active : base}>
+        <NavLink to={purchasePath} className={({ isActive }) => isActive ? active : base}>
           <FaShoppingCart size={15} />
           <span>Purchases</span>
         </NavLink>

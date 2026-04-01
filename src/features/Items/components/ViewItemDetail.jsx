@@ -13,9 +13,7 @@ const ViewItemDetail = ({ companyId, itemId }) => {
   if (error) return <p className="p-6 text-red-600">Error loading item details</p>;
 
   const handleEdit = () => {
-    navigate("/admin/create/item", {
-      state: { itemId: item.itemId },
-    });
+    navigate(`/cf/company/${companyId}/items/${item.itemId}/update`);
   };
 
   return (

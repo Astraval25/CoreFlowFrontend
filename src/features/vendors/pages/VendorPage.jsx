@@ -58,7 +58,7 @@ const VendorPage = () => {
             />
           </div>
           <button
-            onClick={() => navigate(`/vendors/${companyId}/add`)}
+            onClick={() => navigate(`/cf/company/${companyId}/vendors/create`)}
             className="btn-primary text-xs"
           >
             <MdAdd size={15} /> New
@@ -102,7 +102,7 @@ const VendorPage = () => {
                   style={{ borderBottom: "1px solid var(--line)" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                  onClick={() => navigate(`/vendors/${companyId}/${row.original.vendorId}`)}
+                  onClick={() => navigate(`/cf/company/${companyId}/vendors/${row.original.vendorId}/detail`)}
                 >
                   <td className="px-5 py-3 text-xs" style={{ color: "var(--text-muted)" }}>{row.index + 1}</td>
                   <td className="px-5 py-3 text-xs font-semibold" style={{ color: "var(--accent)" }}>
@@ -114,7 +114,7 @@ const VendorPage = () => {
                   <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                     <ActionMenu
                       row={row}
-                      onEdit={() => navigate(`/vendors/${companyId}/${row.original.vendorId}/edit`)}
+                      onEdit={() => navigate(`/cf/company/${companyId}/vendors/${row.original.vendorId}/update`)}
                       onDelete={() => { if (window.confirm("Deactivate this vendor?")) deactivateVendor(row.original.vendorId); }}
                       onActivate={() => { if (window.confirm("Activate this vendor?")) activateVendor(row.original.vendorId); }}
                     />

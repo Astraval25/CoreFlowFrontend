@@ -47,7 +47,7 @@ const CreateVendorPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await submitVendor();
-    if (success) navigate(`/vendors/${companyId}`);
+    if (success) navigate(`/cf/company/${companyId}/vendors`);
   };
 
   const languageOptions = ["English", "Tamil", "Hindi", "Malayalam", "Telugu"];

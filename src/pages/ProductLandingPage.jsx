@@ -24,13 +24,13 @@ const ProductLandingPage = () => {
 
             <div className="hidden md:flex items-center space-x-4">
               <button 
-                onClick={() => navigate('/login')}
+                onClick={() => navigate('/cf/auth/login')}
                 className="text-blue-600 hover:text-blue-700 font-medium"
               >
                 Login
               </button>
               <button 
-                onClick={() => navigate('/signup')}
+                onClick={() => navigate('/cf/auth/register')}
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium"
               >
                 Sign Up Free
@@ -58,13 +58,13 @@ const ProductLandingPage = () => {
               <span className="block px-3 py-2 text-gray-400 cursor-not-allowed">Contact</span>
               <div className="px-3 py-2 space-y-2">
                 <button 
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate('/cf/auth/login')}
                   className="block w-full text-left text-blue-600 font-medium"
                 >
                   Login
                 </button>
                 <button 
-                  onClick={() => navigate('/signup')}
+                  onClick={() => navigate('/cf/auth/register')}
                   className="block w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-medium"
                 >
                   Sign Up Free
@@ -90,7 +90,7 @@ const ProductLandingPage = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <button 
-                  onClick={() => navigate('/signup')}
+                  onClick={() => navigate('/cf/auth/register')}
                   className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition"
                 >
                   Start Free Trial
@@ -208,7 +208,7 @@ const ProductLandingPage = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <button 
-                    onClick={() => navigate('/signup')}
+                    onClick={() => navigate('/cf/auth/register')}
                     className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-blue-700 transition shadow-lg"
                   >
                     Join Waitlist
@@ -230,7 +230,7 @@ const ProductLandingPage = () => {
           <p className="text-xl text-orange-100 mb-8">Join thousands of businesses already using CoreFlow to streamline their operations.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate('/cf/auth/register')}
               className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition"
             >
               Start Your Free Trial

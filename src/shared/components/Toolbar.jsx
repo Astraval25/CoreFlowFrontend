@@ -10,6 +10,8 @@ const Toolbar = () => {
   const [companyName, setCompanyName] = useState("");
   const [userName, setUserName] = useState("");
   const [initials, setInitials] = useState("");
+  const [companyId, setCompanyId] = useState("");
+  const [userId, setUserId] = useState("");
   const [openCompanyPanel, setOpenCompanyPanel] = useState(false);
 
   useEffect(() => {
@@ -18,7 +20,9 @@ const Toolbar = () => {
       const decode = jwtDecode(token);
       if (decode.defaultComp?.length) {
         setCompanyName(decode.defaultComp[1] || "");
+        setCompanyId(decode.defaultComp[0] || "");
       }
+      setUserId(decode.userId || decode.userID || decode.sub || decode.id || "");
       const name = decode.name || decode.sub || "";
       setUserName(name);
       const parts = name.trim().split(" ");
@@ -33,7 +37,23 @@ const Toolbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
-    navigate("/");
+    navigate("/cf/auth/login");
+  };
+
+  const handleNotifications = () => {
+    if (companyId) {
+      navigate(`/cf/company/${companyId}/notifications`);
+      return;
+    }
+    navigate("/cf/company/list");
+  };
+
+  const handleSettings = () => {
+    if (userId) {
+      navigate(`/cf/user/${userId}/settings`);
+      return;
+    }
+    navigate("/cf/company/list");
   };
 
   return (
@@ -114,6 +134,7 @@ const Toolbar = () => {
           className="relative w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
           style={{ color: "var(--text-sub)" }}
           title="Notifications"
+          onClick={handleNotifications}
           onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
         >
@@ -129,6 +150,7 @@ const Toolbar = () => {
           className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
           style={{ color: "var(--text-sub)" }}
           title="Settings"
+          onClick={handleSettings}
           onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
         >

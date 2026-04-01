@@ -27,6 +27,7 @@ import SalesPage from "./features/sales/pages/SalesPage";
 import ViewSalesPage from "./features/sales/pages/ViewSalesPage";
 import CreateSalesPage from "./features/sales/pages/CreateSalesPage";
 import CustomerItems from "./features/CustomerItems/pages/CustomerItems";
+import PlaceholderPage from "./shared/components/PlaceholderPage";
 
 export const router = createBrowserRouter([
   // ── Public pages ──
@@ -35,20 +36,30 @@ export const router = createBrowserRouter([
   { path: "/pricing", element: <PricingPage /> },
   { path: "/about", element: <AboutPage /> },
   { path: "/contact", element: <ContactPage /> },
+
+  // ── Legal ──
+  { path: "cf/legal/privacy-policy", element: <PlaceholderPage title="Privacy Policy" /> },
+  { path: "cf/legal/terms-of-service", element: <PlaceholderPage title="Terms of Service" /> },
+
+  // ── Auth ──
   {
-    path: "/login",
+    path: "cf/auth/login",
     element: <RedirectIfLoggedIn><LoginPage /></RedirectIfLoggedIn>,
   },
   {
-    path: "/register",
+    path: "cf/auth/register",
     element: <RedirectIfLoggedIn><RegisterPage /></RedirectIfLoggedIn>,
   },
   {
-    path: "/verify/:userPath",
+    path: "cf/auth/verify",
     element: <RedirectIfLoggedIn><VerifyOtpPage /></RedirectIfLoggedIn>,
   },
+  {
+    path: "cf/auth/resend-otp",
+    element: <RedirectIfLoggedIn><PlaceholderPage title="Resend OTP" /></RedirectIfLoggedIn>,
+  },
 
-  // ── Shell (ProtectedRoute + MainLayout) ──
+  // ── Protected Shell (ProtectedRoute + MainLayout) ──
   {
     element: (
       <ProtectedRoute>
@@ -56,38 +67,72 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { path: "/dashboard", element: <Dashboard /> },
+      // Dashboard
+      { path: "cf/company/:companyId/dashboard", element: <Dashboard /> },
 
-      // Sales  (/sales/:companyId/create  |  /sales/:companyId/:orderId  |  …/edit)
-      { path: "/sales",                                 element: <SalesPage /> },
-      { path: "/sales/:companyId/create",               element: <CreateSalesPage /> },
-      { path: "/sales/:companyId/:orderId",             element: <ViewSalesPage /> },
-      { path: "/sales/:companyId/:orderId/edit",        element: <CreateSalesPage /> },
+      // Notifications
+      { path: "cf/company/:companyId/notifications", element: <PlaceholderPage title="Notifications" /> },
 
-      // Purchase
-      { path: "/purchase",                              element: <PurchasePage /> },
-      { path: "/purchase/:companyId/create",            element: <CreatePurchasePage /> },
-      { path: "/purchase/:companyId/:orderId",          element: <ViewPurchasePage /> },
-      { path: "/purchase/:companyId/:orderId/edit",     element: <CreatePurchasePage /> },
+      // Company
+      { path: "cf/company/list", element: <PlaceholderPage title="Company List" /> },
+      { path: "cf/company/create", element: <PlaceholderPage title="Create Company" /> },
+      { path: "cf/company/:companyId/detail", element: <PlaceholderPage title="Company Detail" /> },
+      { path: "cf/company/:companyId/update", element: <PlaceholderPage title="Update Company" /> },
 
-      // Customers  (/customers/:companyId  |  …/add  |  …/:customerId  |  …/edit  |  …/items)
-      { path: "/customers/:companyId",                         element: <CustomerPage /> },
-      { path: "/customers/:companyId/add",                     element: <CreateCustomerPage /> },
-      { path: "/customers/:companyId/:customerId",             element: <ViewCustomer /> },
-      { path: "/customers/:companyId/:customerId/edit",        element: <CreateCustomerPage /> },
-      { path: "/customers/:companyId/:customerId/items",       element: <CustomerItems /> },
+      // User
+      { path: "cf/user/:userId/profile", element: <PlaceholderPage title="User Profile" /> },
+      { path: "cf/user/:userId/settings", element: <PlaceholderPage title="User Settings" /> },
+
+      // Customers
+      { path: "cf/company/:companyId/customers", element: <CustomerPage /> },
+      { path: "cf/company/:companyId/customers/create", element: <CreateCustomerPage /> },
+      { path: "cf/company/:companyId/customers/:customerId/detail", element: <ViewCustomer /> },
+      { path: "cf/company/:companyId/customers/:customerId/update", element: <CreateCustomerPage /> },
 
       // Vendors
-      { path: "/vendors/:companyId",                    element: <VendorPage /> },
-      { path: "/vendors/:companyId/add",                element: <CreateVendorPage /> },
-      { path: "/vendors/:companyId/:vendorId",          element: <ViewVendor /> },
-      { path: "/vendors/:companyId/:vendorId/edit",     element: <CreateVendorPage /> },
+      { path: "cf/company/:companyId/vendors", element: <VendorPage /> },
+      { path: "cf/company/:companyId/vendors/create", element: <CreateVendorPage /> },
+      { path: "cf/company/:companyId/vendors/:vendorId/detail", element: <ViewVendor /> },
+      { path: "cf/company/:companyId/vendors/:vendorId/update", element: <CreateVendorPage /> },
 
       // Items
-      { path: "/items/:companyId",                      element: <ItemsPage /> },
-      { path: "/items/:companyId/add",                  element: <CreateItemPage /> },
-      { path: "/items/:companyId/:itemId",              element: <ViewItemPage /> },
-      { path: "/items/:companyId/:itemId/edit",         element: <CreateItemPage /> },
+      { path: "cf/company/:companyId/items", element: <ItemsPage /> },
+      { path: "cf/company/:companyId/items/create", element: <CreateItemPage /> },
+      { path: "cf/company/:companyId/items/:itemId/detail", element: <ViewItemPage /> },
+      { path: "cf/company/:companyId/items/:itemId/update", element: <CreateItemPage /> },
+
+      // Sales
+      { path: "cf/company/:companyId/sales", element: <SalesPage /> },
+      { path: "cf/company/:companyId/sales/create", element: <CreateSalesPage /> },
+      { path: "cf/company/:companyId/sales/:salesId/detail", element: <ViewSalesPage /> },
+      { path: "cf/company/:companyId/sales/:salesId/update", element: <CreateSalesPage /> },
+
+      // Purchase
+      { path: "cf/company/:companyId/purchase/list", element: <PurchasePage /> },
+      { path: "cf/company/:companyId/purchase/create", element: <CreatePurchasePage /> },
+      { path: "cf/company/:companyId/purchase/:purchaseId/detail", element: <ViewPurchasePage /> },
+      { path: "cf/company/:companyId/purchase/:purchaseId/update", element: <CreatePurchasePage /> },
+
+      // Payment Received
+      { path: "cf/company/:companyId/payment-received/list", element: <PlaceholderPage title="Payment Received" /> },
+      { path: "cf/company/:companyId/payment-received/create", element: <PlaceholderPage title="Create Payment Received" /> },
+      { path: "cf/company/:companyId/payment-received/:paymentReceivedId/detail", element: <PlaceholderPage title="Payment Received Detail" /> },
+      { path: "cf/company/:companyId/payment-received/:paymentReceivedId/update", element: <PlaceholderPage title="Update Payment Received" /> },
+
+      // Payment Made
+      { path: "cf/company/:companyId/payment-made/list", element: <PlaceholderPage title="Payment Made" /> },
+      { path: "cf/company/:companyId/payment-made/create", element: <PlaceholderPage title="Create Payment Made" /> },
+      { path: "cf/company/:companyId/payment-made/:paymentMadeId/detail", element: <PlaceholderPage title="Payment Made Detail" /> },
+      { path: "cf/company/:companyId/payment-made/:paymentMadeId/update", element: <PlaceholderPage title="Update Payment Made" /> },
+
+      // Reports
+      { path: "cf/company/:companyId/report/customers", element: <PlaceholderPage title="Customers Report" /> },
+      { path: "cf/company/:companyId/report/vendors", element: <PlaceholderPage title="Vendors Report" /> },
+      { path: "cf/company/:companyId/report/items", element: <PlaceholderPage title="Items Report" /> },
+      { path: "cf/company/:companyId/report/sales", element: <PlaceholderPage title="Sales Report" /> },
+      { path: "cf/company/:companyId/report/purchase", element: <PlaceholderPage title="Purchase Report" /> },
+      { path: "cf/company/:companyId/report/payment-received", element: <PlaceholderPage title="Payment Received Report" /> },
+      { path: "cf/company/:companyId/report/payment-made", element: <PlaceholderPage title="Payment Made Report" /> },
     ],
   },
 ]);

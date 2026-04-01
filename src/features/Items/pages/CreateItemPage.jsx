@@ -44,7 +44,7 @@ const CreateItemPage = () => {
 
     if (result?.success) {
       alert(`Item ${isEditMode ? "updated" : "created"} successfully!`);
-      navigate(`/items/${companyId}`);
+      navigate(`/cf/company/${companyId}/items`);
     } else {
       alert(result?.message || "Something went wrong");
     }

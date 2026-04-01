@@ -41,7 +41,7 @@ const RegisterPage = () => {
         <p className="text-center mt-5 text-sm">
           Already have an account?{" "}
           <span
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/cf/auth/login")}
             className="text-blue-600 cursor-pointer font-medium"
           >
             Login

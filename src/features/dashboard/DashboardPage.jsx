@@ -1,10 +1,18 @@
 import { useState, useCallback } from "react";
 import {
-  AreaChart, Area,
-  BarChart, Bar,
-  PieChart, Pie, Cell,
-  XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer,
+    LineChart,
+    AreaChart,
+    Area,
+    BarChart,
+    Bar,
+    PieChart,
+    Pie,
+    Cell,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
 } from "recharts";
 import { useDashboard } from "./hooks/useDashboard";
 import { MdClose, MdTrendingUp, MdTrendingDown } from "react-icons/md";

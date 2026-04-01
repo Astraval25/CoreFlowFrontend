@@ -24,9 +24,7 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
   const shipping = customer.shippingAddrId;
 
   const handleEdit = () => {
-    navigate("/admin/create/customer", {
-      state: { customerId: customer.customerId },
-    });
+    navigate(`/cf/company/${companyId}/customers/${customer.customerId}/update`);
   };
 
   return (

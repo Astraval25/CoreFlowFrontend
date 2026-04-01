@@ -23,6 +23,7 @@ const CreatePurchasePage = () => {
   const navigate = useNavigate();
   const { companyId, orderId: paramOrderId } = useParams();
   const orderId = paramOrderId || null;
+  const purchaseBase = `/cf/company/${companyId}/purchase/list`;
 
   const {
     formData, items, allVendors, loading, errors, isEditMode,
@@ -32,7 +33,7 @@ const CreatePurchasePage = () => {
 
   const handleSubmit = async () => {
     const result = await submitPurchase();
-    if (result?.success) navigate(`/purchase`);
+    if (result?.success) navigate(purchaseBase);
   };
 
   return (
@@ -49,7 +50,7 @@ const CreatePurchasePage = () => {
           {isEditMode ? "Edit Purchase Order" : "New Purchase Order"}
         </h1>
         <button
-          onClick={() => navigate("/purchase")}
+          onClick={() => navigate(purchaseBase)}
           className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
           style={{ color: "var(--text-muted)" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
@@ -395,7 +396,7 @@ const CreatePurchasePage = () => {
           </button>
           <button
             type="button"
-            onClick={() => navigate("/purchase")}
+            onClick={() => navigate(purchaseBase)}
             className="text-xs"
             style={{ color: "var(--text-muted)" }}
           >

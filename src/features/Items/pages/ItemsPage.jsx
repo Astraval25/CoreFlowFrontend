@@ -51,7 +51,7 @@ const ItemsPage = () => {
             />
           </div>
           <button
-            onClick={() => navigate(`/items/${companyId}/add`)}
+            onClick={() => navigate(`/cf/company/${companyId}/items/create`)}
             className="btn-primary text-xs"
           >
             <MdAdd size={15} /> New
@@ -95,7 +95,7 @@ const ItemsPage = () => {
                   style={{ borderBottom: "1px solid var(--line)" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                  onClick={() => navigate(`/items/${companyId}/${row.original.itemId}`)}
+                  onClick={() => navigate(`/cf/company/${companyId}/items/${row.original.itemId}/detail`)}
                 >
                   <td className="px-5 py-3 text-xs" style={{ color: "var(--text-muted)" }}>{row.index + 1}</td>
                   <td className="px-5 py-3 text-xs font-semibold" style={{ color: "var(--accent)" }}>
@@ -116,7 +116,7 @@ const ItemsPage = () => {
                   <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                     <ActionMenu
                       row={row}
-                      onEdit={() => navigate(`/items/${companyId}/${row.original.itemId}/edit`)}
+                      onEdit={() => navigate(`/cf/company/${companyId}/items/${row.original.itemId}/update`)}
                       onDelete={async () => {
                         if (window.confirm("Deactivate this item?")) {
                           try { await deactivateItem(companyId, row.original.itemId); }

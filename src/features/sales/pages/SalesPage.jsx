@@ -78,7 +78,7 @@ const SalesPage = () => {
           </div>
           <button
             className="btn-primary text-xs"
-            onClick={() => navigate(`/sales/${companyId}/create`)}
+            onClick={() => navigate(`/cf/company/${companyId}/sales/create`)}
           >
             <MdAdd size={15} /> New
           </button>
@@ -122,7 +122,7 @@ const SalesPage = () => {
                   style={{ borderBottom: "1px solid var(--line)" }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
-                  onClick={() => navigate(`/sales/${companyId}/${order.orderId}`)}
+                  onClick={() => navigate(`/cf/company/${companyId}/sales/${order.orderId}/detail`)}
                 >
                   <td className="px-5 py-3 text-xs" style={{ color: "var(--text-muted)" }}>{index + 1}</td>
                   <td className="px-5 py-3 text-xs font-semibold" style={{ color: "var(--accent)" }}>{order.orderNumber}</td>
@@ -137,7 +137,7 @@ const SalesPage = () => {
                   <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                     <ActionMenu
                       row={{ original: order }}
-                      onEdit={() => navigate(`/sales/${companyId}/${order.orderId}/edit`)}
+                      onEdit={() => navigate(`/cf/company/${companyId}/sales/${order.orderId}/update`)}
                       onDelete={() => { if (window.confirm("Deactivate this order?")) deactivateSalesOrder(order.orderId); }}
                       onActivate={() => { if (window.confirm("Activate this order?")) activateSalesOrder(order.orderId); }}
                     />

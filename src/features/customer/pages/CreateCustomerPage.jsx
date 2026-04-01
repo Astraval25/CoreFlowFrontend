@@ -47,7 +47,7 @@ const CreateCustomerPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const success = await submitCustomer();
-    if (success) navigate(`/customers/${companyId}`);
+    if (success) navigate(`/cf/company/${companyId}/customers`);
   };
 
   const languageOptions = ["English", "Tamil", "Hindi", "Malayalam", "Telugu"];

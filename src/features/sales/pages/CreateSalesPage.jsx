@@ -22,6 +22,7 @@ const Field = ({ label, required, error, children }) => (
 const CreateSalesPage = () => {
   const navigate = useNavigate();
   const { companyId } = useParams();
+  const salesBase = `/cf/company/${companyId}/sales`;
 
   const {
     formData, items, allCustomers, loading, errors,
@@ -31,7 +32,7 @@ const CreateSalesPage = () => {
 
   const handleSubmit = async () => {
     const result = await submitSales();
-    if (result?.success) navigate(`/sales`);
+    if (result?.success) navigate(salesBase);
   };
 
   return (
@@ -48,7 +49,7 @@ const CreateSalesPage = () => {
           New Sales Order
         </h1>
         <button
-          onClick={() => navigate("/sales")}
+          onClick={() => navigate(salesBase)}
           className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
           style={{ color: "var(--text-muted)" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
@@ -395,7 +396,7 @@ const CreateSalesPage = () => {
           </button>
           <button
             type="button"
-            onClick={() => navigate("/sales")}
+            onClick={() => navigate(salesBase)}
             className="text-xs"
             style={{ color: "var(--text-muted)" }}
           >

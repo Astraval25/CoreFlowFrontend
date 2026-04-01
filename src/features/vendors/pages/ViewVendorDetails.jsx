@@ -24,9 +24,7 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
   const shipping = vendor.shippingAddrId;
 
   const handleEdit = () => {
-    navigate("/admin/create/vendor", {
-      state: { vendorId: vendor.vendorId },
-    });
+    navigate(`/cf/company/${companyId}/vendors/${vendor.vendorId}/update`);
   };
 
   return (

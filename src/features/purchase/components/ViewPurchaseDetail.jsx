@@ -17,9 +17,7 @@ const ViewPurchaseDetail = ({ companyId, orderId }) => {
   if (!order) return <p className="p-6 text-gray-600">No order data found</p>;
 
   const handleEdit = () => {
-    navigate("/admin/create/purchase", {
-      state: { orderId: order.orderId },
-    });
+    navigate(`/cf/company/${companyId}/purchase/${order.orderId}/update`);
   };
 
   return (
