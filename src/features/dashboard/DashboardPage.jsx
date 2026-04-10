@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback } from "react";
 import {
     LineChart,
     AreaChart,
@@ -17,6 +17,7 @@ import {
 import { useDashboard } from "./hooks/useDashboard";
 import { MdClose, MdTrendingUp, MdTrendingDown } from "react-icons/md";
 import { FiArrowUpRight } from "react-icons/fi";
+import StyledDropdown from "../../shared/components/StyledDropdown";
 
 /* ─── helpers ─── */
 const fmt = (val) =>
@@ -36,89 +37,6 @@ const RANGE_OPTIONS = [
   { value: "quarter", label: "Quarter" },
   { value: "prev_fy_year", label: "Prev financial Year" },
 ];
-
-const RangeSelect = ({ value, onChange, className = "", disabled = false }) => {
-  const [open, setOpen] = useState(false);
-  const [hoveredOption, setHoveredOption] = useState("");
-  const wrapRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!wrapRef.current?.contains(event.target)) {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const selected = RANGE_OPTIONS.find((opt) => opt.value === value)?.label || "Current FY Year";
-
-  return (
-    <div ref={wrapRef} className={`relative ${className}`}>
-      <button
-        type="button"
-        disabled={disabled}
-        onClick={() => !disabled && setOpen((prev) => !prev)}
-        className="text-xs font-medium pl-3 pr-8 py-1.5 rounded-xl transition-all"
-        style={{
-          border: "1px solid var(--line)",
-          color: disabled ? "var(--text-muted)" : "var(--text-main)",
-          background: "var(--surface-bg)",
-          boxShadow: "var(--shadow-xs)",
-          cursor: disabled ? "not-allowed" : "pointer",
-          minWidth: 150,
-          textAlign: "left",
-        }}
-      >
-        {selected}
-      </button>
-      <span
-        className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px]"
-        style={{ color: "var(--text-sub)" }}
-      >
-        {open ? "▴" : "▾"}
-      </span>
-
-      {open && !disabled && (
-        <div
-          className="absolute right-0 mt-1 w-full min-w-[170px] rounded-xl py-1 z-20"
-          style={{
-            border: "1px solid var(--line)",
-            background: "var(--surface-bg)",
-            boxShadow: "var(--shadow-md)",
-          }}
-        >
-          {RANGE_OPTIONS.map((opt) => {
-            const isActive = opt.value === value;
-            const isHovered = hoveredOption === opt.value;
-            return (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => {
-                  onChange(opt.value);
-                  setOpen(false);
-                  setHoveredOption("");
-                }}
-                onMouseEnter={() => setHoveredOption(opt.value)}
-                onMouseLeave={() => setHoveredOption("")}
-                className="w-full text-left px-1.5 py-1 text-xs transition-colors"
-                style={{
-                  color: isActive ? "var(--accent)" : "var(--text-main)",
-                  background: isActive || isHovered ? "var(--surface-soft)" : "var(--surface-bg)",
-                }}
-              >
-                {opt.label}
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-};
 
 /* ─── Detail Modal ─── */
 const DetailModal = ({ title, rows, onClose }) => (
@@ -285,7 +203,7 @@ const CashFlowCard = ({ data, range, onRangeChange, dateRange, loading = false }
           <span className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Cash Flow</span>
           <div className="flex items-center gap-2">
             {loading && <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Updating...</span>}
-            <RangeSelect value={range} onChange={onRangeChange} disabled={loading} />
+            <StyledDropdown value={range} onChange={onRangeChange} options={RANGE_OPTIONS} disabled={loading} />
           </div>
         </div>
         <div className="flex flex-col lg:flex-row gap-5">
@@ -389,7 +307,7 @@ const RevenueExpenseCard = ({ data, range, onRangeChange, loading = false }) => 
           <span className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Income and Expense</span>
           <div className="flex items-center gap-2">
             {loading && <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Updating...</span>}
-            <RangeSelect value={range} onChange={onRangeChange} disabled={loading} />
+            <StyledDropdown value={range} onChange={onRangeChange} options={RANGE_OPTIONS} disabled={loading} />
           </div>
         </div>
 
@@ -459,7 +377,7 @@ const TopExpensesCard = ({ kpi, range, onRangeChange, loading = false }) => {
           <span className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Top Expenses</span>
           <div className="flex items-center gap-2">
             {loading && <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Updating...</span>}
-            <RangeSelect value={range} onChange={onRangeChange} disabled={loading} />
+            <StyledDropdown value={range} onChange={onRangeChange} options={RANGE_OPTIONS} disabled={loading} />
           </div>
         </div>
 
@@ -581,9 +499,10 @@ export const DashboardPage = () => {
           {/* <span className="text-xs font-medium" style={{ color: "var(--text-sub)" }}>
             Overall Duration:
           </span> */}
-          <RangeSelect
+          <StyledDropdown
             value={overallRange}
             onChange={handleOverallRangeChange}
+            options={RANGE_OPTIONS}
             disabled={cashFlowLoading || revenueExpenseLoading || topExpensesLoading}
           />
         </div>
@@ -731,6 +650,8 @@ export const DashboardPage = () => {
     </div>
   );
 };
+
+
 
 
 
