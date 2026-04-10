@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import LoginForm from "./LoginForm";
 import { useLogin } from "./useLogin";
 import { useState } from "react";
+import { jwtDecode } from "jwt-decode";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -12,7 +13,25 @@ const LoginPage = () => {
     try {
       setError("");
       const data = await login(credentials);
-      navigate(data.responseData.landingUrl);
+
+      const token = data?.responseData?.token || localStorage.getItem("token");
+      let companyId = "";
+
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          companyId = decoded?.defaultComp?.[0] ?? "";
+        } catch {
+          companyId = "";
+        }
+      }
+
+      const targetPath =
+        companyId
+          ? `/cf/company/${companyId}/dashboard`
+          : data?.responseData?.landingUrl || "/cf/company/list";
+
+      navigate(targetPath);
     } catch (err) {
       setError(err.message);
     }
