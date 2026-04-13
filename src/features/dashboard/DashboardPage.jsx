@@ -17,6 +17,7 @@ import {
 import { useDashboard } from "./hooks/useDashboard";
 import { MdClose, MdTrendingUp, MdTrendingDown } from "react-icons/md";
 import { FiArrowUpRight } from "react-icons/fi";
+import StyledDropdown from "../../shared/components/StyledDropdown";
 
 /* ─── helpers ─── */
 const fmt = (val) =>
@@ -29,6 +30,13 @@ const shortMonth = (s) => {
 };
 
 const TABS = ["Dashboard", "Getting Started", "Recent Updates"];
+const RANGE_OPTIONS = [
+  { value: "current_fy_year", label: "Current financial Year" },
+  { value: "current_month", label: "Current Month" },
+  { value: "half", label: "Half" },
+  { value: "quarter", label: "Quarter" },
+  { value: "prev_fy_year", label: "Prev financial Year" },
+];
 
 /* ─── Detail Modal ─── */
 const DetailModal = ({ title, rows, onClose }) => (
@@ -155,7 +163,7 @@ const KpiCard = ({ title, amount, current, overdue }) => {
 };
 
 /* ─── Cash Flow Card ─── */
-const CashFlowCard = ({ data, fiscal }) => {
+const CashFlowCard = ({ data, range, onRangeChange, dateRange, loading = false }) => {
   const [modal, setModal] = useState(null);
 
   const chartData = data.map((d) => ({
@@ -170,8 +178,8 @@ const CashFlowCard = ({ data, fiscal }) => {
   const outgoing = data.reduce((s, d) => s + (d.outgoing ?? 0), 0);
   const closing  = data[data.length - 1]?.closingBalance ?? 0;
 
-  const startLabel = fiscal.startDate.split("-").reverse().join("/");
-  const endLabel   = fiscal.endDate.split("-").reverse().join("/");
+  const startLabel = dateRange.startDate.split("-").reverse().join("/");
+  const endLabel   = dateRange.endDate.split("-").reverse().join("/");
 
   const handleClick = useCallback((e) => {
     if (!e?.activePayload?.length) return;
@@ -193,12 +201,10 @@ const CashFlowCard = ({ data, fiscal }) => {
       <div className="card p-5">
         <div className="flex items-center justify-between mb-4">
           <span className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Cash Flow</span>
-          <span
-            className="text-xs px-2.5 py-1 rounded-lg cursor-pointer"
-            style={{ border: "1px solid var(--line)", color: "var(--text-sub)" }}
-          >
-            This Fiscal Year ▾
-          </span>
+          <div className="flex items-center gap-2">
+            {loading && <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Updating...</span>}
+            <StyledDropdown value={range} onChange={onRangeChange} options={RANGE_OPTIONS} disabled={loading} />
+          </div>
         </div>
         <div className="flex flex-col lg:flex-row gap-5">
           <div className="flex-1 min-h-[200px] cursor-pointer" title="Click a point for details">
@@ -266,7 +272,7 @@ const CashFlowCard = ({ data, fiscal }) => {
 };
 
 /* ─── Income & Expense Card ─── */
-const RevenueExpenseCard = ({ data }) => {
+const RevenueExpenseCard = ({ data, range, onRangeChange, loading = false }) => {
   const [modal, setModal] = useState(null);
 
   const chartData = data.map((d) => ({
@@ -299,26 +305,9 @@ const RevenueExpenseCard = ({ data }) => {
       <div className="card p-5 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <span className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Income and Expense</span>
-          <span
-            className="text-xs px-2.5 py-1 rounded-lg cursor-pointer"
-            style={{ border: "1px solid var(--line)", color: "var(--text-sub)" }}
-          >
-            This Fiscal Year ▾
-          </span>
-        </div>
-
-        <div className="flex items-center gap-4 text-xs flex-wrap" style={{ color: "var(--text-sub)" }}>
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm" style={{ background: "var(--accent)" }} />
-            Total Income
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-sm" style={{ background: "var(--red)" }} />
-            Total Expenses
-          </span>
-          <div className="ml-auto flex rounded-lg overflow-hidden text-xs" style={{ border: "1px solid var(--line)" }}>
-            <button className="px-2.5 py-1 font-semibold text-white" style={{ background: "var(--accent)" }}>Accrual</button>
-            <button className="px-2.5 py-1" style={{ color: "var(--text-sub)" }}>Cash</button>
+          <div className="flex items-center gap-2">
+            {loading && <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Updating...</span>}
+            <StyledDropdown value={range} onChange={onRangeChange} options={RANGE_OPTIONS} disabled={loading} />
           </div>
         </div>
 
@@ -360,7 +349,7 @@ const RevenueExpenseCard = ({ data }) => {
 };
 
 /* ─── Top Expenses Card ─── */
-const TopExpensesCard = ({ kpi }) => {
+const TopExpensesCard = ({ kpi, range, onRangeChange, loading = false }) => {
   const [modal, setModal] = useState(null);
   const totalExpense = kpi?.totalExpense ?? 0;
 
@@ -386,12 +375,10 @@ const TopExpensesCard = ({ kpi }) => {
       <div className="card p-5 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <span className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Top Expenses</span>
-          <span
-            className="text-xs px-2.5 py-1 rounded-lg cursor-pointer"
-            style={{ border: "1px solid var(--line)", color: "var(--text-sub)" }}
-          >
-            This Month ▾
-          </span>
+          <div className="flex items-center gap-2">
+            {loading && <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Updating...</span>}
+            <StyledDropdown value={range} onChange={onRangeChange} options={RANGE_OPTIONS} disabled={loading} />
+          </div>
         </div>
 
         <div className="flex flex-col items-center justify-center py-2 cursor-pointer" onClick={handleClick} title="Click for details">
@@ -463,16 +450,62 @@ const Skeleton = ({ h = "h-40" }) => (
 /* ─── Dashboard Page ─── */
 export const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState("Dashboard");
-  const { kpi, cashFlow, revenueExpense, loading, userName, companyName, fiscal } = useDashboard();
+  const [cashFlowRange, setCashFlowRange] = useState("current_fy_year");
+  const [revenueExpenseRange, setRevenueExpenseRange] = useState("current_fy_year");
+  const [topExpensesRange, setTopExpensesRange] = useState("current_fy_year");
+  const [overallRange, setOverallRange] = useState("current_fy_year");
+
+  const {
+    kpi,
+    summaryKpi,
+    cashFlow,
+    revenueExpense,
+    graphKpi,
+    loading,
+    summaryKpiLoading,
+    cashFlowLoading,
+    revenueExpenseLoading,
+    topExpensesLoading,
+    userName,
+    companyName,
+    getDateRangeByPreset,
+  } = useDashboard({
+    cashFlowRange,
+    revenueExpenseRange,
+    topExpensesRange,
+    summaryRange: overallRange,
+  });
+
+  const handleOverallRangeChange = (value) => {
+    setOverallRange(value);
+    setCashFlowRange(value);
+    setRevenueExpenseRange(value);
+    setTopExpensesRange(value);
+  };
+
+  const cashFlowDateRange = getDateRangeByPreset(cashFlowRange);
 
   return (
     <div className="flex flex-col gap-5">
       {/* Header */}
-      <div className="pt-1">
-        <h1 className="text-xl font-extrabold" style={{ color: "var(--text-main)" }}>
-          Hello, {userName}
-        </h1>
-        <p className="text-xs mt-0.5" style={{ color: "var(--text-sub)" }}>{companyName}</p>
+      <div className="pt-1 flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-extrabold" style={{ color: "var(--text-main)" }}>
+            Hello, {userName}
+          </h1>
+          <p className="text-xs mt-0.5" style={{ color: "var(--text-sub)" }}>{companyName}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {/* <span className="text-xs font-medium" style={{ color: "var(--text-sub)" }}>
+            Overall Duration:
+          </span> */}
+          <StyledDropdown
+            value={overallRange}
+            onChange={handleOverallRangeChange}
+            options={RANGE_OPTIONS}
+            disabled={cashFlowLoading || revenueExpenseLoading || topExpensesLoading}
+          />
+        </div>
       </div>
 
       {/* Tabs */}
@@ -495,10 +528,11 @@ export const DashboardPage = () => {
       {/* ── Dashboard tab ── */}
       {activeTab === "Dashboard" && (
         <>
+
           {/* KPI strip */}
-          {loading
+          {(loading || (summaryKpiLoading && !summaryKpi))
             ? <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">{[...Array(5)].map((_, i) => <Skeleton key={i} h="h-20" />)}</div>
-            : <KpiStrip kpi={kpi} />
+            : <KpiStrip kpi={summaryKpi || kpi} />
           }
 
           {/* Receivables + Payables */}
@@ -513,17 +547,40 @@ export const DashboardPage = () => {
           </div>
 
           {/* Cash Flow */}
-          {loading ? <Skeleton h="h-64" /> : <CashFlowCard data={cashFlow} fiscal={fiscal} />}
+          {(cashFlowLoading && cashFlow.length === 0)
+            ? <Skeleton h="h-64" />
+            : (
+              <CashFlowCard
+                data={cashFlow}
+                range={cashFlowRange}
+                onRangeChange={setCashFlowRange}
+                dateRange={cashFlowDateRange}
+                loading={cashFlowLoading}
+              />
+            )}
 
           {/* Income/Expense + Top Expenses */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {loading
-              ? <><Skeleton h="h-72" /><Skeleton h="h-72" /></>
-              : <>
-                  <RevenueExpenseCard data={revenueExpense} />
-                  <TopExpensesCard kpi={kpi} />
-                </>
-            }
+            {(revenueExpenseLoading && revenueExpense.length === 0)
+              ? <Skeleton h="h-72" />
+              : (
+                <RevenueExpenseCard
+                  data={revenueExpense}
+                  range={revenueExpenseRange}
+                  onRangeChange={setRevenueExpenseRange}
+                  loading={revenueExpenseLoading}
+                />
+              )}
+            {(topExpensesLoading && !graphKpi)
+              ? <Skeleton h="h-72" />
+              : (
+                <TopExpensesCard
+                  kpi={graphKpi}
+                  range={topExpensesRange}
+                  onRangeChange={setTopExpensesRange}
+                  loading={topExpensesLoading}
+                />
+              )}
           </div>
 
           {/* Footer */}
@@ -593,3 +650,10 @@ export const DashboardPage = () => {
     </div>
   );
 };
+
+
+
+
+
+
+

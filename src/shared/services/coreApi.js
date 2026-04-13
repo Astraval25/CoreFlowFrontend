@@ -1,6 +1,9 @@
 import api from "../services/apiService";
 import { ENDPOINTS } from "../../config/apiEndpoints";
 
+const withDateRange = (path, startDate, endDate) =>
+  `${path}?startDate=${startDate}&endDate=${endDate}`;
+
 export const coreApi = {
   login: (data) => api.post(ENDPOINTS.LOGIN, data),
   register: (data) => api.post(ENDPOINTS.REGISTER, data),
@@ -150,13 +153,160 @@ export const coreApi = {
   editVendorItem: (companyId, vendorId, itemId, data) => api.put(
     `${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/${itemId}`, data),
 
+  // Payment Made (payments-sent)
+  getPaymentsSentSummary: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments-sent/summary`),
+
+  getPaymentDetail: (companyId, paymentId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}`),
+
+  createPaymentSent: (companyId, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments-sent`, data),
+
+  updatePaymentSent: (companyId, paymentId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments-sent/${paymentId}`, data),
+
+  getVendorUnpaidOrders: (companyId, vendorId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendor/${vendorId}/unpaid-orders`),
+
+  deletePaymentSentAllocation: (companyId, paymentId, allocationId) =>
+    api.delete(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/payments-sent/${paymentId}/allocations/${allocationId}`
+    ),
+
+  updatePaymentStatusPaid: (companyId, paymentId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}/paid`),
+
+  updatePaymentStatusViewed: (companyId, paymentId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}/viewed`),
+
+  updatePaymentStatusFailed: (companyId, paymentId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}/failed`),
+
+  updatePaymentStatusRefund: (companyId, paymentId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}/refund`),
+
+  updatePaymentStatusPartiallyPaid: (companyId, paymentId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}/partially-paid`),
+
+  // Payment Received (payments-received)
+  getPaymentsReceivedSummary: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received/summary`),
+
+  createPaymentReceived: (companyId, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received`, data),
+
+  updatePaymentReceived: (companyId, paymentId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received/${paymentId}`, data),
+
+  getCustomerUnpaidOrders: (companyId, customerId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customer/${customerId}/unpaid-orders`),
+
+  deletePaymentReceivedAllocation: (companyId, paymentId, allocationId) =>
+    api.delete(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received/${paymentId}/allocations/${allocationId}`
+    ),
+
+  // Invitations (company linking)
+  getCustomerInvitationCode: (companyId, customerId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/customers/${customerId}/code`),
+
+  createCustomerInvitation: (companyId, customerId) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/customers/${customerId}`),
+
+  getVendorInvitationCode: (companyId, vendorId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/vendors/${vendorId}/code`),
+
+  createVendorInvitation: (companyId, vendorId) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/vendors/${vendorId}`),
+
+  acceptInvitation: (companyId, invitationCode, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/${invitationCode}/accept`, data),
+
   // Dashboard Analytics
   getDashboardKpi: (companyId, startDate, endDate) =>
-    api.get(`${ENDPOINTS.DASHBOARD_KPI}/${companyId}/analytics/dashboard/kpi?startDate=${startDate}&endDate=${endDate}`),
+    api.get(withDateRange(`${ENDPOINTS.DASHBOARD_KPI}/${companyId}/analytics/dashboard/kpi`, startDate, endDate)),
 
   getDashboardCashFlow: (companyId, startDate, endDate) =>
-    api.get(`${ENDPOINTS.DASHBOARD_CASH_FLOW}/${companyId}/analytics/dashboard/cash-flow?startDate=${startDate}&endDate=${endDate}`),
+    api.get(withDateRange(`${ENDPOINTS.DASHBOARD_CASH_FLOW}/${companyId}/analytics/dashboard/cash-flow`, startDate, endDate)),
 
   getDashboardRevenueExpense: (companyId, startDate, endDate) =>
-    api.get(`${ENDPOINTS.DASHBOARD_REVENUE_EXPENSE}/${companyId}/analytics/dashboard/revenue-expense?startDate=${startDate}&endDate=${endDate}`),
+    api.get(withDateRange(`${ENDPOINTS.DASHBOARD_REVENUE_EXPENSE}/${companyId}/analytics/dashboard/revenue-expense`, startDate, endDate)),
+
+  // Notifications
+  getNotifications: (companyId, page = 0) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/notifications?page=${page}`),
+
+  getUnreadNotificationCount: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/notifications/unread-count`),
+
+  markNotificationRead: (companyId, notificationId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/notifications/${notificationId}/read`),
+
+  markAllNotificationsRead: (companyId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/notifications/read-all`),
+
+  // Report Analytics
+  getSalesSummary: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/summary`, startDate, endDate)),
+
+  getPurchaseSummary: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/summary`, startDate, endDate)),
+
+  getSalesOrderFrequency: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/order-frequency`, startDate, endDate)),
+
+  getPurchaseOrderFrequency: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/order-frequency`, startDate, endDate)),
+
+  getSalesPaymentFrequency: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/payment-frequency`, startDate, endDate)),
+
+  getPurchasePaymentFrequency: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/payment-frequency`, startDate, endDate)),
+
+  getSalesItemFrequency: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/item-frequency`, startDate, endDate)),
+
+  getPurchaseItemFrequency: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/item-frequency`, startDate, endDate)),
+
+  getSalesRunningOrderAmount: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/running-order-amount`, startDate, endDate)),
+
+  getPurchaseRunningOrderAmount: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/running-order-amount`, startDate, endDate)),
+
+  getSalesRunningPaymentAmount: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/running-payment-amount`, startDate, endDate)),
+
+  getPurchaseRunningPaymentAmount: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/running-payment-amount`, startDate, endDate)),
+
+  getSalesByCustomer: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/by-customer`, startDate, endDate)),
+
+  getPurchaseByVendor: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/by-vendor`, startDate, endDate)),
+
+  getSalesByItem: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/by-item`, startDate, endDate)),
+
+  getPurchaseByItem: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/by-item`, startDate, endDate)),
+
+  getProfitByItem: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/profit/by-item`, startDate, endDate)),
+
+  getTopSellingItems: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/dashboard/top-selling-items`, startDate, endDate)),
+
+  getTopProfitableItems: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/dashboard/top-profitable-items`, startDate, endDate)),
+
+  getPaymentModeDistribution: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/dashboard/payment-mode-distribution`, startDate, endDate)),
+
+  getMonthlyTrend: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/dashboard/monthly-trend`, startDate, endDate)),
 };

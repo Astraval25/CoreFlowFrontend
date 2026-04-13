@@ -28,16 +28,16 @@ const ViewCustomer = () => {
   };
 
   return (
-    <div className="rounded-2xl border border-[#d9e1d9] bg-white shadow-sm">
-      <div className="flex">
-        <div className="w-[22%] ">
+    <div className="w-full">
+      <div className="flex gap-3">
+        <div className="w-[22%]">
         <ListAllCustomer
           selectedCustomerId={selectedCustomerId}
           onSelectCustomer={handleSelectCustomer}
         />
         </div>
 
-        <div className="w-[78%] p-2">
+        <div className="w-[78%]">
           {selectedCustomerId && companyId ? (
             <ViewCustomerDetail
               companyId={companyId}
