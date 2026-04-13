@@ -233,6 +233,19 @@ export const coreApi = {
   getDashboardRevenueExpense: (companyId, startDate, endDate) =>
     api.get(withDateRange(`${ENDPOINTS.DASHBOARD_REVENUE_EXPENSE}/${companyId}/analytics/dashboard/revenue-expense`, startDate, endDate)),
 
+  // Notifications
+  getNotifications: (companyId, page = 0) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/notifications?page=${page}`),
+
+  getUnreadNotificationCount: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/notifications/unread-count`),
+
+  markNotificationRead: (companyId, notificationId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/notifications/${notificationId}/read`),
+
+  markAllNotificationsRead: (companyId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/notifications/read-all`),
+
   // Report Analytics
   getSalesSummary: (companyId, startDate, endDate) =>
     api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/summary`, startDate, endDate)),

@@ -2,8 +2,10 @@ import { useNavigate } from "react-router-dom";
 import { FiLogOut, FiSearch, FiBell, FiSettings } from "react-icons/fi";
 import { MdKeyboardArrowDown, MdAdd } from "react-icons/md";
 import { jwtDecode } from "jwt-decode";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import CompanyDrawer from "../../features/companyDrawer/CompanyDrawer";
+import NotificationsDrawer from "../../features/notifications/components/NotificationsDrawer";
+import { coreApi } from "../services/coreApi";
 
 const Toolbar = () => {
   const navigate = useNavigate();
@@ -13,6 +15,18 @@ const Toolbar = () => {
   const [companyId, setCompanyId] = useState("");
   const [userId, setUserId] = useState("");
   const [openCompanyPanel, setOpenCompanyPanel] = useState(false);
+  const [openNotificationsPanel, setOpenNotificationsPanel] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const fetchUnreadCount = useCallback(async (compId) => {
+    if (!compId) return;
+    try {
+      const res = await coreApi.getUnreadNotificationCount(compId);
+      setUnreadCount(res?.data?.responseData?.unreadCount || 0);
+    } catch {
+      // silent
+    }
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -34,18 +48,34 @@ const Toolbar = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (!companyId) return;
+
+    fetchUnreadCount(companyId);
+
+    const onFocus = () => fetchUnreadCount(companyId);
+    const onNotificationsUpdated = (event) => {
+      const updatedCompanyId = event?.detail?.companyId;
+      if (updatedCompanyId && String(updatedCompanyId) !== String(companyId)) return;
+      fetchUnreadCount(companyId);
+    };
+
+    const intervalId = setInterval(() => fetchUnreadCount(companyId), 60000);
+
+    window.addEventListener("focus", onFocus);
+    window.addEventListener("notifications:updated", onNotificationsUpdated);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener("focus", onFocus);
+      window.removeEventListener("notifications:updated", onNotificationsUpdated);
+    };
+  }, [companyId, fetchUnreadCount]);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refreshToken");
     navigate("/cf/auth/login");
-  };
-
-  const handleNotifications = () => {
-    if (companyId) {
-      navigate(`/cf/company/${companyId}/notifications`);
-      return;
-    }
-    navigate("/cf/company/list");
   };
 
   const handleSettings = () => {
@@ -110,7 +140,10 @@ const Toolbar = () => {
 
         {/* Company selector */}
         <button
-          onClick={() => setOpenCompanyPanel(true)}
+          onClick={() => {
+            setOpenNotificationsPanel(false);
+            setOpenCompanyPanel(true);
+          }}
           className="hidden sm:flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
           style={{ color: "var(--text-main)", background: "var(--surface-soft)", border: "1px solid var(--line)" }}
         >
@@ -134,15 +167,22 @@ const Toolbar = () => {
           className="relative w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
           style={{ color: "var(--text-sub)" }}
           title="Notifications"
-          onClick={handleNotifications}
+          onClick={() => {
+            setOpenCompanyPanel(false);
+            setOpenNotificationsPanel((prev) => !prev);
+          }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
         >
           <FiBell size={17} />
-          <span
-            className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full"
-            style={{ background: "var(--red)" }}
-          />
+          {unreadCount > 0 && (
+            <span
+              className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full text-[10px] font-bold flex items-center justify-center"
+              style={{ background: "var(--red)", color: "#fff" }}
+            >
+              {unreadCount > 99 ? "99+" : unreadCount}
+            </span>
+          )}
         </button>
 
         {/* Settings */}
@@ -176,6 +216,10 @@ const Toolbar = () => {
       <CompanyDrawer
         open={openCompanyPanel}
         onClose={() => setOpenCompanyPanel(false)}
+      />
+      <NotificationsDrawer
+        open={openNotificationsPanel}
+        onClose={() => setOpenNotificationsPanel(false)}
       />
     </>
   );

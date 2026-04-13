@@ -35,6 +35,7 @@ import PaymentReceivedPage from "./features/paymentReceived/pages/PaymentReceive
 import CreatePaymentReceivedPage from "./features/paymentReceived/pages/CreatePaymentReceivedPage";
 import ViewPaymentReceivedPage from "./features/paymentReceived/pages/ViewPaymentReceivedPage";
 import ReportPage from "./features/report/pages/ReportPage";
+import NotificationsPage from "./features/notifications/pages/NotificationsPage";
 
 export const router = createBrowserRouter([
   // ── Public pages ──
@@ -78,7 +79,7 @@ export const router = createBrowserRouter([
       { path: "cf/company/:companyId/dashboard", element: <Dashboard /> },
 
       // Notifications
-      { path: "cf/company/:companyId/notifications", element: <PlaceholderPage title="Notifications" /> },
+      { path: "cf/company/:companyId/notifications", element: <NotificationsPage /> },
 
       // Company
       { path: "cf/company/list", element: <PlaceholderPage title="Company List" /> },
