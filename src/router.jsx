@@ -28,6 +28,12 @@ import ViewSalesPage from "./features/sales/pages/ViewSalesPage";
 import CreateSalesPage from "./features/sales/pages/CreateSalesPage";
 import CustomerItems from "./features/CustomerItems/pages/CustomerItems";
 import PlaceholderPage from "./shared/components/PlaceholderPage";
+import PaymentMadePage from "./features/paymentMade/pages/PaymentMadePage";
+import CreatePaymentMadePage from "./features/paymentMade/pages/CreatePaymentMadePage";
+import ViewPaymentMadePage from "./features/paymentMade/pages/ViewPaymentMadePage";
+import PaymentReceivedPage from "./features/paymentReceived/pages/PaymentReceivedPage";
+import CreatePaymentReceivedPage from "./features/paymentReceived/pages/CreatePaymentReceivedPage";
+import ViewPaymentReceivedPage from "./features/paymentReceived/pages/ViewPaymentReceivedPage";
 
 export const router = createBrowserRouter([
   // ── Public pages ──
@@ -114,16 +120,16 @@ export const router = createBrowserRouter([
       { path: "cf/company/:companyId/purchase/:purchaseId/update", element: <CreatePurchasePage /> },
 
       // Payment Received
-      { path: "cf/company/:companyId/payment-received/list", element: <PlaceholderPage title="Payment Received" /> },
-      { path: "cf/company/:companyId/payment-received/create", element: <PlaceholderPage title="Create Payment Received" /> },
-      { path: "cf/company/:companyId/payment-received/:paymentReceivedId/detail", element: <PlaceholderPage title="Payment Received Detail" /> },
-      { path: "cf/company/:companyId/payment-received/:paymentReceivedId/update", element: <PlaceholderPage title="Update Payment Received" /> },
+      { path: "cf/company/:companyId/payment-received/list", element: <PaymentReceivedPage /> },
+      { path: "cf/company/:companyId/payment-received/create", element: <CreatePaymentReceivedPage /> },
+      { path: "cf/company/:companyId/payment-received/:paymentReceivedId/detail", element: <ViewPaymentReceivedPage /> },
+      { path: "cf/company/:companyId/payment-received/:paymentReceivedId/update", element: <CreatePaymentReceivedPage /> },
 
       // Payment Made
-      { path: "cf/company/:companyId/payment-made/list", element: <PlaceholderPage title="Payment Made" /> },
-      { path: "cf/company/:companyId/payment-made/create", element: <PlaceholderPage title="Create Payment Made" /> },
-      { path: "cf/company/:companyId/payment-made/:paymentMadeId/detail", element: <PlaceholderPage title="Payment Made Detail" /> },
-      { path: "cf/company/:companyId/payment-made/:paymentMadeId/update", element: <PlaceholderPage title="Update Payment Made" /> },
+      { path: "cf/company/:companyId/payment-made/list", element: <PaymentMadePage /> },
+      { path: "cf/company/:companyId/payment-made/create", element: <CreatePaymentMadePage /> },
+      { path: "cf/company/:companyId/payment-made/:paymentMadeId/detail", element: <ViewPaymentMadePage /> },
+      { path: "cf/company/:companyId/payment-made/:paymentMadeId/update", element: <CreatePaymentMadePage /> },
 
       // Reports
       { path: "cf/company/:companyId/report/customers", element: <PlaceholderPage title="Customers Report" /> },

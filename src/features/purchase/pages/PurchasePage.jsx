@@ -47,7 +47,13 @@ const PurchasePage = () => {
             {TABS.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  if (tab.id === "paymentMade") {
+                    navigate(`/cf/company/${companyId}/payment-made/list`);
+                    return;
+                  }
+                  setActiveTab(tab.id);
+                }}
                 className="text-xs pb-1 border-b-2 transition-colors"
                 style={{
                   fontWeight: activeTab === tab.id ? 600 : 500,

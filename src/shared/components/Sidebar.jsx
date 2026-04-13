@@ -40,6 +40,12 @@ const Sidebar = () => {
     ) {
       setOpenGroups((prev) => ({ ...prev, manage: true }));
     }
+    if (
+      path.includes("/payment-made") ||
+      path.includes("/payment-received")
+    ) {
+      setOpenGroups((prev) => ({ ...prev, payments: true }));
+    }
   }, [location.pathname]);
 
   const toggle = (key) =>
@@ -167,6 +173,61 @@ const Sidebar = () => {
           <FaShoppingCart size={15} />
           <span>Purchases</span>
         </NavLink>
+
+        {/* Payments group */}
+        <div>
+          <button
+            onClick={() => toggle("payments")}
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              location.pathname.includes("/payment-made") ||
+              location.pathname.includes("/payment-received")
+                ? "text-[var(--sidebar-text-bright)] bg-[var(--sidebar-hover)]"
+                : "text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)]"
+            }`}
+          >
+            <span className="flex items-center gap-2.5">
+              <MdAccountBalance size={17} />
+              Payments
+            </span>
+            <MdKeyboardArrowDown
+              size={18}
+              className={`transition-transform shrink-0 ${openGroups.payments ? "rotate-180" : ""}`}
+            />
+          </button>
+
+          <div
+            className={`overflow-hidden transition-all duration-200 ${
+              openGroups.payments ? "max-h-40 mt-0.5" : "max-h-0"
+            }`}
+          >
+            <div className="ml-4 pl-3 py-0.5 space-y-0.5">
+              {cid && (
+                <>
+                  <NavLink
+                    to={`${companyRoot}/payment-made/list`}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "block px-3 py-2 rounded-lg text-sm font-semibold text-white bg-[var(--sidebar-active-bg)]"
+                        : "block px-3 py-2 rounded-lg text-sm font-medium text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)] transition-colors"
+                    }
+                  >
+                    Payment Made
+                  </NavLink>
+                  <NavLink
+                    to={`${companyRoot}/payment-received/list`}
+                    className={({ isActive }) =>
+                      isActive
+                        ? "block px-3 py-2 rounded-lg text-sm font-semibold text-white bg-[var(--sidebar-active-bg)]"
+                        : "block px-3 py-2 rounded-lg text-sm font-medium text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)] transition-colors"
+                    }
+                  >
+                    Payment Received
+                  </NavLink>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
 
       </nav>
 

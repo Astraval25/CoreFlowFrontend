@@ -150,6 +150,60 @@ export const coreApi = {
   editVendorItem: (companyId, vendorId, itemId, data) => api.put(
     `${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/${itemId}`, data),
 
+  // Payment Made (payments-sent)
+  getPaymentsSentSummary: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments-sent/summary`),
+
+  getPaymentDetail: (companyId, paymentId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}`),
+
+  createPaymentSent: (companyId, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments-sent`, data),
+
+  updatePaymentSent: (companyId, paymentId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments-sent/${paymentId}`, data),
+
+  getVendorUnpaidOrders: (companyId, vendorId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendor/${vendorId}/unpaid-orders`),
+
+  deletePaymentSentAllocation: (companyId, paymentId, allocationId) =>
+    api.delete(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/payments-sent/${paymentId}/allocations/${allocationId}`
+    ),
+
+  updatePaymentStatusPaid: (companyId, paymentId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}/paid`),
+
+  updatePaymentStatusViewed: (companyId, paymentId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}/viewed`),
+
+  updatePaymentStatusFailed: (companyId, paymentId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}/failed`),
+
+  updatePaymentStatusRefund: (companyId, paymentId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}/refund`),
+
+  updatePaymentStatusPartiallyPaid: (companyId, paymentId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}/partially-paid`),
+
+  // Payment Received (payments-received)
+  getPaymentsReceivedSummary: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received/summary`),
+
+  createPaymentReceived: (companyId, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received`, data),
+
+  updatePaymentReceived: (companyId, paymentId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received/${paymentId}`, data),
+
+  getCustomerUnpaidOrders: (companyId, customerId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customer/${customerId}/unpaid-orders`),
+
+  deletePaymentReceivedAllocation: (companyId, paymentId, allocationId) =>
+    api.delete(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received/${paymentId}/allocations/${allocationId}`
+    ),
+
   // Dashboard Analytics
   getDashboardKpi: (companyId, startDate, endDate) =>
     api.get(`${ENDPOINTS.DASHBOARD_KPI}/${companyId}/analytics/dashboard/kpi?startDate=${startDate}&endDate=${endDate}`),
