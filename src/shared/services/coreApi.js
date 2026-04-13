@@ -1,6 +1,9 @@
 import api from "../services/apiService";
 import { ENDPOINTS } from "../../config/apiEndpoints";
 
+const withDateRange = (path, startDate, endDate) =>
+  `${path}?startDate=${startDate}&endDate=${endDate}`;
+
 export const coreApi = {
   login: (data) => api.post(ENDPOINTS.LOGIN, data),
   register: (data) => api.post(ENDPOINTS.REGISTER, data),
@@ -222,11 +225,75 @@ export const coreApi = {
 
   // Dashboard Analytics
   getDashboardKpi: (companyId, startDate, endDate) =>
-    api.get(`${ENDPOINTS.DASHBOARD_KPI}/${companyId}/analytics/dashboard/kpi?startDate=${startDate}&endDate=${endDate}`),
+    api.get(withDateRange(`${ENDPOINTS.DASHBOARD_KPI}/${companyId}/analytics/dashboard/kpi`, startDate, endDate)),
 
   getDashboardCashFlow: (companyId, startDate, endDate) =>
-    api.get(`${ENDPOINTS.DASHBOARD_CASH_FLOW}/${companyId}/analytics/dashboard/cash-flow?startDate=${startDate}&endDate=${endDate}`),
+    api.get(withDateRange(`${ENDPOINTS.DASHBOARD_CASH_FLOW}/${companyId}/analytics/dashboard/cash-flow`, startDate, endDate)),
 
   getDashboardRevenueExpense: (companyId, startDate, endDate) =>
-    api.get(`${ENDPOINTS.DASHBOARD_REVENUE_EXPENSE}/${companyId}/analytics/dashboard/revenue-expense?startDate=${startDate}&endDate=${endDate}`),
+    api.get(withDateRange(`${ENDPOINTS.DASHBOARD_REVENUE_EXPENSE}/${companyId}/analytics/dashboard/revenue-expense`, startDate, endDate)),
+
+  // Report Analytics
+  getSalesSummary: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/summary`, startDate, endDate)),
+
+  getPurchaseSummary: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/summary`, startDate, endDate)),
+
+  getSalesOrderFrequency: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/order-frequency`, startDate, endDate)),
+
+  getPurchaseOrderFrequency: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/order-frequency`, startDate, endDate)),
+
+  getSalesPaymentFrequency: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/payment-frequency`, startDate, endDate)),
+
+  getPurchasePaymentFrequency: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/payment-frequency`, startDate, endDate)),
+
+  getSalesItemFrequency: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/item-frequency`, startDate, endDate)),
+
+  getPurchaseItemFrequency: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/item-frequency`, startDate, endDate)),
+
+  getSalesRunningOrderAmount: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/running-order-amount`, startDate, endDate)),
+
+  getPurchaseRunningOrderAmount: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/running-order-amount`, startDate, endDate)),
+
+  getSalesRunningPaymentAmount: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/running-payment-amount`, startDate, endDate)),
+
+  getPurchaseRunningPaymentAmount: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/running-payment-amount`, startDate, endDate)),
+
+  getSalesByCustomer: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/by-customer`, startDate, endDate)),
+
+  getPurchaseByVendor: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/by-vendor`, startDate, endDate)),
+
+  getSalesByItem: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/by-item`, startDate, endDate)),
+
+  getPurchaseByItem: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/purchase/by-item`, startDate, endDate)),
+
+  getProfitByItem: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/profit/by-item`, startDate, endDate)),
+
+  getTopSellingItems: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/dashboard/top-selling-items`, startDate, endDate)),
+
+  getTopProfitableItems: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/dashboard/top-profitable-items`, startDate, endDate)),
+
+  getPaymentModeDistribution: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/dashboard/payment-mode-distribution`, startDate, endDate)),
+
+  getMonthlyTrend: (companyId, startDate, endDate) =>
+    api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/dashboard/monthly-trend`, startDate, endDate)),
 };

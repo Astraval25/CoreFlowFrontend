@@ -34,6 +34,7 @@ import ViewPaymentMadePage from "./features/paymentMade/pages/ViewPaymentMadePag
 import PaymentReceivedPage from "./features/paymentReceived/pages/PaymentReceivedPage";
 import CreatePaymentReceivedPage from "./features/paymentReceived/pages/CreatePaymentReceivedPage";
 import ViewPaymentReceivedPage from "./features/paymentReceived/pages/ViewPaymentReceivedPage";
+import ReportPage from "./features/report/pages/ReportPage";
 
 export const router = createBrowserRouter([
   // ── Public pages ──
@@ -132,13 +133,14 @@ export const router = createBrowserRouter([
       { path: "cf/company/:companyId/payment-made/:paymentMadeId/update", element: <CreatePaymentMadePage /> },
 
       // Reports
-      { path: "cf/company/:companyId/report/customers", element: <PlaceholderPage title="Customers Report" /> },
-      { path: "cf/company/:companyId/report/vendors", element: <PlaceholderPage title="Vendors Report" /> },
-      { path: "cf/company/:companyId/report/items", element: <PlaceholderPage title="Items Report" /> },
-      { path: "cf/company/:companyId/report/sales", element: <PlaceholderPage title="Sales Report" /> },
-      { path: "cf/company/:companyId/report/purchase", element: <PlaceholderPage title="Purchase Report" /> },
-      { path: "cf/company/:companyId/report/payment-received", element: <PlaceholderPage title="Payment Received Report" /> },
-      { path: "cf/company/:companyId/report/payment-made", element: <PlaceholderPage title="Payment Made Report" /> },
+      { path: "cf/company/:companyId/report", element: <ReportPage /> },
+      { path: "cf/company/:companyId/report/customers", element: <ReportPage reportType="customers" /> },
+      { path: "cf/company/:companyId/report/vendors", element: <ReportPage reportType="vendors" /> },
+      { path: "cf/company/:companyId/report/items", element: <ReportPage reportType="items" /> },
+      { path: "cf/company/:companyId/report/sales", element: <ReportPage reportType="sales" /> },
+      { path: "cf/company/:companyId/report/purchase", element: <ReportPage reportType="purchase" /> },
+      { path: "cf/company/:companyId/report/payment-received", element: <ReportPage reportType="payment-received" /> },
+      { path: "cf/company/:companyId/report/payment-made", element: <ReportPage reportType="payment-made" /> },
     ],
   },
 ]);

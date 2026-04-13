@@ -61,6 +61,7 @@ const Sidebar = () => {
   const homePath = cid ? `${companyRoot}/dashboard` : "/cf/company/list";
   const salesPath = cid ? `${companyRoot}/sales` : "/cf/company/list";
   const purchasePath = cid ? `${companyRoot}/purchase/list` : "/cf/company/list";
+  const reportPath = cid ? `${companyRoot}/report` : "/cf/company/list";
 
   return (
     <aside
@@ -228,6 +229,11 @@ const Sidebar = () => {
             </div>
           </div>
         </div>
+
+        <NavLink to={reportPath} className={({ isActive }) => isActive ? active : base}>
+          <MdAssessment size={17} />
+          <span>Report</span>
+        </NavLink>
 
       </nav>
 
