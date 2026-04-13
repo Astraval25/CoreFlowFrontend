@@ -204,6 +204,22 @@ export const coreApi = {
       `${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received/${paymentId}/allocations/${allocationId}`
     ),
 
+  // Invitations (company linking)
+  getCustomerInvitationCode: (companyId, customerId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/customers/${customerId}/code`),
+
+  createCustomerInvitation: (companyId, customerId) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/customers/${customerId}`),
+
+  getVendorInvitationCode: (companyId, vendorId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/vendors/${vendorId}/code`),
+
+  createVendorInvitation: (companyId, vendorId) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/vendors/${vendorId}`),
+
+  acceptInvitation: (companyId, invitationCode, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/${invitationCode}/accept`, data),
+
   // Dashboard Analytics
   getDashboardKpi: (companyId, startDate, endDate) =>
     api.get(`${ENDPOINTS.DASHBOARD_KPI}/${companyId}/analytics/dashboard/kpi?startDate=${startDate}&endDate=${endDate}`),

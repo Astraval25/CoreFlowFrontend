@@ -1,8 +1,9 @@
-import { MdBusiness, MdEdit, MdEmail, MdLocationOn, MdPhone } from "react-icons/md";
+import { MdBusiness, MdEdit, MdEmail, MdLocationOn, MdPhone, MdLink, MdContentCopy, MdCheck } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import CustomerItems from "../../CustomerItems/pages/CustomerItems";
 import useViewCustomerDetail from "../hooks/useViewCustomerDetail";
+import { coreApi } from "../../../shared/services/coreApi";
 
 const formatAddress = (address) => {
   if (!address) return "Not available";
@@ -17,6 +18,133 @@ const InfoRow = ({ label, value, accent = "var(--text-main)" }) => (
     <span className="text-xs font-semibold text-right" style={{ color: accent }}>{value}</span>
   </div>
 );
+
+const CustomerInvitationSection = ({ companyId, customerId }) => {
+  const [inviteCode, setInviteCode] = useState(null);
+  const [generating, setGenerating] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [acceptCode, setAcceptCode] = useState("");
+  const [accepting, setAccepting] = useState(false);
+
+  const fetchOrGenerateCode = useCallback(async () => {
+    setGenerating(true);
+    try {
+      // Try to get existing code first
+      const res = await coreApi.getCustomerInvitationCode(companyId, customerId);
+      const code = res?.data?.responseData?.invitationCode;
+      if (code) {
+        setInviteCode(code);
+        return;
+      }
+    } catch {
+      // No existing code, generate new one
+    }
+    try {
+      const res = await coreApi.createCustomerInvitation(companyId, customerId);
+      setInviteCode(res?.data?.responseData?.invitationCode || null);
+    } catch (err) {
+      alert(err?.response?.data?.responseMessage || "Failed to generate invitation code");
+    } finally {
+      setGenerating(false);
+    }
+  }, [companyId, customerId]);
+
+  const copyCode = () => {
+    if (!inviteCode) return;
+    navigator.clipboard.writeText(inviteCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleAccept = async () => {
+    if (!acceptCode.trim()) return;
+    setAccepting(true);
+    try {
+      await coreApi.acceptInvitation(companyId, acceptCode.trim(), {
+        selectedCustomerId: Number(customerId),
+      });
+      alert("Invitation accepted successfully! Company linked.");
+      setAcceptCode("");
+    } catch (err) {
+      alert(err?.response?.data?.responseMessage || "Failed to accept invitation");
+    } finally {
+      setAccepting(false);
+    }
+  };
+
+  return (
+    <div className="card p-3.5">
+      <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold" style={{ color: "var(--text-main)" }}>
+        <MdLink size={18} />
+        Company Linking
+      </h3>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        {/* Generate / Show invitation code */}
+        <div className="rounded-lg p-3" style={{ background: "var(--surface-soft)" }}>
+          <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: "var(--text-sub)" }}>
+            Invite Code for this Customer
+          </p>
+          <p className="text-[11px] mb-3" style={{ color: "var(--text-muted)" }}>
+            Share this code with the vendor company so they can link to this customer.
+          </p>
+          {inviteCode ? (
+            <div className="flex items-center gap-2">
+              <span
+                className="inline-flex items-center rounded-lg px-4 py-2 text-lg font-bold tracking-[0.3em] select-all"
+                style={{ background: "var(--surface-bg)", border: "1px dashed var(--line)", color: "var(--accent)" }}
+              >
+                {inviteCode}
+              </span>
+              <button
+                onClick={copyCode}
+                className="btn-ghost text-xs flex items-center gap-1"
+              >
+                {copied ? <MdCheck size={14} /> : <MdContentCopy size={14} />}
+                {copied ? "Copied" : "Copy"}
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={fetchOrGenerateCode}
+              disabled={generating}
+              className="btn-primary text-xs"
+            >
+              {generating ? "Generating..." : "Generate Invite Code"}
+            </button>
+          )}
+        </div>
+
+        {/* Accept invitation from vendor */}
+        <div className="rounded-lg p-3" style={{ background: "var(--surface-soft)" }}>
+          <p className="text-[11px] font-semibold uppercase tracking-wide mb-2" style={{ color: "var(--text-sub)" }}>
+            Accept Vendor Invitation
+          </p>
+          <p className="text-[11px] mb-3" style={{ color: "var(--text-muted)" }}>
+            Enter a code from a vendor company to link this customer to their vendor record.
+          </p>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={acceptCode}
+              onChange={(e) => setAcceptCode(e.target.value.toUpperCase())}
+              placeholder="Enter code e.g. PYE8SB"
+              className="form-input text-xs py-1.5 tracking-widest uppercase"
+              style={{ maxWidth: 200 }}
+            />
+            <button
+              onClick={handleAccept}
+              disabled={accepting || !acceptCode.trim()}
+              className="btn-primary text-xs"
+            >
+              {accepting ? "Linking..." : "Accept"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ViewCustomerDetail = ({ companyId, customerId }) => {
   const { customer, loading, error } = useViewCustomerDetail(companyId, customerId);
@@ -113,6 +241,8 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
             </div>
           </div>
         </div>
+
+        <CustomerInvitationSection companyId={companyId} customerId={customerId} />
 
         <div className="pt-1.5" style={{ borderTop: "1px solid var(--line)" }}>
           <div className="flex flex-wrap gap-2">
