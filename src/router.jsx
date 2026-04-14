@@ -36,6 +36,18 @@ import CreatePaymentReceivedPage from "./features/paymentReceived/pages/CreatePa
 import ViewPaymentReceivedPage from "./features/paymentReceived/pages/ViewPaymentReceivedPage";
 import ReportPage from "./features/report/pages/ReportPage";
 import NotificationsPage from "./features/notifications/pages/NotificationsPage";
+import EmployeesPage from "./features/employees/pages/EmployeesPage";
+import CreateEmployeePage from "./features/employees/pages/CreateEmployeePage";
+import ViewEmployeePage from "./features/employees/pages/ViewEmployeePage";
+import WorkDefinitionsPage from "./features/workDefinitions/pages/WorkDefinitionsPage";
+import CreateWorkDefPage from "./features/workDefinitions/pages/CreateWorkDefPage";
+import WorkLogsPage from "./features/workLogs/pages/WorkLogsPage";
+import LeaveLogsPage from "./features/leaveLogs/pages/LeaveLogsPage";
+import SalaryPage from "./features/salary/pages/SalaryPage";
+import EmployeeProfilePage from "./features/employeePortal/pages/EmployeeProfilePage";
+import EmployeeWorkLogsPage from "./features/employeePortal/pages/EmployeeWorkLogsPage";
+import EmployeeLeaveLogsPage from "./features/employeePortal/pages/EmployeeLeaveLogsPage";
+import EmployeeSalaryPage from "./features/employeePortal/pages/EmployeeSalaryPage";
 
 export const router = createBrowserRouter([
   // ── Public pages ──
@@ -132,6 +144,32 @@ export const router = createBrowserRouter([
       { path: "cf/company/:companyId/payment-made/create", element: <CreatePaymentMadePage /> },
       { path: "cf/company/:companyId/payment-made/:paymentMadeId/detail", element: <ViewPaymentMadePage /> },
       { path: "cf/company/:companyId/payment-made/:paymentMadeId/update", element: <CreatePaymentMadePage /> },
+
+      // Employees
+      { path: "cf/company/:companyId/employees", element: <EmployeesPage /> },
+      { path: "cf/company/:companyId/employees/create", element: <CreateEmployeePage /> },
+      { path: "cf/company/:companyId/employees/:employeeId/detail", element: <ViewEmployeePage /> },
+      { path: "cf/company/:companyId/employees/:employeeId/update", element: <CreateEmployeePage /> },
+
+      // Work Definitions
+      { path: "cf/company/:companyId/work-definitions", element: <WorkDefinitionsPage /> },
+      { path: "cf/company/:companyId/work-definitions/create", element: <CreateWorkDefPage /> },
+      { path: "cf/company/:companyId/work-definitions/:workDefId/update", element: <CreateWorkDefPage /> },
+
+      // Work Logs
+      { path: "cf/company/:companyId/work-logs", element: <WorkLogsPage /> },
+
+      // Leave Logs
+      { path: "cf/company/:companyId/leave-logs", element: <LeaveLogsPage /> },
+
+      // Salary
+      { path: "cf/company/:companyId/salary", element: <SalaryPage /> },
+
+      // Employee Portal (self-service)
+      { path: "cf/emp/profile", element: <EmployeeProfilePage /> },
+      { path: "cf/emp/work-logs", element: <EmployeeWorkLogsPage /> },
+      { path: "cf/emp/leave-logs", element: <EmployeeLeaveLogsPage /> },
+      { path: "cf/emp/salary", element: <EmployeeSalaryPage /> },
 
       // Reports
       { path: "cf/company/:companyId/report", element: <ReportPage /> },

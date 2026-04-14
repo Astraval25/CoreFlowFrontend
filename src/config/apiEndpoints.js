@@ -14,4 +14,8 @@ export const ENDPOINTS = {
   DASHBOARD_KPI: "/companies",
   DASHBOARD_CASH_FLOW: "/companies",
   DASHBOARD_REVENUE_EXPENSE: "/companies",
+
+  // Employee Portal (self-service)
+  EMP: "/emp",
+  MODEMP: "/companies",
 };

@@ -12,13 +12,19 @@ import {
   MdAssessment,
   MdOutlinePayments,
   MdPayments,
+  MdPeople,
+  MdWork,
+  MdEventNote,
+  MdAccountBalance,
+  MdBuild,
+  MdEventAvailable,
 } from "react-icons/md";
 import { FaShoppingCart } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 
 const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
-  const [openGroups, setOpenGroups] = useState({ manage: false, payments: false });
+  const [openGroups, setOpenGroups] = useState({ manage: false, payments: false, employees: false });
   const [companyId, setCompanyId] = useState("");
   const location = useLocation();
 
@@ -49,12 +55,21 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
     { label: "Vendors", to: withCompany("vendors"), icon: <MdStorefront size={16} />, match: "/vendors" },
   ];
 
+  const employeeChildren = [
+    { label: "Employees", to: withCompany("employees"), icon: <MdPeople size={16} />, match: "/employees" },
+    { label: "Work Definitions", to: withCompany("work-definitions"), icon: <MdBuild size={16} />, match: "/work-definitions" },
+    { label: "Work Logs", to: withCompany("work-logs"), icon: <MdWork size={16} />, match: "/work-logs" },
+    { label: "Leave Logs", to: withCompany("leave-logs"), icon: <MdEventAvailable size={16} />, match: "/leave-logs" },
+    { label: "Salary", to: withCompany("salary"), icon: <MdAccountBalance size={16} />, match: "/salary" },
+  ];
+
   const paymentChildren = [
     { label: "Payment Made", to: withCompany("payment-made/list"), icon: <MdOutlinePayments size={16} />, match: "/payment-made" },
     { label: "Payment Received", to: withCompany("payment-received/list"), icon: <MdPayments size={16} />, match: "/payment-received" },
   ];
 
   const isManageActive = manageChildren.some((item) => location.pathname.includes(item.match));
+  const isEmployeesActive = employeeChildren.some((item) => location.pathname.includes(item.match));
   const isPaymentsActive = paymentChildren.some((item) => location.pathname.includes(item.match));
 
   useEffect(() => {
@@ -62,10 +77,13 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
     if (isManageActive) {
       setOpenGroups((prev) => ({ ...prev, manage: true }));
     }
+    if (isEmployeesActive) {
+      setOpenGroups((prev) => ({ ...prev, employees: true }));
+    }
     if (isPaymentsActive) {
       setOpenGroups((prev) => ({ ...prev, payments: true }));
     }
-  }, [minimized, isManageActive, isPaymentsActive]);
+  }, [minimized, isManageActive, isEmployeesActive, isPaymentsActive]);
 
   const toggleGroup = (key) => {
     setOpenGroups((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -76,6 +94,7 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
     ...manageChildren,
     { label: "Sales", to: salesPath, icon: <MdPointOfSale size={18} /> },
     { label: "Purchases", to: purchasePath, icon: <FaShoppingCart size={16} /> },
+    ...employeeChildren,
     ...paymentChildren,
     { label: "Report", to: reportPath, icon: <MdAssessment size={18} /> },
   ];
@@ -196,6 +215,26 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
               <FaShoppingCart size={15} />
               <span>Purchases</span>
             </NavLink>
+
+            <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
+              <button onClick={() => toggleGroup("employees")} className={groupButtonClass(isEmployeesActive)}>
+                <span className="flex items-center gap-2.5">
+                  <MdPeople size={17} />
+                  Employees
+                </span>
+                <MdKeyboardArrowDown
+                  size={18}
+                  className={`transition-transform ${openGroups.employees ? "rotate-180" : ""}`}
+                />
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-200 ${
+                  openGroups.employees ? "max-h-80 mt-1" : "max-h-0"
+                }`}
+              >
+                {renderNestedLinks(employeeChildren)}
+              </div>
+            </div>
 
             <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
               <button onClick={() => toggleGroup("payments")} className={groupButtonClass(isPaymentsActive)}>

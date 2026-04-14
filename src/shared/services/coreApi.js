@@ -309,4 +309,143 @@ export const coreApi = {
 
   getMonthlyTrend: (companyId, startDate, endDate) =>
     api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/dashboard/monthly-trend`, startDate, endDate)),
+
+  // ── Employee Module (Admin) ──
+  // Employees
+  getEmployees: (companyId, activeOnly = true) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees?activeOnly=${activeOnly}`),
+
+  getEmployeeDetail: (companyId, employeeId) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}`),
+
+  createEmployee: (companyId, data) =>
+    api.post(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees`, data),
+
+  updateEmployee: (companyId, employeeId, data) =>
+    api.put(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}`, data),
+
+  deactivateEmployee: (companyId, employeeId) =>
+    api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/deactivate`),
+
+  // Salary Config
+  createSalaryConfig: (companyId, employeeId, data) =>
+    api.post(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/salary-config`, data),
+
+  getActiveSalaryConfig: (companyId, employeeId) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/salary-config`),
+
+  getSalaryConfigHistory: (companyId, employeeId) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/salary-config/history`),
+
+  // Portal User
+  createPortalUser: (companyId, employeeId, data) =>
+    api.post(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/portal-user`, data),
+
+  getPortalUser: (companyId, employeeId) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/portal-user`),
+
+  resetPortalUserPassword: (companyId, employeeId, data) =>
+    api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/portal-user/reset-password`, data),
+
+  // Work Definitions
+  getWorkDefinitions: (companyId, activeOnly = true) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-definitions?activeOnly=${activeOnly}`),
+
+  getWorkDefinitionDetail: (companyId, workDefId) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-definitions/${workDefId}`),
+
+  createWorkDefinition: (companyId, data) =>
+    api.post(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-definitions`, data),
+
+  updateWorkDefinition: (companyId, workDefId, data) =>
+    api.put(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-definitions/${workDefId}`, data),
+
+  deactivateWorkDefinition: (companyId, workDefId) =>
+    api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-definitions/${workDefId}/deactivate`),
+
+  getWorkDefRateHistory: (companyId, workDefId) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-definitions/${workDefId}/rate-history`),
+
+  // Work Logs (Admin)
+  createWorkLog: (companyId, data) =>
+    api.post(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-logs`, data),
+
+  getWorkLogs: (companyId, from, to) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-logs?from=${from}&to=${to}`),
+
+  getWorkLogsByEmployee: (companyId, employeeId, from, to) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-logs/employee/${employeeId}?from=${from}&to=${to}`),
+
+  getPendingWorkLogs: (companyId) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-logs/pending`),
+
+  reviewWorkLog: (companyId, logId, data) =>
+    api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-logs/${logId}/review`, data),
+
+  // Leave Logs (Admin)
+  createLeaveLog: (companyId, data) =>
+    api.post(`${ENDPOINTS.MODEMP}/${companyId}/modemp/leave-logs`, data),
+
+  getLeaveLogs: (companyId, from, to) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/leave-logs?from=${from}&to=${to}`),
+
+  getLeaveLogsByEmployee: (companyId, employeeId, from, to) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/leave-logs/employee/${employeeId}?from=${from}&to=${to}`),
+
+  getPendingLeaveLogs: (companyId) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/leave-logs/pending`),
+
+  reviewLeaveLog: (companyId, leaveId, data) =>
+    api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/leave-logs/${leaveId}/review`, data),
+
+  // Salary (Admin)
+  calculateSalary: (companyId, data) =>
+    api.post(`${ENDPOINTS.MODEMP}/${companyId}/modemp/salary/calculate`, data),
+
+  getSalaryPeriods: (companyId, period) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/salary/periods?period=${period}`),
+
+  getSalaryPeriodDetail: (companyId, salaryPeriodId) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/salary/periods/${salaryPeriodId}`),
+
+  approveSalaryPeriod: (companyId, salaryPeriodId) =>
+    api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/salary/periods/${salaryPeriodId}/approve`),
+
+  markSalaryPaid: (companyId, salaryPeriodId, data) =>
+    api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/salary/periods/${salaryPeriodId}/mark-paid`, data),
+
+  getSalaryReport: (companyId, from, to) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/salary/report?from=${from}&to=${to}`),
+
+  downloadSalarySlip: (companyId, salaryPeriodId) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/salary/periods/${salaryPeriodId}/slip`, {
+      responseType: "blob",
+    }),
+
+  // ── Employee Portal (self-service) ──
+  getMyProfile: () =>
+    api.get(`${ENDPOINTS.EMP}/me`),
+
+  getMyWorkLogs: (from, to) =>
+    api.get(`${ENDPOINTS.EMP}/work-logs?from=${from}&to=${to}`),
+
+  updateWorkLogEmployee: (companyId, data) =>
+    api.put(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-logs/employee`, data),
+
+  getMyLeaveLogs: (from, to) =>
+    api.get(`${ENDPOINTS.EMP}/leave-logs?from=${from}&to=${to}`),
+
+  updateLeaveLogEmployee: (companyId, data) =>
+    api.put(`${ENDPOINTS.MODEMP}/${companyId}/modemp/leave-logs/employee`, data),
+
+  getMySalaryPeriods: (period) =>
+    api.get(`${ENDPOINTS.EMP}/salary/periods?period=${period}`),
+
+  getMySalaryDetail: (salaryPeriodId) =>
+    api.get(`${ENDPOINTS.EMP}/salary/periods/${salaryPeriodId}`),
+
+  downloadMySalarySlip: (salaryPeriodId) =>
+    api.get(`${ENDPOINTS.EMP}/salary/periods/${salaryPeriodId}/slip`, {
+      responseType: "blob",
+    }),
 };
