@@ -103,7 +103,7 @@ export const useEmployeeLeaveLogs = () => {
     };
     try {
       if (editingLog) {
-        await coreApi.updateLeaveLog(companyId, payload);
+        await coreApi.updateLeaveLogEmployee(companyId, { ...payload, leaveId: editingLog.leaveId });
       } else {
         await coreApi.createLeaveLog(companyId, payload);
       }

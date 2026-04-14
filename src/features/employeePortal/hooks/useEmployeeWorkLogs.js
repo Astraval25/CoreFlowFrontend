@@ -104,7 +104,7 @@ export const useEmployeeWorkLogs = () => {
     };
     try {
       if (editingLog) {
-        await coreApi.updateWorkLog(companyId, payload);
+        await coreApi.updateWorkLogEmployee(companyId, { ...payload, logId: editingLog.logId });
       } else {
         await coreApi.createWorkLog(companyId, payload);
       }
