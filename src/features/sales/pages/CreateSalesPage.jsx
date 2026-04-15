@@ -1,7 +1,18 @@
 import useCreateSales from "../hooks/useCreateSales";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { MdAdd, MdDeleteOutline, MdClose } from "react-icons/md";
 import { FiSave } from "react-icons/fi";
+
+const ORDER_TYPE_LABEL = {
+  quote: "Quote",
+  order: "Sales Order",
+  invoice: "Invoice",
+};
+const ORDER_TYPE_TAB = {
+  quote: "quotes",
+  order: "salesOrder",
+  invoice: "invoice",
+};
 
 const fmt = (n) =>
   Number(n || 0).toLocaleString("en-IN", {
@@ -22,17 +33,29 @@ const Field = ({ label, required, error, children }) => (
 const CreateSalesPage = () => {
   const navigate = useNavigate();
   const { companyId } = useParams();
+  const [searchParams] = useSearchParams();
+  const typeParam = searchParams.get("type");
+  const orderType = ["quote", "order", "invoice"].includes(typeParam) ? typeParam : "quote";
   const salesBase = `/cf/company/${companyId}/sales`;
 
   const {
-    formData, items, allCustomers, loading, errors,
+    formData, items, allCustomers, loading, errors, submitError,
     subTotal, discountVal, grandTotal,
     handleInputChange, addOrderItem, updateOrderItem, removeOrderItem, submitSales,
-  } = useCreateSales();
+  } = useCreateSales(orderType);
 
   const handleSubmit = async () => {
     const result = await submitSales();
-    if (result?.success) navigate(salesBase);
+    if (result?.success) {
+      if (result.statusWarning) {
+        alert(result.statusWarning);
+        navigate(`${salesBase}?tab=quotes`);
+      } else {
+        navigate(`${salesBase}?tab=${ORDER_TYPE_TAB[orderType]}`);
+      }
+    } else if (result?.message) {
+      alert(result.message);
+    }
   };
 
   return (
@@ -46,7 +69,7 @@ const CreateSalesPage = () => {
         style={{ borderBottom: "1px solid var(--line)" }}
       >
         <h1 className="text-sm font-bold tracking-tight" style={{ color: "var(--text-main)" }}>
-          New Sales Order
+          New {ORDER_TYPE_LABEL[orderType]}
         </h1>
         <button
           onClick={() => navigate(salesBase)}
@@ -61,6 +84,15 @@ const CreateSalesPage = () => {
 
       {/* ── Body ── */}
       <div className="flex-1 flex flex-col px-8 py-6 gap-8">
+
+        {submitError && (
+          <div
+            className="px-3 py-2 rounded text-xs"
+            style={{ background: "rgba(239,68,68,0.08)", color: "var(--red)", border: "1px solid var(--red)" }}
+          >
+            {submitError}
+          </div>
+        )}
 
         {/* ── Top fields ── */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl">

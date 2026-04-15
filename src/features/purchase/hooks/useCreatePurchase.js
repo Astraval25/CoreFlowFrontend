@@ -5,7 +5,7 @@ import useItemsPage from "../../Items/hooks/useItemsPage";
 import { useCustomer } from "../../customer/hooks/useCustomer";
 import { useVendor } from "../../vendors/hooks/useVendor";
 
-const useCreatePurchase = (orderId = null) => {
+const useCreatePurchase = (orderId = null, orderType = "quote") => {
   const { items } = useItemsPage();
   const { allCustomers } = useCustomer();
   const { allVendors } = useVendor();
@@ -156,12 +156,34 @@ const useCreatePurchase = (orderId = null) => {
         })),
       };
 
+      let createdOrderId = orderId;
+      let statusWarning = null;
       if (isEditMode) {
         await coreApi.editPurchase(companyId, orderId, payload);
       } else {
-        await coreApi.createPurchase(companyId, payload);
+        const createRes = await coreApi.createPurchase(companyId, payload);
+        createdOrderId =
+          createRes?.data?.responseData?.orderId ??
+          createRes?.data?.responseData?.id ??
+          null;
+
+        if (createdOrderId && orderType !== "quote") {
+          try {
+            if (orderType === "order") {
+              await coreApi.updateOrderStatusSalesOrder(companyId, createdOrderId);
+            } else if (orderType === "bill") {
+              await coreApi.updateOrderStatusSalesOrder(companyId, createdOrderId);
+              await coreApi.updateOrderStatusInvoiced(companyId, createdOrderId);
+            }
+          } catch (statusErr) {
+            console.error("Status transition failed:", statusErr);
+            statusWarning =
+              statusErr?.response?.data?.responseMessage ||
+              "Order was saved as a quote; advancing its status failed. You can convert it from the detail view.";
+          }
+        }
       }
-      return { success: true };
+      return { success: true, orderId: createdOrderId, statusWarning };
     } catch (error) {
       return {
         success: false,

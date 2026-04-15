@@ -253,22 +253,27 @@ const useCreatePaymentReceived = (paymentId = null) => {
       };
       const allocations = getAllocationsPayload();
 
+      let createdPaymentId = paymentId;
       if (isEditMode) {
         await coreApi.updatePaymentReceived(companyId, paymentId, {
           ...baseDetails,
           ...(allocations.length ? { orderAllocations: allocations } : {}),
         });
       } else {
-        await coreApi.createPaymentReceived(companyId, {
+        const createRes = await coreApi.createPaymentReceived(companyId, {
           customerId: Number(formData.customerId),
           paymentDetails: {
             ...baseDetails,
             ...(allocations.length ? { orderAllocations: allocations } : {}),
           },
         });
+        createdPaymentId =
+          createRes?.data?.responseData?.paymentId ??
+          createRes?.data?.responseData?.id ??
+          null;
       }
 
-      return { success: true };
+      return { success: true, paymentId: createdPaymentId };
     } catch (error) {
       return {
         success: false,

@@ -23,6 +23,10 @@ const ViewPurchasePage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (paramOrderId) setSelectedOrderId(Number(paramOrderId));
+  }, [paramOrderId]);
+
   const handleSelectOrder = (id) => {
     setSelectedOrderId(id);
   };

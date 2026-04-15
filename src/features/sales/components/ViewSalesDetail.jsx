@@ -5,7 +5,11 @@ import useViewSalesDetail from "../hooks/useViewSalesDetail";
 const money = (value) => `Rs. ${Number(value || 0).toLocaleString()}`;
 
 const ViewSalesDetail = ({ companyId, orderId }) => {
-  const { order, orderItems, loading, error } = useViewSalesDetail(companyId, orderId);
+  const {
+    order, orderItems, loading, error, statusUpdating,
+    convertToSalesOrder, convertToInvoice, markPaid,
+    acceptQuotation, declineQuotation, cancelOrder,
+  } = useViewSalesDetail(companyId, orderId);
   const navigate = useNavigate();
 
   if (!orderId) return <p className="p-6 text-gray-600">Select an order to view details</p>;
@@ -14,9 +18,23 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
   if (!order) return <p className="p-6 text-gray-600">No order data available</p>;
 
   const items = orderItems || [];
+  const status = order.orderStatus;
 
   const handleEdit = () => {
     navigate(`/cf/company/${companyId}/sales/${order.orderId}/update`);
+  };
+
+  const TransitionBtn = ({ onClick, children, variant = "primary" }) => {
+    const base =
+      "inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 cursor-pointer";
+    const styles = variant === "danger"
+      ? "border border-[#f0c2c2] bg-[#fbe9e9] text-[#9a3d3d] hover:bg-[#f6d9d9]"
+      : "border border-[#cfe0cf] bg-[#edf4ee] text-[#2f7a47] hover:bg-[#e3eee4]";
+    return (
+      <button onClick={onClick} disabled={statusUpdating} className={`${base} ${styles}`}>
+        {children}
+      </button>
+    );
   };
 
   return (
@@ -43,13 +61,33 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
             </div>
           </div>
 
-          <button
-            className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-4 py-2 text-sm font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
-            onClick={handleEdit}
-          >
-            <MdEdit size={17} />
-            Edit Sales
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            {(status === "QUOTATION" || status === "QUOTATION_VIEWED") && (
+              <>
+                <TransitionBtn onClick={acceptQuotation}>Accept Quote</TransitionBtn>
+                <TransitionBtn onClick={declineQuotation} variant="danger">Decline</TransitionBtn>
+              </>
+            )}
+            {(status === "QUOTATION_ACCEPTED" || status === "QUOTATION") && (
+              <TransitionBtn onClick={convertToSalesOrder}>Convert to Order</TransitionBtn>
+            )}
+            {(status === "ORDER" || status === "ORDER_VIEWED") && (
+              <TransitionBtn onClick={convertToInvoice}>Convert to Invoice</TransitionBtn>
+            )}
+            {status === "ORDER_INVOICED" && (
+              <TransitionBtn onClick={markPaid}>Mark Paid</TransitionBtn>
+            )}
+            {status !== "ORDER_PAYED" && status !== "ORDER_CANCELLED" && (
+              <TransitionBtn onClick={cancelOrder} variant="danger">Cancel</TransitionBtn>
+            )}
+            <button
+              className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-3 py-1.5 text-xs font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+              onClick={handleEdit}
+            >
+              <MdEdit size={15} />
+              Edit
+            </button>
+          </div>
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
