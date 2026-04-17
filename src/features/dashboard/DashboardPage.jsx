@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
     LineChart,
     AreaChart,
@@ -18,6 +18,7 @@ import { useDashboard } from "./hooks/useDashboard";
 import { MdClose, MdTrendingUp, MdTrendingDown } from "react-icons/md";
 import { FiArrowUpRight } from "react-icons/fi";
 import StyledDropdown from "../../shared/components/StyledDropdown";
+import { coreApi } from "../../shared/services/coreApi";
 
 /* ─── helpers ─── */
 const fmt = (val) =>
@@ -37,6 +38,91 @@ const RANGE_OPTIONS = [
   { value: "quarter", label: "Quarter" },
   { value: "prev_fy_year", label: "Prev financial Year" },
 ];
+
+/* ─── Ad Banner ─── */
+const AdBanner = () => {
+  const [ads, setAds] = useState([]);
+  const [imgUrls, setImgUrls] = useState({});
+  const [dismissed, setDismissed] = useState(new Set());
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    coreApi.getActiveAds("dashboard")
+      .then(async (res) => {
+        if (cancelled) return;
+        const list = res?.data?.responseData?.advertisements
+          ?? (Array.isArray(res?.data?.responseData) ? res.data.responseData : []);
+        setAds(list);
+
+        // download all images in parallel
+        const fsIds = [...new Set(list.map((a) => a.fsId).filter(Boolean))];
+        if (fsIds.length > 0) {
+          const results = await Promise.allSettled(
+            fsIds.map((fsId) =>
+              coreApi.downloadFile(fsId).then((r) => ({ fsId, url: URL.createObjectURL(r.data) }))
+            )
+          );
+          if (cancelled) return;
+          const urls = {};
+          results.forEach((r) => { if (r.status === "fulfilled") urls[r.value.fsId] = r.value.url; });
+          setImgUrls(urls);
+        }
+      })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setLoading(false); });
+
+    return () => { cancelled = true; };
+  }, []);
+
+  // cleanup object URLs on unmount
+  useEffect(() => () => Object.values(imgUrls).forEach((u) => URL.revokeObjectURL(u)), [imgUrls]);
+
+  const visibleAds = ads.filter((ad) => !dismissed.has(ad.adId));
+  if (loading || visibleAds.length === 0) return null;
+
+  return (
+    <div className="flex gap-3 overflow-x-auto pb-1">
+      {visibleAds.map((ad) => (
+        <div
+          key={ad.adId}
+          className="relative rounded-xl overflow-hidden cursor-pointer shrink-0"
+          style={{
+            border: "1px solid var(--line)",
+            background: "var(--surface-soft)",
+            width: visibleAds.length === 1 ? "100%" : "calc(50% - 6px)",
+            minWidth: 260,
+          }}
+          onClick={() => ad.actionUrl && window.open(ad.actionUrl, "_blank", "noopener")}
+        >
+          <button
+            onClick={(e) => { e.stopPropagation(); setDismissed((prev) => new Set(prev).add(ad.adId)); }}
+            className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center z-10"
+            style={{ background: "rgba(0,0,0,0.45)", color: "#fff" }}
+          >
+            <MdClose size={14} />
+          </button>
+          {imgUrls[ad.fsId] ? (
+            <img src={imgUrls[ad.fsId]} alt={ad.description || "Ad"} className="w-full h-32 object-cover" />
+          ) : (
+            <div className="flex items-center gap-3 p-4 h-32">
+              <div className="flex-1">
+                <p className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>
+                  {ad.companyName}{ad.itemName ? ` — ${ad.itemName}` : ""}
+                </p>
+                {ad.description && (
+                  <p className="text-xs mt-1" style={{ color: "var(--text-sub)" }}>{ad.description}</p>
+                )}
+              </div>
+              <FiArrowUpRight size={18} style={{ color: "var(--accent)", flexShrink: 0 }} />
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
 
 /* ─── Detail Modal ─── */
 const DetailModal = ({ title, rows, onClose }) => (
@@ -534,6 +620,9 @@ export const DashboardPage = () => {
             ? <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">{[...Array(5)].map((_, i) => <Skeleton key={i} h="h-20" />)}</div>
             : <KpiStrip kpi={summaryKpi || kpi} />
           }
+
+          {/* Ad Banner */}
+          <AdBanner />
 
           {/* Receivables + Payables */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

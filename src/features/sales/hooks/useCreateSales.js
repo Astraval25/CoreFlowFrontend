@@ -4,7 +4,7 @@ import { coreApi } from "../../../shared/services/coreApi";
 import useItemsPage from "../../Items/hooks/useItemsPage";
 import { useCustomer } from "../../customer/hooks/useCustomer";
 
-const useCreateSales = () => {
+const useCreateSales = (orderType = "quote") => {
   const { items } = useItemsPage();
   const { allCustomers } = useCustomer();
 
@@ -23,6 +23,7 @@ const useCreateSales = () => {
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -87,10 +88,10 @@ const useCreateSales = () => {
 
   const submitSales = async () => {
     setLoading(true);
+    setSubmitError("");
     const newErrors = {};
 
     if (!formData.customerId) newErrors.customerId = "Customer is required";
-    if (!formData.deliveryCharge) newErrors.deliveryCharge = "Delivery charge is required";
     if (!formData.orderItems.length) {
       newErrors.orderItems = "Add at least one item";
     } else {
@@ -144,13 +145,39 @@ const useCreateSales = () => {
         })),
       };
 
-      await coreApi.createSales(companyId, payload);
-      return { success: true };
+      const createRes = await coreApi.createSales(companyId, payload);
+      const createdOrderId =
+        createRes?.data?.responseData?.orderId ??
+        createRes?.data?.responseData?.id ??
+        null;
+
+      let statusWarning = null;
+      if (createdOrderId && orderType !== "quote") {
+        try {
+          if (orderType === "order") {
+            await coreApi.updateOrderStatusSalesOrder(companyId, createdOrderId);
+          } else if (orderType === "invoice") {
+            await coreApi.updateOrderStatusSalesOrder(companyId, createdOrderId);
+            await coreApi.updateOrderStatusInvoiced(companyId, createdOrderId);
+          }
+        } catch (statusErr) {
+          console.error("Status transition failed:", statusErr);
+          statusWarning =
+            statusErr?.response?.data?.responseMessage ||
+            "Order was saved as a quote; advancing its status failed. You can convert it from the detail view.";
+        }
+      }
+
+      return { success: true, orderId: createdOrderId, statusWarning };
     } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.responseMessage || "Failed to create sales order"
-      };
+      const message =
+        error.response?.data?.responseMessage ||
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to create sales order";
+      console.error("Create sales error:", error.response?.data || error);
+      setSubmitError(message);
+      return { success: false, message };
     } finally {
       setLoading(false);
     }
@@ -174,6 +201,7 @@ const useCreateSales = () => {
     allCustomers,
     loading,
     errors,
+    submitError,
     subTotal,
     discountVal,
     taxVal,

@@ -5,7 +5,7 @@ import { useEmployeeSalary } from "../hooks/useEmployeeSalary";
 const EmployeeSalaryPage = () => {
   const {
     table, globalFilter, setGlobalFilter, loading,
-    dateRange, setDateRange,
+    period, setPeriod,
     viewDetail, downloadSlip,
     selectedDetail, setSelectedDetail, detailLoading,
   } = useEmployeeSalary();
@@ -20,8 +20,12 @@ const EmployeeSalaryPage = () => {
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>My Salary</h1>
         <div className="flex items-center gap-3">
-          <input type="date" value={dateRange.from} onChange={(e) => setDateRange((p) => ({ ...p, from: e.target.value }))} className="form-input text-xs py-1" />
-          <input type="date" value={dateRange.to} onChange={(e) => setDateRange((p) => ({ ...p, to: e.target.value }))} className="form-input text-xs py-1" />
+          <input
+            type="month"
+            value={`${period.slice(0, 4)}-${period.slice(4)}`}
+            onChange={(e) => setPeriod(e.target.value.replace("-", ""))}
+            className="form-input text-xs py-1"
+          />
           <div className="relative">
             <MdSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--text-muted)" }} />
             <input value={globalFilter ?? ""} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search…" className="form-input pl-8 text-xs py-1.5" style={{ width: 160 }} />

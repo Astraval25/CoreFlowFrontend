@@ -1,9 +1,9 @@
 import usePurchasePage from "../hooks/usePurchasePage";
 import { MdAdd, MdSearch, MdInbox } from "react-icons/md";
 import { flexRender } from "@tanstack/react-table";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ActionMenu from "../../../shared/components/ActionMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const TABS = [
   { id: "report",        label: "Report" },
@@ -21,7 +21,28 @@ const PurchasePage = () => {
   } = usePurchasePage();
 
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("quotes");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const validTabs = TABS.map((t) => t.id);
+  const initialTab = validTabs.includes(tabParam) ? tabParam : "quotes";
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  useEffect(() => {
+    if (tabParam && validTabs.includes(tabParam) && tabParam !== activeTab) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
+
+  const handleTabChange = (id) => {
+    setActiveTab(id);
+    setSearchParams({ tab: id });
+  };
+
+  const createPath = () => {
+    const typeMap = { quotes: "quote", purchaseOrder: "order", bill: "bill" };
+    const orderType = typeMap[activeTab] || "quote";
+    return `/cf/company/${companyId}/purchase/create?type=${orderType}`;
+  };
 
   const filterByStatus = (statuses) =>
     allOrder.filter((o) => statuses.includes(o.orderStatus));
@@ -52,7 +73,7 @@ const PurchasePage = () => {
                     navigate(`/cf/company/${companyId}/payment-made/list`);
                     return;
                   }
-                  setActiveTab(tab.id);
+                  handleTabChange(tab.id);
                 }}
                 className="text-xs pb-1 border-b-2 transition-colors"
                 style={{
@@ -84,7 +105,7 @@ const PurchasePage = () => {
           </div>
           <button
             className="btn-primary text-xs"
-            onClick={() => navigate(`/cf/company/${companyId}/purchase/create`)}
+            onClick={() => navigate(createPath())}
           >
             <MdAdd size={15} /> New
           </button>

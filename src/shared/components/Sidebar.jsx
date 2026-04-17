@@ -24,7 +24,13 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 
 const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
-  const [openGroups, setOpenGroups] = useState({ manage: false, payments: false, employees: false });
+  const [openGroups, setOpenGroups] = useState({
+    manage: false,
+    sales: false,
+    purchase: false,
+    payments: false,
+    employees: false,
+  });
   const [companyId, setCompanyId] = useState("");
   const location = useLocation();
 
@@ -45,14 +51,29 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
   const withCompany = (path) => (cid ? `${companyRoot}/${path}` : fallbackPath);
 
   const homePath = withCompany("dashboard");
-  const salesPath = withCompany("sales");
-  const purchasePath = withCompany("purchase/list");
   const reportPath = withCompany("report");
 
   const manageChildren = [
     { label: "Customers", to: withCompany("customers"), icon: <MdManageAccounts size={16} />, match: "/customers" },
     { label: "Items", to: withCompany("items"), icon: <MdInventory2 size={16} />, match: "/items" },
     { label: "Vendors", to: withCompany("vendors"), icon: <MdStorefront size={16} />, match: "/vendors" },
+  ];
+
+  const salesChildren = [
+    { label: "Quotes",      to: `${withCompany("sales")}?tab=quotes`,      icon: <MdPointOfSale size={16} />, match: "sales-tab=quotes" },
+    { label: "Sales Order", to: `${withCompany("sales")}?tab=salesOrder`,  icon: <MdPointOfSale size={16} />, match: "sales-tab=salesOrder" },
+    { label: "Invoice",     to: `${withCompany("sales")}?tab=invoice`,     icon: <MdPointOfSale size={16} />, match: "sales-tab=invoice" },
+  ];
+
+  const purchaseChildren = [
+    { label: "Quotes",         to: `${withCompany("purchase/list")}?tab=quotes`,        icon: <FaShoppingCart size={14} />, match: "purchase-tab=quotes" },
+    { label: "Purchase Order", to: `${withCompany("purchase/list")}?tab=purchaseOrder`, icon: <FaShoppingCart size={14} />, match: "purchase-tab=purchaseOrder" },
+    { label: "Bill",           to: `${withCompany("purchase/list")}?tab=bill`,          icon: <FaShoppingCart size={14} />, match: "purchase-tab=bill" },
+  ];
+
+  const paymentsChildren = [
+    { label: "Payment Received", to: withCompany("payment-received/list"), icon: <MdPayments size={16} />,          match: "/payment-received" },
+    { label: "Payment Made",     to: withCompany("payment-made/list"),     icon: <MdOutlinePayments size={16} />,   match: "/payment-made" },
   ];
 
   const employeeChildren = [
@@ -63,39 +84,48 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
     { label: "Salary", to: withCompany("salary"), icon: <MdAccountBalance size={16} />, match: "/salary" },
   ];
 
-  const paymentChildren = [
-    { label: "Payment Made", to: withCompany("payment-made/list"), icon: <MdOutlinePayments size={16} />, match: "/payment-made" },
-    { label: "Payment Received", to: withCompany("payment-received/list"), icon: <MdPayments size={16} />, match: "/payment-received" },
-  ];
+  const currentLocation = `${location.pathname}${location.search}`;
+  const matchesItem = (match) => {
+    // "sales-tab=quotes" → must be on /sales path AND have ?tab=quotes
+    const salesTabMatch = match.match(/^sales-tab=(.+)$/);
+    if (salesTabMatch) return location.pathname.includes("/sales") && location.search.includes(`tab=${salesTabMatch[1]}`);
+    const purchaseTabMatch = match.match(/^purchase-tab=(.+)$/);
+    if (purchaseTabMatch) return location.pathname.includes("/purchase") && location.search.includes(`tab=${purchaseTabMatch[1]}`);
+    return currentLocation.includes(match);
+  };
 
-  const isManageActive = manageChildren.some((item) => location.pathname.includes(item.match));
-  const isEmployeesActive = employeeChildren.some((item) => location.pathname.includes(item.match));
-  const isPaymentsActive = paymentChildren.some((item) => location.pathname.includes(item.match));
+  const isManageActive = manageChildren.some((item) => matchesItem(item.match));
+  const isSalesActive = salesChildren.some((item) => matchesItem(item.match)) || (location.pathname.includes("/sales") && !location.search.includes("tab="));
+  const isPurchaseActive = purchaseChildren.some((item) => matchesItem(item.match)) || (location.pathname.includes("/purchase") && !location.search.includes("tab="));
+  const isPaymentsActive = paymentsChildren.some((item) => matchesItem(item.match));
+  const isEmployeesActive = employeeChildren.some((item) => matchesItem(item.match));
 
   useEffect(() => {
     if (minimized) return;
-    if (isManageActive) {
-      setOpenGroups((prev) => ({ ...prev, manage: true }));
-    }
-    if (isEmployeesActive) {
-      setOpenGroups((prev) => ({ ...prev, employees: true }));
-    }
-    if (isPaymentsActive) {
-      setOpenGroups((prev) => ({ ...prev, payments: true }));
-    }
-  }, [minimized, isManageActive, isEmployeesActive, isPaymentsActive]);
+    const active = isManageActive ? "manage" : isSalesActive ? "sales" : isPurchaseActive ? "purchase" : isPaymentsActive ? "payments" : isEmployeesActive ? "employees" : null;
+    if (active) setOpenGroups((prev) => {
+      const next = {};
+      for (const k in prev) next[k] = k === active;
+      return next;
+    });
+  }, [minimized, isManageActive, isSalesActive, isPurchaseActive, isPaymentsActive, isEmployeesActive]);
 
   const toggleGroup = (key) => {
-    setOpenGroups((prev) => ({ ...prev, [key]: !prev[key] }));
+    setOpenGroups((prev) => {
+      const isOpening = !prev[key];
+      const next = {};
+      for (const k in prev) next[k] = isOpening ? k === key : (k === key ? false : prev[k]);
+      return next;
+    });
   };
 
   const compactItems = [
     { label: "Home", to: homePath, icon: <MdDashboard size={19} /> },
     ...manageChildren,
-    { label: "Sales", to: salesPath, icon: <MdPointOfSale size={18} /> },
-    { label: "Purchases", to: purchasePath, icon: <FaShoppingCart size={16} /> },
+    ...salesChildren,
+    ...purchaseChildren,
+    ...paymentsChildren,
     ...employeeChildren,
-    ...paymentChildren,
     { label: "Report", to: reportPath, icon: <MdAssessment size={18} /> },
   ];
 
@@ -129,12 +159,19 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
 
   const renderNestedLinks = (items) => (
     <div className="ml-5 pl-3 py-1 space-y-1">
-      {items.map((item) => (
-        <NavLink key={`${item.label}-${item.to}`} to={item.to} className={nestedItemClass}>
-          <span className="shrink-0">{item.icon}</span>
-          <span>{item.label}</span>
-        </NavLink>
-      ))}
+      {items.map((item) => {
+        const active = matchesItem(item.match);
+        return (
+          <NavLink
+            key={`${item.label}-${item.to}`}
+            to={item.to}
+            className={() => nestedItemClass({ isActive: active })}
+          >
+            <span className="shrink-0">{item.icon}</span>
+            <span>{item.label}</span>
+          </NavLink>
+        );
+      })}
     </div>
   );
 
@@ -206,15 +243,65 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
               </div>
             </div>
 
-            <NavLink to={salesPath} className={expandedItemClass}>
-              <MdPointOfSale size={17} />
-              <span>Sales</span>
-            </NavLink>
+            <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
+              <button onClick={() => toggleGroup("sales")} className={groupButtonClass(isSalesActive)}>
+                <span className="flex items-center gap-2.5">
+                  <MdPointOfSale size={17} />
+                  Sales
+                </span>
+                <MdKeyboardArrowDown
+                  size={18}
+                  className={`transition-transform ${openGroups.sales ? "rotate-180" : ""}`}
+                />
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-200 ${
+                  openGroups.sales ? "max-h-72 mt-1" : "max-h-0"
+                }`}
+              >
+                {renderNestedLinks(salesChildren)}
+              </div>
+            </div>
 
-            <NavLink to={purchasePath} className={expandedItemClass}>
-              <FaShoppingCart size={15} />
-              <span>Purchases</span>
-            </NavLink>
+            <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
+              <button onClick={() => toggleGroup("purchase")} className={groupButtonClass(isPurchaseActive)}>
+                <span className="flex items-center gap-2.5">
+                  <FaShoppingCart size={15} />
+                  Purchase
+                </span>
+                <MdKeyboardArrowDown
+                  size={18}
+                  className={`transition-transform ${openGroups.purchase ? "rotate-180" : ""}`}
+                />
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-200 ${
+                  openGroups.purchase ? "max-h-72 mt-1" : "max-h-0"
+                }`}
+              >
+                {renderNestedLinks(purchaseChildren)}
+              </div>
+            </div>
+
+            <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
+              <button onClick={() => toggleGroup("payments")} className={groupButtonClass(isPaymentsActive)}>
+                <span className="flex items-center gap-2.5">
+                  <MdPayments size={17} />
+                  Payments
+                </span>
+                <MdKeyboardArrowDown
+                  size={18}
+                  className={`transition-transform ${openGroups.payments ? "rotate-180" : ""}`}
+                />
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-200 ${
+                  openGroups.payments ? "max-h-40 mt-1" : "max-h-0"
+                }`}
+              >
+                {renderNestedLinks(paymentsChildren)}
+              </div>
+            </div>
 
             <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
               <button onClick={() => toggleGroup("employees")} className={groupButtonClass(isEmployeesActive)}>
@@ -233,26 +320,6 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
                 }`}
               >
                 {renderNestedLinks(employeeChildren)}
-              </div>
-            </div>
-
-            <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
-              <button onClick={() => toggleGroup("payments")} className={groupButtonClass(isPaymentsActive)}>
-                <span className="flex items-center gap-2.5">
-                  <MdPayments size={17} />
-                  Payments
-                </span>
-                <MdKeyboardArrowDown
-                  size={18}
-                  className={`transition-transform ${openGroups.payments ? "rotate-180" : ""}`}
-                />
-              </button>
-              <div
-                className={`overflow-hidden transition-all duration-200 ${
-                  openGroups.payments ? "max-h-56 mt-1" : "max-h-0"
-                }`}
-              >
-                {renderNestedLinks(paymentChildren)}
               </div>
             </div>
 

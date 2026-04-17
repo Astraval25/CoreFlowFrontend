@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm run:*)",
-      "Skill(new-feature-implement)"
+      "Skill(new-feature-implement)",
+      "Bash(grep -n \"createSales\\\\|sales/orders\" \"e:/workspace/CoreFlow/CoreFlowFrontend/doc/\"*.md)"
     ]
   }
 }

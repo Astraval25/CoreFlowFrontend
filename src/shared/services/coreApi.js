@@ -108,7 +108,13 @@ export const coreApi = {
     api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/purchase/orders`, data),
 
   editPurchase: (companyId, orderId, data) =>
-    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/sales/orders/${orderId}`, data),
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/purchase/orders/${orderId}`, data),
+
+  deactivatePurchase: (companyId, orderId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/deactivate`),
+
+  activatePurchase: (companyId, orderId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/activate`),
 
   // sales
   getAllSales: (companyId) =>
@@ -126,7 +132,38 @@ export const coreApi = {
   createSales: (companyId, data) =>
     api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/sales/orders`, data),
 
-  // Customer Items 
+  editSales: (companyId, orderId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/sales/orders/${orderId}`, data),
+
+  // Order status transitions (shared by sales & purchase)
+  updateOrderStatusQuotation: (companyId, orderId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/quotation`),
+
+  updateOrderStatusQuotationViewed: (companyId, orderId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/quotation-viewed`),
+
+  updateOrderStatusQuotationAccepted: (companyId, orderId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/quotation-accepted`),
+
+  updateOrderStatusQuotationDeclined: (companyId, orderId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/quotation-declined`),
+
+  updateOrderStatusSalesOrder: (companyId, orderId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/sales-order`),
+
+  updateOrderStatusInvoiced: (companyId, orderId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/invoiced`),
+
+  updateOrderStatusPaid: (companyId, orderId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/paid`),
+
+  markOrderViewed: (companyId, orderId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/viewed`),
+
+  cancelOrder: (companyId, orderId) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/cancel-order`),
+
+  // Customer Items
   getCustomerItems: (companyId, customerId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/active`),
 
   getCustomerMappedItems: (companyId, customerId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/mapped`),
@@ -206,6 +243,16 @@ export const coreApi = {
     api.delete(
       `${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received/${paymentId}/allocations/${allocationId}`
     ),
+
+  // Advertisements
+  getActiveAds: (placement) =>
+    api.get(`/ads${placement ? `?placement=${placement}` : ""}`),
+
+  // Payment Proof
+  uploadPaymentProof: (companyId, formData) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/payment-proof`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 
   // Invitations (company linking)
   getCustomerInvitationCode: (companyId, customerId) =>

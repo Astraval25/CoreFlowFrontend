@@ -1,6 +1,8 @@
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { MdEdit, MdPayments } from "react-icons/md";
+import { MdEdit, MdPayments, MdKeyboardArrowDown, MdUploadFile } from "react-icons/md";
 import usePaymentReceivedDetail from "../hooks/usePaymentReceivedDetail";
+import { coreApi } from "../../../shared/services/coreApi";
 
 const money = (value) =>
   Number(value || 0).toLocaleString("en-IN", {
@@ -8,7 +10,7 @@ const money = (value) =>
     maximumFractionDigits: 2,
   });
 
-const statusButtons = [
+const statusOptions = [
   { key: "paid", label: "Mark Paid" },
   { key: "viewed", label: "Mark Viewed" },
   { key: "failed", label: "Mark Failed" },
@@ -16,10 +18,69 @@ const statusButtons = [
   { key: "partiallyPaid", label: "Mark Partially Paid" },
 ];
 
+const StatusDropdown = ({ onSelect }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="inline-flex items-center gap-1.5 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-3 py-1.5 text-xs font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+      >
+        Update Status <MdKeyboardArrowDown size={16} />
+      </button>
+      {open && (
+        <div
+          className="absolute right-0 mt-1 w-44 rounded-lg border bg-white shadow-lg z-50"
+          style={{ borderColor: "var(--line)" }}
+        >
+          {statusOptions.map((s) => (
+            <button
+              key={s.key}
+              type="button"
+              onClick={() => { onSelect(s.key); setOpen(false); }}
+              className="w-full text-left px-3 py-2 text-xs transition-colors hover:bg-[var(--surface-soft)]"
+              style={{ color: "var(--text-main)" }}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ViewPaymentReceivedPage = () => {
   const { paymentReceivedId } = useParams();
   const { companyId, payment, loading, updateStatus } = usePaymentReceivedDetail(paymentReceivedId);
   const navigate = useNavigate();
+  const [uploading, setUploading] = useState(false);
+
+  const handleProofUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      await coreApi.uploadPaymentProof(companyId, formData);
+      alert("Payment proof uploaded successfully");
+    } catch (err) {
+      alert(err?.response?.data?.responseMessage || "Failed to upload payment proof");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
 
   if (loading) {
     return <p className="p-6 text-gray-600">Loading payment details...</p>;
@@ -54,13 +115,16 @@ const ViewPaymentReceivedPage = () => {
           </div>
         </div>
 
-        <button
-          className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-4 py-2 text-sm font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
-          onClick={() => navigate(`/cf/company/${companyId}/payment-received/${payment.paymentId}/update`)}
-        >
-          <MdEdit size={17} />
-          Edit Payment
-        </button>
+        <div className="flex items-center gap-2">
+          <StatusDropdown onSelect={updateStatus} />
+          <button
+            className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-4 py-2 text-sm font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+            onClick={() => navigate(`/cf/company/${companyId}/payment-received/${payment.paymentId}/update`)}
+          >
+            <MdEdit size={17} />
+            Edit Payment
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -96,19 +160,20 @@ const ViewPaymentReceivedPage = () => {
         </div>
 
         <div className="rounded-lg bg-[#f8faf8] p-4">
-          <h3 className="mb-3 text-sm font-semibold text-[#2d3b2d]">Update Status</h3>
-          <div className="flex flex-wrap gap-2">
-            {statusButtons.map((s) => (
-              <button
-                key={s.key}
-                type="button"
-                className="btn-ghost text-xs"
-                onClick={() => updateStatus(s.key)}
-              >
-                {s.label}
-              </button>
-            ))}
-          </div>
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+            <MdUploadFile size={18} />
+            Payment Proof
+          </h3>
+          <p className="text-xs mb-3" style={{ color: "var(--text-muted)" }}>
+            Upload a receipt, screenshot, or document as proof of payment.
+          </p>
+          <label
+            className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-white px-3 py-2 text-xs font-semibold text-[#2f7a47] cursor-pointer transition hover:bg-[#edf4ee]"
+          >
+            <MdUploadFile size={15} />
+            {uploading ? "Uploading..." : "Upload Proof"}
+            <input type="file" className="hidden" onChange={handleProofUpload} accept="image/*,.pdf" disabled={uploading} />
+          </label>
         </div>
       </div>
 

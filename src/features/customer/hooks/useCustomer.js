@@ -74,6 +74,8 @@ export const useCustomer = () => {
     columnHelper.accessor("sno", { header: "S.No" }),
     columnHelper.accessor("displayName", { header: "Customer Name" }),
     columnHelper.accessor("email", { header: "Email" }),
+    columnHelper.accessor("companyName", { header: "Company" }),
+    columnHelper.accessor("dueAmount", { header: "Due Amount" }),
     columnHelper.accessor("action", { header: "Action" }),
   ];
 

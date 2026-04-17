@@ -1,9 +1,9 @@
 import useSalesPage from "../hooks/useSalesPage";
 import { MdAdd, MdSearch, MdInbox } from "react-icons/md";
 import { flexRender } from "@tanstack/react-table";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ActionMenu from "../../../shared/components/ActionMenu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const TABS = [
   { id: "report",      label: "Report" },
@@ -21,7 +21,28 @@ const SalesPage = () => {
   } = useSalesPage();
 
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("quotes");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const validTabs = TABS.map((t) => t.id);
+  const initialTab = validTabs.includes(tabParam) ? tabParam : "quotes";
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  useEffect(() => {
+    if (tabParam && validTabs.includes(tabParam) && tabParam !== activeTab) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
+
+  const handleTabChange = (id) => {
+    setActiveTab(id);
+    setSearchParams({ tab: id });
+  };
+
+  const createPath = () => {
+    const typeMap = { quotes: "quote", salesOrder: "order", invoice: "invoice" };
+    const orderType = typeMap[activeTab] || "quote";
+    return `/cf/company/${companyId}/sales/create?type=${orderType}`;
+  };
 
   const filterByStatus = (statuses) =>
     allSales.filter((s) => statuses.includes(s.orderStatus));
@@ -47,7 +68,13 @@ const SalesPage = () => {
             {TABS.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  if (tab.id === "payReceived") {
+                    navigate(`/cf/company/${companyId}/payment-received/list`);
+                    return;
+                  }
+                  handleTabChange(tab.id);
+                }}
                 className="text-xs pb-1 border-b-2 transition-colors"
                 style={{
                   fontWeight: activeTab === tab.id ? 600 : 500,
@@ -78,7 +105,7 @@ const SalesPage = () => {
           </div>
           <button
             className="btn-primary text-xs"
-            onClick={() => navigate(`/cf/company/${companyId}/sales/create`)}
+            onClick={() => navigate(createPath())}
           >
             <MdAdd size={15} /> New
           </button>

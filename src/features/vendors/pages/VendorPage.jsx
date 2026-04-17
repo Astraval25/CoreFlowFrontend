@@ -111,6 +111,12 @@ const VendorPage = () => {
                   <td className="px-5 py-3 text-xs" style={{ color: "var(--text-sub)" }}>
                     {row.getValue("email")}
                   </td>
+                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-sub)" }}>
+                    {row.original.company?.vendorCompany || row.original.vendorCompany?.companyName || "-"}
+                  </td>
+                  <td className="px-5 py-3 text-xs tabular-nums font-semibold" style={{ color: row.original.dueAmount > 0 ? "var(--red)" : "var(--text-main)" }}>
+                    {row.original.dueAmount != null ? `₹${Number(row.original.dueAmount).toLocaleString("en-IN", { minimumFractionDigits: 2 })}` : "-"}
+                  </td>
                   <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                     <ActionMenu
                       row={row}

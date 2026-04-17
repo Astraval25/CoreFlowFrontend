@@ -9,31 +9,27 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-const getYearRange = () => {
+const getCurrentPeriod = () => {
   const now = new Date();
-  const year = now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
-  return {
-    from: `${year}-04-01`,
-    to: `${year + 1}-03-31`,
-  };
+  return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}`;
 };
 
 export const useEmployeeSalary = () => {
   const [periods, setPeriods] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [loading, setLoading] = useState(true);
-  const [dateRange, setDateRange] = useState(getYearRange);
+  const [period, setPeriod] = useState(getCurrentPeriod);
   const [selectedDetail, setSelectedDetail] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
   const fetchPeriods = useCallback(() => {
     setLoading(true);
     coreApi
-      .getMySalaryPeriods(dateRange.from, dateRange.to)
+      .getMySalaryPeriods(period)
       .then((res) => setPeriods(res.data.responseData || []))
       .catch((err) => console.error("Salary periods fetch error:", err))
       .finally(() => setLoading(false));
-  }, [dateRange]);
+  }, [period]);
 
   useEffect(() => {
     fetchPeriods();
@@ -70,12 +66,12 @@ export const useEmployeeSalary = () => {
   const columnHelper = createColumnHelper();
 
   const columns = [
-    columnHelper.accessor("periodLabel", { header: "Period" }),
+    columnHelper.accessor("period", { header: "Period" }),
     columnHelper.accessor("fromDate", { header: "From" }),
     columnHelper.accessor("toDate", { header: "To" }),
-    columnHelper.accessor("totalWorkDays", { header: "Work Days" }),
-    columnHelper.accessor("grossSalary", { header: "Gross Salary" }),
-    columnHelper.accessor("netSalary", { header: "Net Salary" }),
+    columnHelper.accessor("salaryType", { header: "Type" }),
+    columnHelper.accessor("grossAmount", { header: "Gross" }),
+    columnHelper.accessor("netAmount", { header: "Net" }),
     columnHelper.accessor("status", { header: "Status" }),
     columnHelper.accessor("_actions", { header: "Actions" }),
   ];
@@ -96,8 +92,8 @@ export const useEmployeeSalary = () => {
     globalFilter,
     setGlobalFilter,
     loading,
-    dateRange,
-    setDateRange,
+    period,
+    setPeriod,
     fetchPeriods,
     viewDetail,
     downloadSlip,

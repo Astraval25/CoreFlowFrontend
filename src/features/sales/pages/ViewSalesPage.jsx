@@ -5,7 +5,7 @@ import ViewSalesDetail from "../components/ViewSalesDetail";
 import { useParams } from "react-router-dom";
 
 const ViewSalesPage = () => {
-  const { orderId: paramOrderId } = useParams();
+  const { salesId: paramOrderId } = useParams();
   const [selectedOrderId, setSelectedOrderId] = useState(
     paramOrderId ? Number(paramOrderId) : null
   );
@@ -22,6 +22,10 @@ const ViewSalesPage = () => {
       console.error("Invalid token", err);
     }
   }, []);
+
+  useEffect(() => {
+    if (paramOrderId) setSelectedOrderId(Number(paramOrderId));
+  }, [paramOrderId]);
 
   const handleSelectOrder = (id) => {
     setSelectedOrderId(id);

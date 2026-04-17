@@ -1,7 +1,18 @@
 import useCreatePurchase from "../hooks/useCreatePurchase";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { MdAdd, MdDeleteOutline, MdClose } from "react-icons/md";
 import { FiSave } from "react-icons/fi";
+
+const ORDER_TYPE_LABEL = {
+  quote: "Quote",
+  order: "Purchase Order",
+  bill: "Bill",
+};
+const ORDER_TYPE_TAB = {
+  quote: "quotes",
+  order: "purchaseOrder",
+  bill: "bill",
+};
 
 const fmt = (n) =>
   Number(n || 0).toLocaleString("en-IN", {
@@ -22,6 +33,9 @@ const Field = ({ label, required, error, children }) => (
 const CreatePurchasePage = () => {
   const navigate = useNavigate();
   const { companyId, orderId: paramOrderId } = useParams();
+  const [searchParams] = useSearchParams();
+  const typeParam = searchParams.get("type");
+  const orderType = ["quote", "order", "bill"].includes(typeParam) ? typeParam : "quote";
   const orderId = paramOrderId || null;
   const purchaseBase = `/cf/company/${companyId}/purchase/list`;
 
@@ -29,11 +43,24 @@ const CreatePurchasePage = () => {
     formData, items, allVendors, loading, errors, isEditMode,
     subTotal, discountVal, grandTotal,
     handleInputChange, addOrderItem, updateOrderItem, removeOrderItem, submitPurchase,
-  } = useCreatePurchase(orderId);
+  } = useCreatePurchase(orderId, orderType);
 
   const handleSubmit = async () => {
     const result = await submitPurchase();
-    if (result?.success) navigate(purchaseBase);
+    if (!result?.success) {
+      if (result?.message) alert(result.message);
+      return;
+    }
+    if (isEditMode) {
+      navigate(purchaseBase);
+      return;
+    }
+    if (result.statusWarning) {
+      alert(result.statusWarning);
+      navigate(`${purchaseBase}?tab=quotes`);
+    } else {
+      navigate(`${purchaseBase}?tab=${ORDER_TYPE_TAB[orderType]}`);
+    }
   };
 
   return (
@@ -47,7 +74,7 @@ const CreatePurchasePage = () => {
         style={{ borderBottom: "1px solid var(--line)" }}
       >
         <h1 className="text-sm font-bold tracking-tight" style={{ color: "var(--text-main)" }}>
-          {isEditMode ? "Edit Purchase Order" : "New Purchase Order"}
+          {isEditMode ? `Edit ${ORDER_TYPE_LABEL[orderType]}` : `New ${ORDER_TYPE_LABEL[orderType]}`}
         </h1>
         <button
           onClick={() => navigate(purchaseBase)}

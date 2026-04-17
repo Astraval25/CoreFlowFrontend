@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { coreApi } from "../../../shared/services/coreApi";
 
 const useViewSalesDetail = (companyId, orderId) => {
@@ -6,32 +6,58 @@ const useViewSalesDetail = (companyId, orderId) => {
   const [orderItems, setOrderItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [statusUpdating, setStatusUpdating] = useState(false);
 
-  useEffect(() => {
+  const fetchOrderDetail = useCallback(async () => {
     if (!companyId || !orderId) {
       setLoading(false);
       return;
     }
-
-    const fetchOrderDetail = async () => {
-      try {
-        setLoading(true);
-        const response = await coreApi.getSalesDetails(companyId, orderId);
-        const data = response.data.responseData;
-        setOrder(data);
-        setOrderItems(data.orderItems || []);
-      } catch (err) {
-        setError(err);
-        console.error("Error fetching order details:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrderDetail();
+    try {
+      setLoading(true);
+      const response = await coreApi.getSalesDetails(companyId, orderId);
+      const data = response.data.responseData;
+      setOrder(data);
+      setOrderItems(data.orderItems || []);
+    } catch (err) {
+      setError(err);
+      console.error("Error fetching order details:", err);
+    } finally {
+      setLoading(false);
+    }
   }, [companyId, orderId]);
 
-  return { order, orderItems, loading, error };
+  useEffect(() => {
+    fetchOrderDetail();
+  }, [fetchOrderDetail]);
+
+  const transition = async (apiFn) => {
+    if (!companyId || !orderId) return;
+    setStatusUpdating(true);
+    try {
+      await apiFn(companyId, orderId);
+      await fetchOrderDetail();
+    } catch (err) {
+      console.error("Status update failed:", err);
+      alert(err.response?.data?.responseMessage || "Status update failed");
+    } finally {
+      setStatusUpdating(false);
+    }
+  };
+
+  return {
+    order,
+    orderItems,
+    loading,
+    error,
+    statusUpdating,
+    convertToSalesOrder: () => transition(coreApi.updateOrderStatusSalesOrder),
+    convertToInvoice: () => transition(coreApi.updateOrderStatusInvoiced),
+    markPaid: () => transition(coreApi.updateOrderStatusPaid),
+    acceptQuotation: () => transition(coreApi.updateOrderStatusQuotationAccepted),
+    declineQuotation: () => transition(coreApi.updateOrderStatusQuotationDeclined),
+    cancelOrder: () => transition(coreApi.cancelOrder),
+  };
 };
 
 export default useViewSalesDetail;

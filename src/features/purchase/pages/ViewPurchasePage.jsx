@@ -5,7 +5,7 @@ import ListAllPurchase from "../components/ListAllPurchase";
 import { useParams } from "react-router-dom";
 
 const ViewPurchasePage = () => {
-  const { orderId: paramOrderId } = useParams();
+  const { purchaseId: paramOrderId } = useParams();
   const [selectedOrderId, setSelectedOrderId] = useState(
     paramOrderId ? Number(paramOrderId) : null
   );
@@ -22,6 +22,10 @@ const ViewPurchasePage = () => {
       console.error("Invalid token", err);
     }
   }, []);
+
+  useEffect(() => {
+    if (paramOrderId) setSelectedOrderId(Number(paramOrderId));
+  }, [paramOrderId]);
 
   const handleSelectOrder = (id) => {
     setSelectedOrderId(id);
