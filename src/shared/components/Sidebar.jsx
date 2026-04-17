@@ -28,6 +28,7 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
     manage: false,
     sales: false,
     purchase: false,
+    payments: false,
     employees: false,
   });
   const [companyId, setCompanyId] = useState("");
@@ -59,17 +60,20 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
   ];
 
   const salesChildren = [
-    { label: "Quotes",           to: `${withCompany("sales")}?tab=quotes`,      icon: <MdPointOfSale size={16} />, match: "tab=quotes" },
-    { label: "Sales Order",      to: `${withCompany("sales")}?tab=salesOrder`,  icon: <MdPointOfSale size={16} />, match: "tab=salesOrder" },
-    { label: "Invoice",          to: `${withCompany("sales")}?tab=invoice`,     icon: <MdPointOfSale size={16} />, match: "tab=invoice" },
-    { label: "Payment Received", to: withCompany("payment-received/list"),      icon: <MdPayments size={16} />,    match: "/payment-received" },
+    { label: "Quotes",      to: `${withCompany("sales")}?tab=quotes`,      icon: <MdPointOfSale size={16} />, match: "sales-tab=quotes" },
+    { label: "Sales Order", to: `${withCompany("sales")}?tab=salesOrder`,  icon: <MdPointOfSale size={16} />, match: "sales-tab=salesOrder" },
+    { label: "Invoice",     to: `${withCompany("sales")}?tab=invoice`,     icon: <MdPointOfSale size={16} />, match: "sales-tab=invoice" },
   ];
 
   const purchaseChildren = [
-    { label: "Quotes",         to: `${withCompany("purchase/list")}?tab=quotes`,        icon: <FaShoppingCart size={14} />, match: "tab=quotes" },
-    { label: "Purchase Order", to: `${withCompany("purchase/list")}?tab=purchaseOrder`, icon: <FaShoppingCart size={14} />, match: "tab=purchaseOrder" },
-    { label: "Bill",           to: `${withCompany("purchase/list")}?tab=bill`,          icon: <FaShoppingCart size={14} />, match: "tab=bill" },
-    { label: "Payment Made",   to: withCompany("payment-made/list"),                    icon: <MdOutlinePayments size={16} />, match: "/payment-made" },
+    { label: "Quotes",         to: `${withCompany("purchase/list")}?tab=quotes`,        icon: <FaShoppingCart size={14} />, match: "purchase-tab=quotes" },
+    { label: "Purchase Order", to: `${withCompany("purchase/list")}?tab=purchaseOrder`, icon: <FaShoppingCart size={14} />, match: "purchase-tab=purchaseOrder" },
+    { label: "Bill",           to: `${withCompany("purchase/list")}?tab=bill`,          icon: <FaShoppingCart size={14} />, match: "purchase-tab=bill" },
+  ];
+
+  const paymentsChildren = [
+    { label: "Payment Received", to: withCompany("payment-received/list"), icon: <MdPayments size={16} />,          match: "/payment-received" },
+    { label: "Payment Made",     to: withCompany("payment-made/list"),     icon: <MdOutlinePayments size={16} />,   match: "/payment-made" },
   ];
 
   const employeeChildren = [
@@ -81,24 +85,38 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
   ];
 
   const currentLocation = `${location.pathname}${location.search}`;
-  const matchesItem = (match) =>
-    match.startsWith("tab=") ? location.search.includes(match) : currentLocation.includes(match);
+  const matchesItem = (match) => {
+    // "sales-tab=quotes" → must be on /sales path AND have ?tab=quotes
+    const salesTabMatch = match.match(/^sales-tab=(.+)$/);
+    if (salesTabMatch) return location.pathname.includes("/sales") && location.search.includes(`tab=${salesTabMatch[1]}`);
+    const purchaseTabMatch = match.match(/^purchase-tab=(.+)$/);
+    if (purchaseTabMatch) return location.pathname.includes("/purchase") && location.search.includes(`tab=${purchaseTabMatch[1]}`);
+    return currentLocation.includes(match);
+  };
 
   const isManageActive = manageChildren.some((item) => matchesItem(item.match));
-  const isSalesActive = salesChildren.some((item) => matchesItem(item.match)) || location.pathname.includes("/sales");
-  const isPurchaseActive = purchaseChildren.some((item) => matchesItem(item.match)) || location.pathname.includes("/purchase");
+  const isSalesActive = salesChildren.some((item) => matchesItem(item.match)) || (location.pathname.includes("/sales") && !location.search.includes("tab="));
+  const isPurchaseActive = purchaseChildren.some((item) => matchesItem(item.match)) || (location.pathname.includes("/purchase") && !location.search.includes("tab="));
+  const isPaymentsActive = paymentsChildren.some((item) => matchesItem(item.match));
   const isEmployeesActive = employeeChildren.some((item) => matchesItem(item.match));
 
   useEffect(() => {
     if (minimized) return;
-    if (isManageActive) setOpenGroups((prev) => ({ ...prev, manage: true }));
-    if (isSalesActive) setOpenGroups((prev) => ({ ...prev, sales: true }));
-    if (isPurchaseActive) setOpenGroups((prev) => ({ ...prev, purchase: true }));
-    if (isEmployeesActive) setOpenGroups((prev) => ({ ...prev, employees: true }));
-  }, [minimized, isManageActive, isSalesActive, isPurchaseActive, isEmployeesActive]);
+    const active = isManageActive ? "manage" : isSalesActive ? "sales" : isPurchaseActive ? "purchase" : isPaymentsActive ? "payments" : isEmployeesActive ? "employees" : null;
+    if (active) setOpenGroups((prev) => {
+      const next = {};
+      for (const k in prev) next[k] = k === active;
+      return next;
+    });
+  }, [minimized, isManageActive, isSalesActive, isPurchaseActive, isPaymentsActive, isEmployeesActive]);
 
   const toggleGroup = (key) => {
-    setOpenGroups((prev) => ({ ...prev, [key]: !prev[key] }));
+    setOpenGroups((prev) => {
+      const isOpening = !prev[key];
+      const next = {};
+      for (const k in prev) next[k] = isOpening ? k === key : (k === key ? false : prev[k]);
+      return next;
+    });
   };
 
   const compactItems = [
@@ -106,6 +124,7 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
     ...manageChildren,
     ...salesChildren,
     ...purchaseChildren,
+    ...paymentsChildren,
     ...employeeChildren,
     { label: "Report", to: reportPath, icon: <MdAssessment size={18} /> },
   ];
@@ -140,12 +159,19 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
 
   const renderNestedLinks = (items) => (
     <div className="ml-5 pl-3 py-1 space-y-1">
-      {items.map((item) => (
-        <NavLink key={`${item.label}-${item.to}`} to={item.to} className={nestedItemClass}>
-          <span className="shrink-0">{item.icon}</span>
-          <span>{item.label}</span>
-        </NavLink>
-      ))}
+      {items.map((item) => {
+        const active = matchesItem(item.match);
+        return (
+          <NavLink
+            key={`${item.label}-${item.to}`}
+            to={item.to}
+            className={() => nestedItemClass({ isActive: active })}
+          >
+            <span className="shrink-0">{item.icon}</span>
+            <span>{item.label}</span>
+          </NavLink>
+        );
+      })}
     </div>
   );
 
@@ -254,6 +280,26 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
                 }`}
               >
                 {renderNestedLinks(purchaseChildren)}
+              </div>
+            </div>
+
+            <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
+              <button onClick={() => toggleGroup("payments")} className={groupButtonClass(isPaymentsActive)}>
+                <span className="flex items-center gap-2.5">
+                  <MdPayments size={17} />
+                  Payments
+                </span>
+                <MdKeyboardArrowDown
+                  size={18}
+                  className={`transition-transform ${openGroups.payments ? "rotate-180" : ""}`}
+                />
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-200 ${
+                  openGroups.payments ? "max-h-40 mt-1" : "max-h-0"
+                }`}
+              >
+                {renderNestedLinks(paymentsChildren)}
               </div>
             </div>
 

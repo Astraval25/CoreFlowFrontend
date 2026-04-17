@@ -5,7 +5,7 @@ import ListAllPurchase from "../components/ListAllPurchase";
 import { useParams } from "react-router-dom";
 
 const ViewPurchasePage = () => {
-  const { orderId: paramOrderId } = useParams();
+  const { purchaseId: paramOrderId } = useParams();
   const [selectedOrderId, setSelectedOrderId] = useState(
     paramOrderId ? Number(paramOrderId) : null
   );

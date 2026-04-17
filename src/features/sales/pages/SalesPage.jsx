@@ -68,7 +68,13 @@ const SalesPage = () => {
             {TABS.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => handleTabChange(tab.id)}
+                onClick={() => {
+                  if (tab.id === "payReceived") {
+                    navigate(`/cf/company/${companyId}/payment-received/list`);
+                    return;
+                  }
+                  handleTabChange(tab.id);
+                }}
                 className="text-xs pb-1 border-b-2 transition-colors"
                 style={{
                   fontWeight: activeTab === tab.id ? 600 : 500,

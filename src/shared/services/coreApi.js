@@ -244,6 +244,16 @@ export const coreApi = {
       `${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received/${paymentId}/allocations/${allocationId}`
     ),
 
+  // Advertisements
+  getActiveAds: (placement) =>
+    api.get(`/ads${placement ? `?placement=${placement}` : ""}`),
+
+  // Payment Proof
+  uploadPaymentProof: (companyId, formData) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/payment-proof`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+
   // Invitations (company linking)
   getCustomerInvitationCode: (companyId, customerId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/customers/${customerId}/code`),

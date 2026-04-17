@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import ListAllCustomer from "./ListAllCustomer";
 import ViewCustomerDetail from "./ViewCustomerDetail";
 import { useParams } from "react-router-dom";
 
 const ViewCustomer = () => {
   const { customerId: paramCustomerId } = useParams();
-  const [selectedCustomerId, setSelectedCustomerId] = useState(
-    paramCustomerId ? Number(paramCustomerId) : null
-  );
   const [companyId, setCompanyId] = useState(null);
 
   useEffect(() => {
@@ -23,31 +19,16 @@ const ViewCustomer = () => {
     }
   }, []);
 
-  const handleSelectCustomer = (id) => {
-    setSelectedCustomerId(id);
-  };
-
   return (
     <div className="w-full">
-      <div className="flex gap-3">
-        <div className="w-[22%]">
-        <ListAllCustomer
-          selectedCustomerId={selectedCustomerId}
-          onSelectCustomer={handleSelectCustomer}
+      {paramCustomerId && companyId ? (
+        <ViewCustomerDetail
+          companyId={companyId}
+          customerId={Number(paramCustomerId)}
         />
-        </div>
-
-        <div className="w-[78%]">
-          {selectedCustomerId && companyId ? (
-            <ViewCustomerDetail
-              companyId={companyId}
-              customerId={selectedCustomerId}
-            />
-          ) : (
-            <p className="p-6 text-gray-600">Select a customer to view details</p>
-          )}
-        </div>
-      </div>
+      ) : (
+        <p className="p-6" style={{ color: "var(--text-sub)" }}>Loading customer details...</p>
+      )}
     </div>
   );
 };

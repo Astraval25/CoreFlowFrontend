@@ -45,7 +45,11 @@ const CreatePaymentReceivedPage = () => {
   const handleSubmit = async () => {
     const result = await submitPayment();
     if (result.success) {
-      navigate(paymentBase);
+      if (!isEditMode && result.paymentId) {
+        navigate(`/cf/company/${companyId}/payment-received/${result.paymentId}/detail`);
+      } else {
+        navigate(paymentBase);
+      }
       return;
     }
     if (result.message) {

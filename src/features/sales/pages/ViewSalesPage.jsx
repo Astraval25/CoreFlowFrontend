@@ -5,7 +5,7 @@ import ViewSalesDetail from "../components/ViewSalesDetail";
 import { useParams } from "react-router-dom";
 
 const ViewSalesPage = () => {
-  const { orderId: paramOrderId } = useParams();
+  const { salesId: paramOrderId } = useParams();
   const [selectedOrderId, setSelectedOrderId] = useState(
     paramOrderId ? Number(paramOrderId) : null
   );

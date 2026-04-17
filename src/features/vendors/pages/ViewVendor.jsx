@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
-import ListAllVendor from "./ListAllVendor";
 import ViewVendorDetails from "./ViewVendorDetails";
 import { useParams } from "react-router-dom";
 
 const ViewVendor = () => {
   const { vendorId: paramVendorId } = useParams();
-  const [selectedVendorId, setSelectedVendorId] = useState(
-    paramVendorId ? Number(paramVendorId) : null
-  );
   const [companyId, setCompanyId] = useState(null);
 
   useEffect(() => {
@@ -23,28 +19,13 @@ const ViewVendor = () => {
     }
   }, []);
 
-  const handleSelectVendor = (id) => {
-    setSelectedVendorId(id);
-  };
-
   return (
-    <div className="rounded-2xl border border-[#d9e1d9] bg-white shadow-sm">
-      <div className="flex">
-        <div className="w-[22%]">
-        <ListAllVendor
-          selectedVendorId={selectedVendorId}
-          onSelectVendor={handleSelectVendor}
-        />
-        </div>
-
-        <div className="w-[78%] p-2">
-          {selectedVendorId && companyId ? (
-            <ViewVendorDetails companyId={companyId} vendorId={selectedVendorId} />
-          ) : (
-            <p className="p-6 text-gray-600">Select a vendor to view details</p>
-          )}
-        </div>
-      </div>
+    <div className="w-full">
+      {paramVendorId && companyId ? (
+        <ViewVendorDetails companyId={companyId} vendorId={Number(paramVendorId)} />
+      ) : (
+        <p className="p-6" style={{ color: "var(--text-sub)" }}>Loading vendor details...</p>
+      )}
     </div>
   );
 };
