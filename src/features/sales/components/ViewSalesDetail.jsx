@@ -1,6 +1,7 @@
-import { MdEdit, MdInventory2, MdPointOfSale } from "react-icons/md";
+import { MdEdit, MdInventory2, MdPointOfSale, MdDownload } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import useViewSalesDetail from "../hooks/useViewSalesDetail";
+import { coreApi } from "../../../shared/services/coreApi";
 
 const money = (value) => `Rs. ${Number(value || 0).toLocaleString()}`;
 
@@ -11,6 +12,23 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
     acceptQuotation, declineQuotation, cancelOrder,
   } = useViewSalesDetail(companyId, orderId);
   const navigate = useNavigate();
+
+  const handleDownloadBill = async () => {
+    try {
+      const res = await coreApi.downloadOrderBill(companyId, orderId);
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `order-bill-${order?.orderNumber || orderId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Download bill error:", err);
+      alert("Failed to download bill");
+    }
+  };
 
   if (!orderId) return <p className="p-6 text-gray-600">Select an order to view details</p>;
   if (loading) return <p className="p-6 text-gray-600">Loading order details...</p>;
@@ -79,6 +97,15 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
             )}
             {status !== "ORDER_PAYED" && status !== "ORDER_CANCELLED" && (
               <TransitionBtn onClick={cancelOrder} variant="danger">Cancel</TransitionBtn>
+            )}
+            {order.hasBill && (
+              <button
+                className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-3 py-1.5 text-xs font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+                onClick={handleDownloadBill}
+              >
+                <MdDownload size={15} />
+                Download Bill
+              </button>
             )}
             <button
               className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-3 py-1.5 text-xs font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"

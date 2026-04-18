@@ -12,6 +12,17 @@ export const coreApi = {
   resend_otp: (data) => api.post(ENDPOINTS.RESEND_OTP, data),
   getMyCompanies: () => api.get(ENDPOINTS.GET_COMPANY),
 
+  getCompanyById: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}`),
+
+  uploadCompanyLogo: (companyId, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/logo`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  },
+
   // Customer
   getCustomers: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/active`),
@@ -466,6 +477,11 @@ export const coreApi = {
 
   downloadSalarySlip: (companyId, salaryPeriodId) =>
     api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/salary/periods/${salaryPeriodId}/slip`, {
+      responseType: "blob",
+    }),
+
+  downloadOrderBill: (companyId, orderId) =>
+    api.get(`/companies/${companyId}/orders/${orderId}/bill`, {
       responseType: "blob",
     }),
 
