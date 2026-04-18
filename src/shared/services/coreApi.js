@@ -480,6 +480,11 @@ export const coreApi = {
       responseType: "blob",
     }),
 
+  downloadOrderBill: (companyId, orderId) =>
+    api.get(`/companies/${companyId}/orders/${orderId}/bill`, {
+      responseType: "blob",
+    }),
+
   // ── Employee Portal (self-service) ──
   getMyProfile: () =>
     api.get(`${ENDPOINTS.EMP}/me`),
