@@ -321,9 +321,7 @@ const CashFlowCard = ({ data, range, onRangeChange, dateRange, loading = false }
                 />
               </AreaChart>
             </ResponsiveContainer>
-            <p className="text-[10px] mt-1 text-center" style={{ color: "var(--text-muted)" }}>
-              Click any point to see details
-            </p>
+          
           </div>
 
           {/* Summary panel */}
@@ -421,9 +419,6 @@ const RevenueExpenseCard = ({ data, range, onRangeChange, loading = false }) => 
               <Bar dataKey="Expense" fill="var(--red)"    radius={[3, 3, 0, 0]} cursor="pointer" />
             </BarChart>
           </ResponsiveContainer>
-          <p className="text-[10px] mt-1 text-center" style={{ color: "var(--text-muted)" }}>
-            Click any bar for details
-          </p>
         </div>
 
         <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>

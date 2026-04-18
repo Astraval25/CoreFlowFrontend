@@ -218,9 +218,16 @@ const CreateSalesPage = () => {
                             style={{ borderColor: errors[`item_${idx}_itemId`] ? "var(--red)" : undefined }}
                           >
                             <option value="">Select item</option>
-                            {items.map((i) => (
-                              <option key={i.itemId} value={i.itemName}>{i.itemName}</option>
+                            {items.filter((i) => i.source !== "ITEM_BASE").map((i) => (
+                              <option key={`m-${i.itemId}`} value={i.itemName}>{i.itemName}</option>
                             ))}
+                            {items.some((i) => i.source === "ITEM_BASE") && (
+                              <optgroup label="Catalog items">
+                                {items.filter((i) => i.source === "ITEM_BASE").map((i) => (
+                                  <option key={`b-${i.itemId}`} value={i.itemName}>{i.itemName}</option>
+                                ))}
+                              </optgroup>
+                            )}
                           </select>
                           {errors[`item_${idx}_itemId`] && (
                             <p className="mt-0.5 text-[10px]" style={{ color: "var(--red)" }}>

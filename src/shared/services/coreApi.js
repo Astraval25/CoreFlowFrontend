@@ -174,6 +174,13 @@ export const coreApi = {
   cancelOrder: (companyId, orderId) =>
     api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/cancel-order`),
 
+  // Sellable / Purchasable items (used for order creation)
+  getSellableItems: (companyId, customerId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/sellable`),
+
+  getPurchasableItems: (companyId, vendorId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/purchasable`),
+
   // Customer Items
   getCustomerItems: (companyId, customerId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/active`),
 

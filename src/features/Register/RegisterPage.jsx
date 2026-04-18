@@ -14,10 +14,10 @@ const RegisterPage = () => {
       const { confirmPassword, ...payload } = formData;
       const res = await register(payload);
       if (res.responseStatus) {
-        navigate(res.responseData.landingUrl, {
+        navigate("/cf/auth/verify", {
           state: {
-            email: formData.email
-          }
+            email: formData.email,
+          },
         });
       }
     } catch (err) {

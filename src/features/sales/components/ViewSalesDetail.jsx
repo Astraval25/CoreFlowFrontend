@@ -1,5 +1,6 @@
-import { MdEdit, MdInventory2, MdPointOfSale, MdDownload } from "react-icons/md";
+import { MdEdit, MdInventory2, MdPointOfSale, MdDownload, MdExpandMore } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useState as useLocalState } from "react";
 import useViewSalesDetail from "../hooks/useViewSalesDetail";
 import { coreApi } from "../../../shared/services/coreApi";
 
@@ -12,21 +13,16 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
     acceptQuotation, declineQuotation, cancelOrder,
   } = useViewSalesDetail(companyId, orderId);
   const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useLocalState(false);
 
   const handleDownloadBill = async () => {
     try {
       const res = await coreApi.downloadOrderBill(companyId, orderId);
       const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `order-bill-${order?.orderNumber || orderId}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      window.open(url, "_blank");
     } catch (err) {
       console.error("Download bill error:", err);
-      alert("Failed to download bill");
+      alert("Failed to open bill");
     }
   };
 
@@ -80,33 +76,6 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            {(status === "QUOTATION" || status === "QUOTATION_VIEWED") && (
-              <>
-                <TransitionBtn onClick={acceptQuotation}>Accept Quote</TransitionBtn>
-                <TransitionBtn onClick={declineQuotation} variant="danger">Decline</TransitionBtn>
-              </>
-            )}
-            {(status === "QUOTATION_ACCEPTED" || status === "QUOTATION") && (
-              <TransitionBtn onClick={convertToSalesOrder}>Convert to Order</TransitionBtn>
-            )}
-            {(status === "ORDER" || status === "ORDER_VIEWED") && (
-              <TransitionBtn onClick={convertToInvoice}>Convert to Invoice</TransitionBtn>
-            )}
-            {status === "ORDER_INVOICED" && (
-              <TransitionBtn onClick={markPaid}>Mark Paid</TransitionBtn>
-            )}
-            {status !== "ORDER_PAYED" && status !== "ORDER_CANCELLED" && (
-              <TransitionBtn onClick={cancelOrder} variant="danger">Cancel</TransitionBtn>
-            )}
-            {order.hasBill && (
-              <button
-                className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-3 py-1.5 text-xs font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
-                onClick={handleDownloadBill}
-              >
-                <MdDownload size={15} />
-                Download Bill
-              </button>
-            )}
             <button
               className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-3 py-1.5 text-xs font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
               onClick={handleEdit}
@@ -114,6 +83,69 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
               <MdEdit size={15} />
               Edit
             </button>
+
+            {/* Actions dropdown */}
+            <div className="relative">
+              <button
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-3 py-1.5 text-xs font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+                onClick={() => setDropdownOpen((o) => !o)}
+              >
+                Actions <MdExpandMore size={15} />
+              </button>
+              {dropdownOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
+                  <div className="absolute right-0 z-20 mt-1 w-48 rounded-lg border border-[#e2e8e2] bg-white shadow-lg overflow-hidden">
+                    {(status === "QUOTATION" || status === "QUOTATION_VIEWED") && (
+                      <>
+                        <button onClick={() => { acceptQuotation(); setDropdownOpen(false); }}
+                          disabled={statusUpdating}
+                          className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#2f7a47] hover:bg-[#f2f6f2] disabled:opacity-50">
+                          Accept Quote
+                        </button>
+                        <button onClick={() => { declineQuotation(); setDropdownOpen(false); }}
+                          disabled={statusUpdating}
+                          className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#9a3d3d] hover:bg-[#fdf4f4] disabled:opacity-50">
+                          Decline
+                        </button>
+                      </>
+                    )}
+                    {(status === "QUOTATION_ACCEPTED" || status === "QUOTATION") && (
+                      <button onClick={() => { convertToSalesOrder(); setDropdownOpen(false); }}
+                        disabled={statusUpdating}
+                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#2f7a47] hover:bg-[#f2f6f2] disabled:opacity-50">
+                        Convert to Order
+                      </button>
+                    )}
+                    {(status === "ORDER" || status === "ORDER_VIEWED") && (
+                      <button onClick={() => { convertToInvoice(); setDropdownOpen(false); }}
+                        disabled={statusUpdating}
+                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#2f7a47] hover:bg-[#f2f6f2] disabled:opacity-50">
+                        Convert to Invoice
+                      </button>
+                    )}
+                    {status === "ORDER_INVOICED" && (
+                      <button onClick={() => { markPaid(); setDropdownOpen(false); }}
+                        disabled={statusUpdating}
+                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#2f7a47] hover:bg-[#f2f6f2] disabled:opacity-50">
+                        Mark Paid
+                      </button>
+                    )}
+                    {status !== "ORDER_PAYED" && status !== "ORDER_CANCELLED" && (
+                      <button onClick={() => { cancelOrder(); setDropdownOpen(false); }}
+                        disabled={statusUpdating}
+                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#9a3d3d] hover:bg-[#fdf4f4] disabled:opacity-50">
+                        Cancel
+                      </button>
+                    )}
+                    <button onClick={() => { handleDownloadBill(); setDropdownOpen(false); }}
+                      className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#2f7a47] hover:bg-[#f2f6f2] flex items-center gap-2">
+                      <MdDownload size={13} /> View / Print Bill
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
