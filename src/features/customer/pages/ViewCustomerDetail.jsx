@@ -233,7 +233,9 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
           </div>
         </div>
 
-        <CustomerInvitationSection companyId={companyId} customerId={customerId} />
+        {!customer.customerCompany && (
+          <CustomerInvitationSection companyId={companyId} customerId={customerId} />
+        )}
 
         <div className="border-t border-[#e3e9e3] pt-2">
           <div className="flex flex-wrap gap-2">

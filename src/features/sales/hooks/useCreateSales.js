@@ -1,12 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { coreApi } from "../../../shared/services/coreApi";
-import useItemsPage from "../../Items/hooks/useItemsPage";
 import { useCustomer } from "../../customer/hooks/useCustomer";
 
 const useCreateSales = (orderType = "quote") => {
-  const { items } = useItemsPage();
   const { allCustomers } = useCustomer();
+  const [items, setItems] = useState([]);
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -24,6 +23,33 @@ const useCreateSales = (orderType = "quote") => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState("");
+
+  useEffect(() => {
+    if (!formData.customerId) {
+      setItems([]);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const decode = jwtDecode(token);
+        const companyId = decode?.defaultComp?.[0];
+        const res = await coreApi.getSellableItems(companyId, formData.customerId);
+        if (cancelled) return;
+        const list = res?.data?.responseData || [];
+        setItems(list.map((i) => ({ ...i, baseSalesPrice: i.price })));
+      } catch (err) {
+        if (!cancelled) {
+          console.error("Fetch sellable items failed:", err);
+          setItems([]);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [formData.customerId]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -132,7 +158,7 @@ const useCreateSales = (orderType = "quote") => {
 
       const payload = {
         customerId: Number(formData.customerId),
-        orderDate: formData.orderDate,
+        orderDate: formData.orderDate ? `${formData.orderDate}T00:00:00` : null,
         taxAmount: Number(formData.taxAmount || 0),
         discountAmount,
         deliveryCharge: Number(formData.deliveryCharge || 0),
