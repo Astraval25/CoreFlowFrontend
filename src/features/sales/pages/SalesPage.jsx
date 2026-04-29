@@ -6,10 +6,10 @@ import ActionMenu from "../../../shared/components/ActionMenu";
 import { useEffect, useState } from "react";
 
 const TABS = [
-  { id: "report",      label: "Report" },
-  { id: "quotes",      label: "Quotes" },
-  { id: "salesOrder",  label: "Sales Order" },
-  { id: "invoice",     label: "Invoices" },
+  { id: "report", label: "Report" },
+  { id: "quotes", label: "Quotes" },
+  { id: "salesOrder", label: "Sales Order" },
+  { id: "invoice", label: "Invoices" },
   { id: "payReceived", label: "Pay Received" },
 ];
 
@@ -31,7 +31,7 @@ const SalesPage = () => {
     if (tabParam && validTabs.includes(tabParam) && tabParam !== activeTab) {
       setActiveTab(tabParam);
     }
-  }, [tabParam]);
+  }, [tabParam, activeTab, validTabs]);
 
   const handleTabChange = (id) => {
     setActiveTab(id);
@@ -44,23 +44,25 @@ const SalesPage = () => {
     return `/cf/company/${companyId}/sales/create?type=${orderType}`;
   };
 
-  const filterByStatus = (statuses) =>
-    allSales.filter((s) => statuses.includes(s.orderStatus));
+  const filterByStatus = (statuses) => allSales.filter((s) => statuses.includes(s.orderStatus));
 
   const getFilteredSales = () => {
     switch (activeTab) {
-      case "quotes":     return filterByStatus(["QUOTATION", "QUOTATION_VIEWED", "QUOTATION_ACCEPTED", "QUOTATION_DECLINED"]);
-      case "salesOrder": return filterByStatus(["ORDER", "ORDER_VIEWED"]);
-      case "invoice":    return filterByStatus(["ORDER_INVOICED", "ORDER_PAYED"]);
-      default:           return [];
+      case "quotes":
+        return filterByStatus(["QUOTATION", "QUOTATION_VIEWED", "QUOTATION_ACCEPTED", "QUOTATION_DECLINED"]);
+      case "salesOrder":
+        return filterByStatus(["ORDER", "ORDER_VIEWED"]);
+      case "invoice":
+        return filterByStatus(["ORDER_INVOICED", "ORDER_PAYED"]);
+      default:
+        return [];
     }
   };
 
   const filteredSales = getFilteredSales();
 
   return (
-    <div>
-      {/* ── Header ── */}
+    <div className="min-h-screen bg-[#f8f9fc]">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-6">
           <h1 className="text-sm font-bold" style={{ color: "var(--text-main)" }}>Sales</h1>
@@ -98,32 +100,29 @@ const SalesPage = () => {
             <input
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
-              placeholder="Search orders…"
+              placeholder="Search orders..."
               className="form-input pl-8 text-xs py-1.5"
               style={{ width: 220 }}
             />
           </div>
-          <button
-            className="btn-primary text-xs"
-            onClick={() => navigate(createPath())}
-          >
+          <button className="btn-primary text-xs" onClick={() => navigate(createPath())}>
             <MdAdd size={15} /> New
           </button>
         </div>
       </div>
 
-      {/* ── Table ── */}
-      <div className="card overflow-hidden">
-        <table className="w-full" style={{ borderCollapse: "collapse" }}>
+      <div className="p-4" style={{ background: "#ffffff" }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #e3e7f1" }}>
+          <table className="w-full min-w-[980px]">
           <thead>
-            <tr style={{ background: "var(--surface-soft)", borderBottom: "1px solid var(--line)" }}>
+            <tr style={{ background: "#f7f8fc", borderBottom: "1px solid #e3e7f1" }}>
               {table.getHeaderGroups().map((hg) =>
                 hg.headers.map((header) => (
                   <th
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
                     className="px-5 py-3 text-left cursor-pointer select-none"
-                    style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)" }}
+                    style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#6a7693" }}
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
                   </th>
@@ -136,8 +135,8 @@ const SalesPage = () => {
               <tr>
                 <td colSpan={table.getAllColumns().length} className="py-16 text-center">
                   <div className="flex flex-col items-center gap-2">
-                    <MdInbox size={28} style={{ color: "var(--text-muted)" }} />
-                    <p className="text-xs" style={{ color: "var(--text-muted)" }}>No orders found</p>
+                    <MdInbox size={28} style={{ color: "#6a7693" }} />
+                    <p className="text-sm" style={{ color: "#6a7693" }}>No orders found</p>
                   </div>
                 </td>
               </tr>
@@ -146,18 +145,18 @@ const SalesPage = () => {
                 <tr
                   key={order.orderId}
                   className="cursor-pointer"
-                  style={{ borderBottom: "1px solid var(--line)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  style={{ borderBottom: "1px solid #edf1f8" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f8faff")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "#ffffff")}
                   onClick={() => navigate(`/cf/company/${companyId}/sales/${order.orderId}/detail`)}
                 >
-                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-muted)" }}>{index + 1}</td>
-                  <td className="px-5 py-3 text-xs font-semibold" style={{ color: "var(--accent)" }}>{order.orderNumber}</td>
-                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-sub)" }}>{order.orderDate}</td>
-                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-sub)" }}>{order.sellerCompanyName}</td>
-                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-sub)" }}>{order.customerName}</td>
-                  <td className="px-5 py-3 text-xs font-semibold tabular-nums" style={{ color: "var(--text-main)" }}>₹{order.totalAmount}</td>
-                  <td className="px-5 py-3 text-xs font-semibold tabular-nums" style={{ color: "var(--text-main)" }}>₹{order.paidAmount}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "#6a7693" }}>{index + 1}</td>
+                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "#1b5fcc" }}>{order.orderNumber}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>{order.orderDate}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>{order.sellerCompanyName}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>{order.customerName}</td>
+                  <td className="px-5 py-3 text-sm font-medium tabular-nums" style={{ color: "#202c45" }}>Rs {order.totalAmount}</td>
+                  <td className="px-5 py-3 text-sm font-medium tabular-nums" style={{ color: "#202c45" }}>Rs {order.paidAmount}</td>
                   <td className="px-5 py-3">
                     <span className="badge badge-blue">{order.orderStatus}</span>
                   </td>
@@ -173,7 +172,8 @@ const SalesPage = () => {
               ))
             )}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
     </div>
   );

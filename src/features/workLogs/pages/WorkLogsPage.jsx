@@ -16,7 +16,7 @@ const WorkLogsPage = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#f8f9fc]">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
           <h1 className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Work Logs</h1>
@@ -34,22 +34,23 @@ const WorkLogsPage = () => {
           )}
           <div className="relative">
             <MdSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--text-muted)" }} />
-            <input value={globalFilter ?? ""} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search…" className="form-input pl-8 text-xs py-1.5" style={{ width: 180 }} />
+            <input value={globalFilter ?? ""} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." className="form-input pl-8 text-xs py-1.5" style={{ width: 180 }} />
           </div>
           <button onClick={openCreate} className="btn-primary text-xs"><MdAdd size={15} /> New</button>
         </div>
       </div>
 
-      <div className="card overflow-hidden">
-        {loading ? (
-          <p className="text-xs p-8 text-center" style={{ color: "var(--text-muted)" }}>Loading…</p>
-        ) : (
-          <table className="w-full" style={{ borderCollapse: "collapse" }}>
+      <div className="p-4" style={{ background: "#ffffff" }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #e3e7f1" }}>
+          {loading ? (
+            <p className="text-sm p-8 text-center" style={{ color: "#6a7693" }}>Loading...</p>
+          ) : (
+            <table className="w-full min-w-[980px]">
             <thead>
-              <tr style={{ background: "var(--surface-soft)", borderBottom: "1px solid var(--line)" }}>
+              <tr style={{ background: "#f7f8fc", borderBottom: "1px solid #e3e7f1" }}>
                 {table.getHeaderGroups().map((hg) =>
                   hg.headers.map((header) => (
-                    <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="px-4 py-3 text-left cursor-pointer select-none" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)" }}>
+                    <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="px-4 py-3 text-left cursor-pointer select-none" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#6a7693" }}>
                       <div className="flex gap-1">{flexRender(header.column.columnDef.header, header.getContext())}</div>
                     </th>
                   ))
@@ -58,16 +59,16 @@ const WorkLogsPage = () => {
             </thead>
             <tbody>
               {table.getRowModel().rows.length === 0 ? (
-                <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-xs" style={{ color: "var(--text-muted)" }}>No work logs found</p></td></tr>
+                <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-sm" style={{ color: "#6a7693" }}>No work logs found</p></td></tr>
               ) : (
                 table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} style={{ borderBottom: "1px solid var(--line)" }} onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")} onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
-                    <td className="px-4 py-3 text-xs" style={{ color: "var(--text-sub)" }}>{row.original.logDate}</td>
-                    <td className="px-4 py-3 text-xs font-semibold" style={{ color: "var(--text-main)" }}>{row.original.employeeName}</td>
-                    <td className="px-4 py-3 text-xs" style={{ color: "var(--text-sub)" }}>{row.original.workName}</td>
-                    <td className="px-4 py-3 text-xs tabular-nums" style={{ color: "var(--text-main)" }}>{row.original.quantity}</td>
-                    <td className="px-4 py-3 text-xs" style={{ color: "var(--text-sub)" }}>{row.original.unit}</td>
-                    <td className="px-4 py-3 text-xs tabular-nums font-semibold" style={{ color: "var(--accent)" }}>₹{row.original.amountEarned?.toLocaleString()}</td>
+                  <tr key={row.id} style={{ borderBottom: "1px solid #edf1f8" }} onMouseEnter={(e) => (e.currentTarget.style.background = "#f8faff")} onMouseLeave={(e) => (e.currentTarget.style.background = "#ffffff")}>
+                    <td className="px-4 py-3 text-sm" style={{ color: "#202c45" }}>{row.original.logDate}</td>
+                    <td className="px-4 py-3 text-sm font-medium" style={{ color: "#202c45" }}>{row.original.employeeName}</td>
+                    <td className="px-4 py-3 text-sm" style={{ color: "#202c45" }}>{row.original.workName}</td>
+                    <td className="px-4 py-3 text-sm tabular-nums" style={{ color: "#202c45" }}>{row.original.quantity}</td>
+                    <td className="px-4 py-3 text-sm" style={{ color: "#202c45" }}>{row.original.unit}</td>
+                    <td className="px-4 py-3 text-sm tabular-nums font-medium" style={{ color: "#1b5fcc" }}>Rs {row.original.amountEarned?.toLocaleString()}</td>
                     <td className="px-4 py-3">{statusBadge(row.original.status)}</td>
                     <td className="px-4 py-3">
                       {row.original.status === "PENDING" && (
@@ -81,11 +82,11 @@ const WorkLogsPage = () => {
                 ))
               )}
             </tbody>
-          </table>
-        )}
+            </table>
+          )}
+        </div>
       </div>
 
-      {/* Create Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.35)" }} onClick={() => setShowModal(false)}>
           <div className="card w-full max-w-md mx-4 p-5" onClick={(e) => e.stopPropagation()}>
@@ -124,7 +125,7 @@ const WorkLogsPage = () => {
             </div>
             <div className="flex justify-end gap-3 mt-4">
               <button onClick={() => setShowModal(false)} className="btn-outline text-xs">Cancel</button>
-              <button onClick={submitForm} disabled={submitting} className="btn-primary text-xs">{submitting ? "Saving…" : "Create"}</button>
+              <button onClick={submitForm} disabled={submitting} className="btn-primary text-xs">{submitting ? "Saving..." : "Create"}</button>
             </div>
           </div>
         </div>

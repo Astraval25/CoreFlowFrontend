@@ -7,7 +7,7 @@ import ActionMenu from "../../../shared/components/ActionMenu";
 
 const ItemsPage = () => {
   const {
-    items, setItems, companyId,
+    setItems, companyId,
     activateItem, deactivateItem,
     table, globalFilter, setGlobalFilter, allItems,
   } = useItemsPage();
@@ -22,8 +22,7 @@ const ItemsPage = () => {
   };
 
   return (
-    <div>
-      {/* ── Header ── */}
+    <div className="min-h-screen bg-[#f8f9fc]">
       <div className="flex items-center justify-between mb-5">
         <select
           value={itemsType}
@@ -45,7 +44,7 @@ const ItemsPage = () => {
             <input
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
-              placeholder="Search items…"
+              placeholder="Search items..."
               className="form-input pl-8 text-xs py-1.5"
               style={{ width: 220 }}
             />
@@ -59,18 +58,18 @@ const ItemsPage = () => {
         </div>
       </div>
 
-      {/* ── Table ── */}
-      <div className="card overflow-hidden">
-        <table className="w-full" style={{ borderCollapse: "collapse" }}>
+      <div className="p-4" style={{ background: "#ffffff" }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #e3e7f1" }}>
+          <table className="w-full min-w-[780px]">
           <thead>
-            <tr style={{ background: "var(--surface-soft)", borderBottom: "1px solid var(--line)" }}>
+            <tr style={{ background: "#f7f8fc", borderBottom: "1px solid #e3e7f1" }}>
               {table.getHeaderGroups().map((hg) =>
                 hg.headers.map((header) => (
                   <th
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
                     className="px-5 py-3 text-left cursor-pointer select-none"
-                    style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)" }}
+                    style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#6a7693" }}
                   >
                     <div className="flex gap-1">
                       {flexRender(header.column.columnDef.header, header.getContext())}
@@ -84,7 +83,7 @@ const ItemsPage = () => {
             {table.getRowModel().rows.length === 0 ? (
               <tr>
                 <td colSpan={table.getAllColumns().length} className="py-16 text-center">
-                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>No items found</p>
+                  <p className="text-sm" style={{ color: "#6a7693" }}>No items found</p>
                 </td>
               </tr>
             ) : (
@@ -92,25 +91,25 @@ const ItemsPage = () => {
                 <tr
                   key={row.id}
                   className="cursor-pointer"
-                  style={{ borderBottom: "1px solid var(--line)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  style={{ borderBottom: "1px solid #edf1f8" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f8faff")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "#ffffff")}
                   onClick={() => navigate(`/cf/company/${companyId}/items/${row.original.itemId}/detail`)}
                 >
-                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-muted)" }}>{row.index + 1}</td>
-                  <td className="px-5 py-3 text-xs font-semibold" style={{ color: "var(--accent)" }}>
+                  <td className="px-5 py-3 text-sm" style={{ color: "#6a7693" }}>{row.index + 1}</td>
+                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "#1b5fcc" }}>
                     {row.getValue("itemName")}
                   </td>
-                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-sub)" }}>
+                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>
                     {row.getValue("itemType")}
                   </td>
-                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-sub)" }}>
+                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>
                     {row.getValue("unit")}
                   </td>
-                  <td className="px-5 py-3 text-xs tabular-nums font-semibold" style={{ color: "var(--text-main)" }}>
+                  <td className="px-5 py-3 text-sm tabular-nums font-medium" style={{ color: "#202c45" }}>
                     {row.getValue("baseSalesPrice")}
                   </td>
-                  <td className="px-5 py-3 text-xs tabular-nums font-semibold" style={{ color: "var(--text-main)" }}>
+                  <td className="px-5 py-3 text-sm tabular-nums font-medium" style={{ color: "#202c45" }}>
                     {row.getValue("basePurchasePrice")}
                   </td>
                   <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
@@ -135,7 +134,8 @@ const ItemsPage = () => {
               ))
             )}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ const EmployeesPage = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-[#f8f9fc]">
       <div className="flex items-center justify-between mb-5">
         <select
           value={filter}
@@ -39,7 +39,7 @@ const EmployeesPage = () => {
             <input
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
-              placeholder="Search employees…"
+              placeholder="Search employees..."
               className="form-input pl-8 text-xs py-1.5"
               style={{ width: 220 }}
             />
@@ -50,17 +50,18 @@ const EmployeesPage = () => {
         </div>
       </div>
 
-      <div className="card overflow-hidden">
-        <table className="w-full" style={{ borderCollapse: "collapse" }}>
+      <div className="p-4" style={{ background: "#ffffff" }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #e3e7f1" }}>
+          <table className="w-full min-w-[780px]">
           <thead>
-            <tr style={{ background: "var(--surface-soft)", borderBottom: "1px solid var(--line)" }}>
+            <tr style={{ background: "#f7f8fc", borderBottom: "1px solid #e3e7f1" }}>
               {table.getHeaderGroups().map((hg) =>
                 hg.headers.map((header) => (
                   <th
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
                     className="px-5 py-3 text-left cursor-pointer select-none"
-                    style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)" }}
+                    style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#6a7693" }}
                   >
                     <div className="flex gap-1">
                       {flexRender(header.column.columnDef.header, header.getContext())}
@@ -74,7 +75,7 @@ const EmployeesPage = () => {
             {table.getRowModel().rows.length === 0 ? (
               <tr>
                 <td colSpan={table.getAllColumns().length} className="py-16 text-center">
-                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>No employees found</p>
+                  <p className="text-sm" style={{ color: "#6a7693" }}>No employees found</p>
                 </td>
               </tr>
             ) : (
@@ -82,16 +83,16 @@ const EmployeesPage = () => {
                 <tr
                   key={row.id}
                   className="cursor-pointer"
-                  style={{ borderBottom: "1px solid var(--line)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  style={{ borderBottom: "1px solid #edf1f8" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f8faff")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "#ffffff")}
                   onClick={() => navigate(`/cf/company/${companyId}/employees/${row.original.employeeId}/detail`)}
                 >
-                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-muted)" }}>{row.index + 1}</td>
-                  <td className="px-5 py-3 text-xs font-semibold" style={{ color: "var(--accent)" }}>{row.original.employeeCode}</td>
-                  <td className="px-5 py-3 text-xs font-semibold" style={{ color: "var(--text-main)" }}>{row.original.employeeName}</td>
-                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-sub)" }}>{row.original.designation}</td>
-                  <td className="px-5 py-3 text-xs" style={{ color: "var(--text-sub)" }}>
+                  <td className="px-5 py-3 text-sm" style={{ color: "#6a7693" }}>{row.index + 1}</td>
+                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "#1b5fcc" }}>{row.original.employeeCode}</td>
+                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "#202c45" }}>{row.original.employeeName}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>{row.original.designation}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>
                     <span className={`badge badge-${row.original.currentSalaryType === "MONTHLY" ? "blue" : "orange"}`}>
                       {row.original.currentSalaryType}
                     </span>
@@ -111,7 +112,8 @@ const EmployeesPage = () => {
               ))
             )}
           </tbody>
-        </table>
+          </table>
+        </div>
       </div>
     </div>
   );

@@ -130,31 +130,31 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
   ];
 
   const expandedItemClass = ({ isActive }) =>
-    `group flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-colors ${
+    `group flex items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
       isActive
-        ? "font-semibold text-white bg-[var(--sidebar-active-bg)] shadow-sm"
-        : "font-medium text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)]"
+        ? "font-semibold shadow-sm rounded-md"
+        : "font-medium hover:bg-[var(--sidebar-hover)] rounded-xl"
     }`;
 
   const compactItemClass = ({ isActive }) =>
-    `group relative flex items-center justify-center w-11 h-11 mx-auto rounded-xl transition-colors ${
+    `group relative flex items-center justify-center w-11 h-11 mx-auto transition-colors ${
       isActive
-        ? "text-white bg-[var(--sidebar-active-bg)] shadow-sm"
-        : "text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)]"
+        ? "shadow-sm rounded-md"
+        : "hover:bg-[var(--sidebar-hover)] rounded-xl"
     }`;
 
   const groupButtonClass = (active) =>
-    `w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+    `w-full flex items-center justify-between px-3 py-2 rounded-sm text-sm font-medium transition-colors ${
       active
-        ? "text-[var(--sidebar-text-bright)] bg-[var(--sidebar-hover)]"
-        : "text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)]"
+        ? "hover:bg-[var(--sidebar-hover)]"
+        : "hover:bg-[var(--sidebar-hover)]"
     }`;
 
   const nestedItemClass = ({ isActive }) =>
-    `flex items-center gap-2 px-2.5 py-2 rounded-lg text-[13px] transition-colors ${
+    `flex items-center gap-2 px-2.5 py-2 text-[13px] transition-colors ${
       isActive
-        ? "font-semibold text-white bg-[var(--sidebar-active-bg)]"
-        : "font-medium text-[var(--sidebar-text)] hover:bg-[var(--sidebar-hover)] hover:text-[var(--sidebar-text-bright)]"
+        ? "font-semibold rounded-sm"
+        : "font-medium hover:bg-[var(--sidebar-hover)] rounded-lg"
     }`;
 
   const renderNestedLinks = (items) => (
@@ -166,6 +166,10 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
             key={`${item.label}-${item.to}`}
             to={item.to}
             className={() => nestedItemClass({ isActive: active })}
+            style={{
+              background: active ? "#e9eefc" : "transparent",
+              color: active ? "#1849b8" : "#2d3b5f",
+            }}
           >
             <span className="shrink-0">{item.icon}</span>
             <span>{item.label}</span>
@@ -178,11 +182,10 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
   return (
     <aside
       className="h-full flex flex-col thin-scroll overflow-y-auto"
-      style={{ background: "var(--sidebar-bg)" }}
+      style={{ background: "#f8f9fc" }}
     >
       <div
-        className={`flex items-center h-16 shrink-0 ${minimized ? "justify-center px-2" : "gap-2.5 px-4"}`}
-        style={{ borderBottom: "0.4px solid var(--sidebar-border)" }}
+        className={`flex items-center h-16 shrink-0 border-b border-gray-200 bg-white ${minimized ? "justify-center px-2" : "gap-2.5 px-4"}`}
       >
         <div
           className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
@@ -211,6 +214,10 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
                 to={item.to}
                 title={item.label}
                 className={compactItemClass}
+                style={({ isActive }) => ({
+                  background: isActive ? "#e9eefc" : "transparent",
+                  color: isActive ? "#1849b8" : "#2d3b5f",
+                })}
               >
                 {item.icon}
               </NavLink>
@@ -218,13 +225,27 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
           </>
         ) : (
           <>
-            <NavLink to={homePath} className={expandedItemClass}>
+            <NavLink
+              to={homePath}
+              className={expandedItemClass}
+              style={({ isActive }) => ({
+                background: isActive ? "#e9eefc" : "transparent",
+                color: isActive ? "#1849b8" : "#2d3b5f",
+              })}
+            >
               <MdDashboard size={17} />
               <span>Home</span>
             </NavLink>
 
             <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
-              <button onClick={() => toggleGroup("manage")} className={groupButtonClass(isManageActive)}>
+              <button
+                onClick={() => toggleGroup("manage")}
+                className={groupButtonClass(isManageActive)}
+                style={{
+                  background: "transparent",
+                  color: "#2d3b5f",
+                }}
+              >
                 <span className="flex items-center gap-2.5">
                   <MdManageAccounts size={17} />
                   Manage
@@ -244,7 +265,14 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
             </div>
 
             <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
-              <button onClick={() => toggleGroup("sales")} className={groupButtonClass(isSalesActive)}>
+              <button
+                onClick={() => toggleGroup("sales")}
+                className={groupButtonClass(isSalesActive)}
+                style={{
+                  background: "transparent",
+                  color: "#2d3b5f",
+                }}
+              >
                 <span className="flex items-center gap-2.5">
                   <MdPointOfSale size={17} />
                   Sales
@@ -264,7 +292,14 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
             </div>
 
             <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
-              <button onClick={() => toggleGroup("purchase")} className={groupButtonClass(isPurchaseActive)}>
+              <button
+                onClick={() => toggleGroup("purchase")}
+                className={groupButtonClass(isPurchaseActive)}
+                style={{
+                  background: "transparent",
+                  color: "#2d3b5f",
+                }}
+              >
                 <span className="flex items-center gap-2.5">
                   <FaShoppingCart size={15} />
                   Purchase
@@ -284,7 +319,14 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
             </div>
 
             <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
-              <button onClick={() => toggleGroup("payments")} className={groupButtonClass(isPaymentsActive)}>
+              <button
+                onClick={() => toggleGroup("payments")}
+                className={groupButtonClass(isPaymentsActive)}
+                style={{
+                  background: "transparent",
+                  color: "#2d3b5f",
+                }}
+              >
                 <span className="flex items-center gap-2.5">
                   <MdPayments size={17} />
                   Payments
@@ -304,7 +346,14 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
             </div>
 
             <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
-              <button onClick={() => toggleGroup("employees")} className={groupButtonClass(isEmployeesActive)}>
+              <button
+                onClick={() => toggleGroup("employees")}
+                className={groupButtonClass(isEmployeesActive)}
+                style={{
+                  background: "transparent",
+                  color: "#2d3b5f",
+                }}
+              >
                 <span className="flex items-center gap-2.5">
                   <MdPeople size={17} />
                   Employees
@@ -323,7 +372,14 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
               </div>
             </div>
 
-            <NavLink to={reportPath} className={expandedItemClass}>
+            <NavLink
+              to={reportPath}
+              className={expandedItemClass}
+              style={({ isActive }) => ({
+                background: isActive ? "#e9eefc" : "transparent",
+                color: isActive ? "#1849b8" : "#2d3b5f",
+              })}
+            >
               <MdAssessment size={17} />
               <span>Report</span>
             </NavLink>
