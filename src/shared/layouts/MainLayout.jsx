@@ -35,7 +35,7 @@ const MainLayout = () => {
         </div>
 
         <div className={`flex-1 ${contentOffset} transition-all duration-200`}>
-          <div className={`admin-topbar h-16 md:fixed md:top-0 ${topbarOffset} md:right-0 z-10 transition-all duration-200`}>
+          <div className={`admin-topbar h-16 md:fixed md:top-0 ${topbarOffset} md:right-0 z-50 transition-all duration-200`}>
             <Toolbar />
           </div>
 

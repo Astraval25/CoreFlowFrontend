@@ -264,7 +264,7 @@ const Toolbar = () => {
 
           {openCreateShortcutMenu && (
             <div
-              className="absolute right-0 mt-2 w-72 rounded-xl border z-30 overflow-hidden"
+              className="absolute right-0 mt-2 w-72 rounded-xl border z-[60] overflow-hidden"
               style={{
                 borderColor: "var(--line)",
                 background: "var(--surface-bg)",
