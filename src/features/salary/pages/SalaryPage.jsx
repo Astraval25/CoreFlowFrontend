@@ -17,10 +17,10 @@ const SalaryPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--app-bg)]">
+    <div className="min-h-screen bg-app">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <h1 className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Salary</h1>
+          <h1 className="text-sm font-semibold text-app-text">Salary</h1>
           <input
             type="month"
             value={`${period.slice(0, 4)}-${period.slice(4)}`}
@@ -30,7 +30,7 @@ const SalaryPage = () => {
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
-            <MdSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--text-muted)" }} />
+            <MdSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
             <input value={globalFilter ?? ""} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." className="form-input pl-8 text-xs py-1.5" style={{ width: 180 }} />
           </div>
           <button onClick={() => { setCalcForm({ fromDate: "", toDate: "", employeeId: "" }); setShowCalcModal(true); }} className="btn-primary text-xs">
@@ -39,17 +39,17 @@ const SalaryPage = () => {
         </div>
       </div>
 
-      <div className="p-4" style={{ background: "var(--surface-bg)" }}>
-        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--line)" }}>
+      <div className="p-4 bg-surface">
+        <div className="rounded-xl overflow-hidden border border-line">
           {loading ? (
-            <p className="text-sm p-8 text-center" style={{ color: "var(--text-sub)" }}>Loading...</p>
+            <p className="text-sm p-8 text-center text-app-sub">Loading...</p>
           ) : (
             <table className="w-full min-w-[980px]">
             <thead>
-              <tr style={{ background: "var(--surface-muted)", borderBottom: "1px solid var(--line)" }}>
+              <tr className="border-b border-line bg-surface-muted">
                 {table.getHeaderGroups().map((hg) =>
                   hg.headers.map((header) => (
-                    <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="px-4 py-3 text-left cursor-pointer select-none" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-sub)" }}>
+                    <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="px-4 py-3 text-left cursor-pointer select-none text-[11px] font-bold uppercase tracking-[0.05em] text-app-sub">
                       <div className="flex gap-1">{flexRender(header.column.columnDef.header, header.getContext())}</div>
                     </th>
                   ))
@@ -58,27 +58,27 @@ const SalaryPage = () => {
             </thead>
             <tbody>
               {table.getRowModel().rows.length === 0 ? (
-                <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-sm" style={{ color: "var(--text-sub)" }}>No salary periods found</p></td></tr>
+                <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-sm text-app-sub">No salary periods found</p></td></tr>
               ) : (
                 table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} style={{ borderBottom: "1px solid var(--line-soft)" }} onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-hover)")} onMouseLeave={(e) => (e.currentTarget.style.background = "var(--surface-bg)")}>
-                    <td className="px-4 py-3 text-sm font-medium" style={{ color: "var(--text-main)" }}>{row.original.employeeName}</td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "var(--accent-hover)" }}>{row.original.employeeCode}</td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "var(--text-main)" }}>{row.original.fromDate}</td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "var(--text-main)" }}>{row.original.toDate}</td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "var(--text-main)" }}>{row.original.salaryType}</td>
-                    <td className="px-4 py-3 text-sm tabular-nums font-medium" style={{ color: "var(--text-main)" }}>Rs {row.original.grossAmount?.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-sm tabular-nums font-medium" style={{ color: "var(--accent-hover)" }}>Rs {row.original.netAmount?.toLocaleString()}</td>
+                  <tr key={row.id} className="border-b border-line-soft hover:bg-surface-hover">
+                    <td className="px-4 py-3 text-sm font-medium text-app-text">{row.original.employeeName}</td>
+                    <td className="px-4 py-3 text-sm text-brand-hover">{row.original.employeeCode}</td>
+                    <td className="px-4 py-3 text-sm text-app-text">{row.original.fromDate}</td>
+                    <td className="px-4 py-3 text-sm text-app-text">{row.original.toDate}</td>
+                    <td className="px-4 py-3 text-sm text-app-text">{row.original.salaryType}</td>
+                    <td className="px-4 py-3 text-sm tabular-nums font-medium text-app-text">Rs {row.original.grossAmount?.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-sm tabular-nums font-medium text-brand-hover">Rs {row.original.netAmount?.toLocaleString()}</td>
                     <td className="px-4 py-3">{statusBadge(row.original.status)}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1">
-                        <button onClick={() => viewDetail(row.original.salaryPeriodId)} className="p-1 rounded hover:bg-gray-100" title="View Detail"><MdVisibility size={16} style={{ color: "var(--text-sub)" }} /></button>
-                        <button onClick={() => downloadSlip(row.original.salaryPeriodId)} className="p-1 rounded hover:bg-gray-100" title="Download Slip"><MdDownload size={16} style={{ color: "var(--text-sub)" }} /></button>
+                        <button onClick={() => viewDetail(row.original.salaryPeriodId)} className="p-1 rounded hover:bg-gray-100" title="View Detail"><MdVisibility size={16} className="text-app-sub" /></button>
+                        <button onClick={() => downloadSlip(row.original.salaryPeriodId)} className="p-1 rounded hover:bg-gray-100" title="Download Slip"><MdDownload size={16} className="text-app-sub" /></button>
                         {row.original.status === "DRAFT" && (
-                          <button onClick={() => { if (window.confirm("Approve this salary period?")) approvePeriod(row.original.salaryPeriodId); }} className="p-1 rounded hover:bg-blue-50" title="Approve"><MdCheck size={16} style={{ color: "var(--accent)" }} /></button>
+                          <button onClick={() => { if (window.confirm("Approve this salary period?")) approvePeriod(row.original.salaryPeriodId); }} className="p-1 rounded hover:bg-blue-50" title="Approve"><MdCheck size={16} className="text-brand" /></button>
                         )}
                         {row.original.status === "APPROVED" && (
-                          <button onClick={() => { if (window.confirm("Mark as paid?")) markPaid(row.original.salaryPeriodId); }} className="p-1 rounded hover:bg-blue-50" title="Mark Paid"><MdPayment size={16} style={{ color: "var(--blue)" }} /></button>
+                          <button onClick={() => { if (window.confirm("Mark as paid?")) markPaid(row.original.salaryPeriodId); }} className="p-1 rounded hover:bg-blue-50" title="Mark Paid"><MdPayment size={16} className="text-info" /></button>
                         )}
                       </div>
                     </td>
@@ -92,16 +92,16 @@ const SalaryPage = () => {
       </div>
 
       {showCalcModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "var(--overlay-bg)" }} onClick={() => setShowCalcModal(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay" onClick={() => setShowCalcModal(false)}>
           <div className="card w-full max-w-md mx-4 p-5" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Calculate Salary</p>
+              <p className="text-sm font-semibold text-app-text">Calculate Salary</p>
               <button onClick={() => setShowCalcModal(false)} className="p-1 rounded hover:bg-gray-100"><MdClose size={18} /></button>
             </div>
-            {calcError && <p className="text-xs mb-3 p-2 rounded" style={{ color: "var(--red)", background: "var(--red-tint)" }}>{calcError}</p>}
+            {calcError && <p className="text-xs mb-3 p-2 rounded text-danger bg-danger-tint">{calcError}</p>}
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-medium mb-1 block" style={{ color: "var(--text-sub)" }}>Employee (optional - leave blank for all)</label>
+                <label className="text-xs font-medium mb-1 block text-app-sub">Employee (optional - leave blank for all)</label>
                 <select value={calcForm.employeeId} onChange={(e) => setCalcForm((p) => ({ ...p, employeeId: e.target.value }))} className="form-input text-xs w-full">
                   <option value="">All Employees</option>
                   {employees.map((emp) => <option key={emp.employeeId} value={emp.employeeId}>{emp.employeeName}</option>)}
@@ -109,11 +109,11 @@ const SalaryPage = () => {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-medium mb-1 block" style={{ color: "var(--text-sub)" }}>From Date</label>
+                  <label className="text-xs font-medium mb-1 block text-app-sub">From Date</label>
                   <input type="date" value={calcForm.fromDate} onChange={(e) => setCalcForm((p) => ({ ...p, fromDate: e.target.value }))} className="form-input text-xs w-full" />
                 </div>
                 <div>
-                  <label className="text-xs font-medium mb-1 block" style={{ color: "var(--text-sub)" }}>To Date</label>
+                  <label className="text-xs font-medium mb-1 block text-app-sub">To Date</label>
                   <input type="date" value={calcForm.toDate} onChange={(e) => setCalcForm((p) => ({ ...p, toDate: e.target.value }))} className="form-input text-xs w-full" />
                 </div>
               </div>
@@ -127,14 +127,14 @@ const SalaryPage = () => {
       )}
 
       {selectedDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "var(--overlay-bg)" }} onClick={() => setSelectedDetail(null)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay" onClick={() => setSelectedDetail(null)}>
           <div className="card w-full max-w-lg mx-4 p-5 max-h-[80vh] overflow-y-auto thin-scroll" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Salary Detail - {selectedDetail.employeeName}</p>
+              <p className="text-sm font-semibold text-app-text">Salary Detail - {selectedDetail.employeeName}</p>
               <button onClick={() => setSelectedDetail(null)} className="p-1 rounded hover:bg-gray-100"><MdClose size={18} /></button>
             </div>
             {detailLoading ? (
-              <p className="text-xs" style={{ color: "var(--text-muted)" }}>Loading...</p>
+              <p className="text-xs text-app-muted">Loading...</p>
             ) : (
               <>
                 <div className="grid grid-cols-2 gap-3 mb-4">
@@ -151,29 +151,29 @@ const SalaryPage = () => {
                     ["Status", selectedDetail.status],
                   ].map(([label, val]) => (
                     <div key={label}>
-                      <p className="text-[10px] uppercase font-semibold" style={{ color: "var(--text-muted)" }}>{label}</p>
-                      <p className="text-xs font-medium" style={{ color: "var(--text-main)" }}>{val}</p>
+                      <p className="text-[10px] uppercase font-semibold text-app-muted">{label}</p>
+                      <p className="text-xs font-medium text-app-text">{val}</p>
                     </div>
                   ))}
                 </div>
 
                 {selectedDetail.lines?.length > 0 && (
                   <>
-                    <p className="text-xs font-semibold mb-2" style={{ color: "var(--text-main)" }}>Breakdown</p>
-                    <table className="w-full" style={{ borderCollapse: "collapse" }}>
+                    <p className="text-xs font-semibold mb-2 text-app-text">Breakdown</p>
+                    <table className="w-full" >
                       <thead>
-                        <tr style={{ borderBottom: "1px solid var(--line)" }}>
+                        <tr className="border-b border-line">
                           {["Type", "Description", "Amount"].map((h) => (
-                            <th key={h} className="px-3 py-2 text-left" style={{ fontSize: 10, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>{h}</th>
+                            <th key={h} className="px-3 py-2 text-left text-[10px] font-bold uppercase text-app-muted">{h}</th>
                           ))}
                         </tr>
                       </thead>
                       <tbody>
                         {selectedDetail.lines.map((line) => (
-                          <tr key={line.lineId} style={{ borderBottom: "1px solid var(--line)" }}>
+                          <tr key={line.lineId} className="border-b border-line">
                             <td className="px-3 py-2 text-xs"><span className={`badge badge-${line.lineType === "DEDUCTION" ? "red" : line.lineType === "FIXED" ? "blue" : "blue"}`}>{line.lineType}</span></td>
-                            <td className="px-3 py-2 text-xs" style={{ color: "var(--text-sub)" }}>{line.description}</td>
-                            <td className="px-3 py-2 text-xs tabular-nums font-semibold" style={{ color: line.amount < 0 ? "var(--red)" : "var(--text-main)" }}>Rs {line.amount?.toLocaleString()}</td>
+                            <td className="px-3 py-2 text-xs text-app-sub">{line.description}</td>
+                            <td className={`px-3 py-2 text-xs tabular-nums font-semibold ${line.amount < 0 ? "text-danger" : "text-app-text"}`}>Rs {line.amount?.toLocaleString()}</td>
                           </tr>
                         ))}
                       </tbody>

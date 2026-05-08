@@ -60,15 +60,15 @@ const CreateVendorPage = () => {
   ];
 
   return (
-    <div className="rounded-2xl border border-[var(--line)] bg-white p-5 shadow-sm">
-      <h1 className="mb-6 text-lg font-bold text-[var(--text-main)]">
+    <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+      <h1 className="mb-6 text-lg font-bold text-app-text">
         {isEditMode ? "Edit vendor" : "New vendor"}
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-7">
         {/* ================= vendor ================= */}
-        <div className="rounded-xl border border-[var(--line)] bg-[var(--app-bg)] p-4">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">
+        <div className="rounded-xl border border-line bg-app p-4">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-app-sub">
             Vendor Details
           </p>
           <div className="grid max-w-3xl grid-cols-[180px_1fr] gap-4">
@@ -153,8 +153,8 @@ const CreateVendorPage = () => {
         {/* ================= ADDRESSES ================= */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* BILLING */}
-          <div className="rounded-xl border border-[var(--line)] bg-[var(--app-bg)] p-4">
-            <h3 className="mb-4 text-base font-semibold text-[var(--accent)]">
+          <div className="rounded-xl border border-line bg-app p-4">
+            <h3 className="mb-4 text-base font-semibold text-brand">
               Billing Address
             </h3>
             <div className="grid grid-cols-[180px_1fr] gap-4">
@@ -241,9 +241,9 @@ const CreateVendorPage = () => {
           </div>
 
           {/* SHIPPING */}
-          <div className="rounded-xl border border-[var(--line)] bg-[var(--app-bg)] p-4">
+          <div className="rounded-xl border border-line bg-app p-4">
             <div className="mb-4 flex justify-between">
-              <h3 className="text-base font-semibold text-[var(--accent)]">
+              <h3 className="text-base font-semibold text-brand">
                 Shipping Address
               </h3>
               <label className="flex gap-2 text-sm">
@@ -315,7 +315,7 @@ const CreateVendorPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="cursor-pointer rounded-lg bg-[var(--accent)] px-6 py-2 text-white transition hover:bg-[var(--accent-hover)]"
+            className="cursor-pointer rounded-lg bg-brand px-6 py-2 text-white transition hover:bg-brand-hover"
           >
             {loading
               ? "Saving..."

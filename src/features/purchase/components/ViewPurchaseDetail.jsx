@@ -44,8 +44,8 @@ const ViewPurchaseDetail = ({ companyId, orderId }) => {
     const base =
       "inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 cursor-pointer";
     const styles = variant === "danger"
-      ? "border border-[var(--red-border)] bg-[var(--red-bg)] text-[var(--red-text)] hover:bg-[var(--red-soft)]"
-      : "border border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--accent)] hover:bg-[var(--accent-soft-hover)]";
+      ? "border border-danger-border bg-danger-bg text-danger-text hover:bg-danger-soft"
+      : "border border-brand-border bg-brand-soft text-brand hover:bg-brand-soft-hover";
     return (
       <button onClick={onClick} disabled={statusUpdating} className={`${base} ${styles}`}>
         {children}
@@ -58,18 +58,18 @@ const ViewPurchaseDetail = ({ companyId, orderId }) => {
       <section className="p-5 space-y-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-sub)]">Purchase Order</p>
-            <h2 className="text-2xl font-bold text-[var(--text-main)]">{order.orderNumber}</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-app-sub">Purchase Order</p>
+            <h2 className="text-2xl font-bold text-app-text">{order.orderNumber}</h2>
             <div className="flex flex-wrap gap-2 pt-1">
-              <span className="inline-flex rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent)]">
+              <span className="inline-flex rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
                 Date: {new Date(order.orderDate).toLocaleDateString()}
               </span>
-              <span className="inline-flex rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent)]">
+              <span className="inline-flex rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
                 Status: {order.orderStatus || "-"}
               </span>
               <span
                 className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                  order.hasBill ? "bg-[var(--accent-soft)] text-[var(--accent)]" : "bg-[var(--orange-bg)] text-[var(--orange-text)]"
+                  order.hasBill ? "bg-brand-soft text-brand" : "bg-warning-bg text-warning-text"
                 }`}
               >
                 {order.hasBill ? "Bill Attached" : "No Bill"}
@@ -79,7 +79,7 @@ const ViewPurchaseDetail = ({ companyId, orderId }) => {
 
           <div className="flex flex-wrap items-center gap-2">
             <button
-              className="inline-flex items-center gap-2 rounded-lg border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--accent)] transition hover:bg-[var(--accent-soft-hover)] cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-lg border border-brand-border bg-brand-soft px-3 py-1.5 text-xs font-semibold text-brand transition hover:bg-brand-soft-hover cursor-pointer"
               onClick={handleEdit}
             >
               <MdEdit size={15} />
@@ -89,7 +89,7 @@ const ViewPurchaseDetail = ({ companyId, orderId }) => {
             {/* Actions dropdown */}
             <div className="relative">
               <button
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--accent)] transition hover:bg-[var(--accent-soft-hover)] cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border bg-brand-soft px-3 py-1.5 text-xs font-semibold text-brand transition hover:bg-brand-soft-hover cursor-pointer"
                 onClick={() => setDropdownOpen((o) => !o)}
               >
                 Actions <MdExpandMore size={15} />
@@ -97,17 +97,17 @@ const ViewPurchaseDetail = ({ companyId, orderId }) => {
               {dropdownOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
-                  <div className="absolute right-0 z-20 mt-1 w-48 rounded-lg border border-[var(--line)] bg-white shadow-lg overflow-hidden">
+                  <div className="absolute right-0 z-20 mt-1 w-48 rounded-lg border border-line bg-white shadow-lg overflow-hidden">
                     {(status === "QUOTATION" || status === "QUOTATION_VIEWED") && (
                       <>
                         <button onClick={() => { acceptQuotation(); setDropdownOpen(false); }}
                           disabled={statusUpdating}
-                          className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--accent)] hover:bg-[var(--surface-muted)] disabled:opacity-50">
+                          className="w-full px-4 py-2.5 text-left text-xs font-medium text-brand hover:bg-surface-muted disabled:opacity-50">
                           Accept Quote
                         </button>
                         <button onClick={() => { declineQuotation(); setDropdownOpen(false); }}
                           disabled={statusUpdating}
-                          className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--red-text)] hover:bg-[var(--red-bg)] disabled:opacity-50">
+                          className="w-full px-4 py-2.5 text-left text-xs font-medium text-danger-text hover:bg-danger-bg disabled:opacity-50">
                           Decline
                         </button>
                       </>
@@ -115,33 +115,33 @@ const ViewPurchaseDetail = ({ companyId, orderId }) => {
                     {(status === "QUOTATION_ACCEPTED" || status === "QUOTATION") && (
                       <button onClick={() => { convertToOrder(); setDropdownOpen(false); }}
                         disabled={statusUpdating}
-                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--accent)] hover:bg-[var(--surface-muted)] disabled:opacity-50">
+                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-brand hover:bg-surface-muted disabled:opacity-50">
                         Convert to Order
                       </button>
                     )}
                     {(status === "ORDER" || status === "ORDER_VIEWED") && (
                       <button onClick={() => { convertToBill(); setDropdownOpen(false); }}
                         disabled={statusUpdating}
-                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--accent)] hover:bg-[var(--surface-muted)] disabled:opacity-50">
+                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-brand hover:bg-surface-muted disabled:opacity-50">
                         Convert to Invoice
                       </button>
                     )}
                     {status === "ORDER_INVOICED" && (
                       <button onClick={() => { markPaid(); setDropdownOpen(false); }}
                         disabled={statusUpdating}
-                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--accent)] hover:bg-[var(--surface-muted)] disabled:opacity-50">
+                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-brand hover:bg-surface-muted disabled:opacity-50">
                         Mark Paid
                       </button>
                     )}
                     {status !== "ORDER_PAYED" && status !== "ORDER_CANCELLED" && (
                       <button onClick={() => { cancelOrder(); setDropdownOpen(false); }}
                         disabled={statusUpdating}
-                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--red-text)] hover:bg-[var(--red-bg)] disabled:opacity-50">
+                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-danger-text hover:bg-danger-bg disabled:opacity-50">
                         Cancel
                       </button>
                     )}
                     <button onClick={() => { handleDownloadBill(); setDropdownOpen(false); }}
-                      className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--accent)] hover:bg-[var(--surface-muted)] flex items-center gap-2">
+                      className="w-full px-4 py-2.5 text-left text-xs font-medium text-brand hover:bg-surface-muted flex items-center gap-2">
                       <MdDownload size={13} /> View / Print Bill
                     </button>
                   </div>
@@ -152,64 +152,64 @@ const ViewPurchaseDetail = ({ companyId, orderId }) => {
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg bg-[var(--app-bg)] p-4">
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--text-heading)]">
+          <div className="rounded-lg bg-app p-4">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-app-heading">
               <MdReceiptLong size={18} />
               Parties
             </h3>
             <dl className="space-y-2 text-sm">
               <div className="flex items-center justify-between">
-                <dt className="text-[var(--text-sub)]">Buyer Company</dt>
-                <dd className="font-semibold text-[var(--text-main)]">{order.buyerCompanyName || "-"}</dd>
+                <dt className="text-app-sub">Buyer Company</dt>
+                <dd className="font-semibold text-app-text">{order.buyerCompanyName || "-"}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-[var(--text-sub)]">Vendor</dt>
-                <dd className="font-semibold text-[var(--text-main)]">{order.vendorName || "-"}</dd>
+                <dt className="text-app-sub">Vendor</dt>
+                <dd className="font-semibold text-app-text">{order.vendorName || "-"}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-[var(--text-sub)]">Paid Amount</dt>
-                <dd className="font-semibold text-[var(--text-main)]">{money(order.paidAmount)}</dd>
+                <dt className="text-app-sub">Paid Amount</dt>
+                <dd className="font-semibold text-app-text">{money(order.paidAmount)}</dd>
               </div>
             </dl>
           </div>
 
-          <div className="rounded-lg bg-[var(--app-bg)] p-4">
-            <h3 className="mb-3 text-sm font-semibold text-[var(--text-heading)]">Amount Summary</h3>
+          <div className="rounded-lg bg-app p-4">
+            <h3 className="mb-3 text-sm font-semibold text-app-heading">Amount Summary</h3>
             <dl className="space-y-2 text-sm">
               <div className="flex items-center justify-between">
-                <dt className="text-[var(--text-sub)]">Order Amount</dt>
-                <dd className="font-semibold text-[var(--text-main)]">{money(order.orderAmount)}</dd>
+                <dt className="text-app-sub">Order Amount</dt>
+                <dd className="font-semibold text-app-text">{money(order.orderAmount)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-[var(--text-sub)]">Tax</dt>
-                <dd className="font-semibold text-[var(--text-main)]">{money(order.taxAmount)}</dd>
+                <dt className="text-app-sub">Tax</dt>
+                <dd className="font-semibold text-app-text">{money(order.taxAmount)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-[var(--text-sub)]">Delivery</dt>
-                <dd className="font-semibold text-[var(--text-main)]">{money(order.deliveryCharge)}</dd>
+                <dt className="text-app-sub">Delivery</dt>
+                <dd className="font-semibold text-app-text">{money(order.deliveryCharge)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-[var(--text-sub)]">Discount</dt>
-                <dd className="font-semibold text-[var(--text-main)]">{money(order.discountAmount)}</dd>
+                <dt className="text-app-sub">Discount</dt>
+                <dd className="font-semibold text-app-text">{money(order.discountAmount)}</dd>
               </div>
-              <div className="mt-1 border-t border-[var(--line)] pt-2 flex items-center justify-between">
-                <dt className="font-semibold text-[var(--text-heading)]">Total</dt>
-                <dd className="text-base font-bold text-[var(--accent)]">{money(order.totalAmount)}</dd>
+              <div className="mt-1 border-t border-line pt-2 flex items-center justify-between">
+                <dt className="font-semibold text-app-heading">Total</dt>
+                <dd className="text-base font-bold text-brand">{money(order.totalAmount)}</dd>
               </div>
             </dl>
           </div>
         </div>
-        <div className="border-t border-[var(--line)] pt-4">
-          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-[var(--text-heading)]">
+        <div className="border-t border-line pt-4">
+          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-app-heading">
           <MdInventory2 size={18} />
           Ordered Items
           </h3>
           {orderItems.length === 0 ? (
             <p className="text-sm text-gray-600">No order items available.</p>
           ) : (
-            <div className="overflow-x-auto rounded-lg border border-[var(--line)]">
+            <div className="overflow-x-auto rounded-lg border border-line">
               <table className="min-w-full text-sm">
-                <thead className="bg-[var(--surface-muted)] text-[var(--text-sub)]">
+                <thead className="bg-surface-muted text-app-sub">
                   <tr>
                     <th className="px-4 py-3 text-left font-semibold">Item</th>
                     <th className="px-4 py-3 text-left font-semibold">Qty</th>
@@ -219,11 +219,11 @@ const ViewPurchaseDetail = ({ companyId, orderId }) => {
                 </thead>
                 <tbody>
                   {orderItems.map((item) => (
-                    <tr key={item.orderItemId} className="border-t border-[var(--line-muted)]">
-                      <td className="px-4 py-3 font-medium text-[var(--text-main)]">{item.itemName || item.itemId?.itemName || "-"}</td>
-                      <td className="px-4 py-3 text-[var(--text-soft)]">{item.quantity ?? 0}</td>
-                      <td className="px-4 py-3 text-[var(--text-soft)]">{money(item.updatedPrice)}</td>
-                      <td className="px-4 py-3 font-semibold text-[var(--text-main)]">{money(item.itemTotal)}</td>
+                    <tr key={item.orderItemId} className="border-t border-line-muted">
+                      <td className="px-4 py-3 font-medium text-app-text">{item.itemName || item.itemId?.itemName || "-"}</td>
+                      <td className="px-4 py-3 text-app-soft">{item.quantity ?? 0}</td>
+                      <td className="px-4 py-3 text-app-soft">{money(item.updatedPrice)}</td>
+                      <td className="px-4 py-3 font-semibold text-app-text">{money(item.itemTotal)}</td>
                     </tr>
                   ))}
                 </tbody>

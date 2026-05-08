@@ -221,7 +221,7 @@ const ReportPage = ({ reportType = "" }) => {
   const selectedReportData = selectedReport ? data[selectedReport.id] : null;
 
   return (
-    <div className="min-h-[calc(100vh-90px)] bg-[var(--app-bg)]">
+    <div className="min-h-[calc(100vh-90px)] bg-app">
       {!detailOpen ? (
         <ReportCenterListView
           searchText={searchText}

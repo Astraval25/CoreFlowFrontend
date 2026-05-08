@@ -11,12 +11,12 @@ import {
 } from "react-icons/md";
 import useNotifications from "../hooks/useNotifications";
 
-const typeColors = {
-  LEAVE_LOG_CREATED: "var(--orange)",
-  WORK_LOG_CREATED: "var(--blue)",
-  ORDER_CREATED: "var(--accent)",
-  PAYMENT_RECEIVED: "var(--accent)",
-  PAYMENT_SENT: "var(--red)",
+const typeClasses = {
+  LEAVE_LOG_CREATED: "text-warning",
+  WORK_LOG_CREATED: "text-info",
+  ORDER_CREATED: "text-brand",
+  PAYMENT_RECEIVED: "text-brand",
+  PAYMENT_SENT: "text-danger",
 };
 
 const formatDate = (dt) => {
@@ -82,7 +82,7 @@ const NotificationsDrawer = ({ open, onClose }) => {
           <div className="flex items-center gap-2">
             <h2 className="font-semibold text-gray-800">Notifications</h2>
             {unreadCount > 0 && (
-              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[var(--red-soft)] text-[var(--red-text)]">
+              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-danger-soft text-danger-text">
                 {unreadCount} unread
               </span>
             )}
@@ -91,7 +91,7 @@ const NotificationsDrawer = ({ open, onClose }) => {
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
-                className="text-[11px] font-medium px-2 py-1 rounded hover:bg-gray-200 text-[var(--accent)] flex items-center gap-1"
+                className="text-[11px] font-medium px-2 py-1 rounded hover:bg-gray-200 text-brand flex items-center gap-1"
               >
                 <MdDoneAll size={13} />
                 Mark all
@@ -122,28 +122,25 @@ const NotificationsDrawer = ({ open, onClose }) => {
                   <div
                     key={n.notificationId}
                     onClick={() => handleNotificationClick(n)}
-                    className="flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors border-b border-gray-100"
-                    style={{ background: n.isRead ? "var(--surface-bg)" : "var(--surface-soft)" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = n.isRead ? "var(--surface-bg)" : "var(--surface-soft)")}
+                    className={`flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors border-b border-gray-100 hover:bg-surface-soft ${n.isRead ? "bg-surface" : "bg-surface-soft"}`}
                   >
                     <div className="pt-1 shrink-0">
                       {n.isRead ? (
-                        <MdCheckCircle size={10} style={{ color: "var(--text-muted)" }} />
+                        <MdCheckCircle size={10} className="text-app-muted" />
                       ) : (
-                        <MdCircle size={10} style={{ color: typeColors[n.type] || "var(--accent)" }} />
+                        <MdCircle size={10} className={typeClasses[n.type] || "text-brand"} />
                       )}
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <span className="text-xs font-semibold text-[var(--text-main)]">{n.title}</span>
+                        <span className="text-xs font-semibold text-app-text">{n.title}</span>
                       </div>
-                      <p className="text-xs mb-1 text-[var(--text-sub)]">{n.message}</p>
+                      <p className="text-xs mb-1 text-app-sub">{n.message}</p>
                       <div className="flex items-center gap-3">
-                        <span className="text-[10px] text-[var(--text-muted)]">{formatDate(n.createdDt)}</span>
+                        <span className="text-[10px] text-app-muted">{formatDate(n.createdDt)}</span>
                         {n.actionLabel && (
-                          <span className="text-[10px] font-semibold text-[var(--accent)]">{n.actionLabel}</span>
+                          <span className="text-[10px] font-semibold text-brand">{n.actionLabel}</span>
                         )}
                       </div>
                     </div>
@@ -154,7 +151,7 @@ const NotificationsDrawer = ({ open, onClose }) => {
                           e.stopPropagation();
                           markRead(n.notificationId);
                         }}
-                        className="shrink-0 text-[10px] font-medium px-2 py-1 rounded transition-colors text-[var(--accent)] hover:bg-gray-100"
+                        className="shrink-0 text-[10px] font-medium px-2 py-1 rounded transition-colors text-brand hover:bg-gray-100"
                       >
                         Mark read
                       </button>

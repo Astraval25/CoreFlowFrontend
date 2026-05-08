@@ -27,7 +27,7 @@ const ViewItemPage = () => {
           itemId={Number(paramItemId)}
         />
       ) : (
-        <p className="p-6" style={{ color: "var(--text-sub)" }}>Loading item details...</p>
+        <p className="p-6 text-app-sub">Loading item details...</p>
       )}
     </div>
   );

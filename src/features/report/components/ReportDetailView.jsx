@@ -93,19 +93,18 @@ const ReportDetailTable = ({ value, onColumnsReady }) => {
   }, [columns, rows, onColumnsReady]);
 
   if (!rows.length) {
-    return <p className="text-sm py-8 text-center" style={{ color: "var(--text-muted)" }}>No records found for selected report.</p>;
+    return <p className="text-sm py-8 text-center text-app-muted">No records found for selected report.</p>;
   }
 
   return (
     <div className="overflow-auto">
       <table className="w-full min-w-[560px]">
         <thead>
-          <tr style={{ background: "var(--surface-muted)", borderBottom: "1px solid var(--line)" }}>
+          <tr className="border-b border-line bg-surface-muted">
             {columns.map((column) => (
               <th
                 key={column}
-                className="px-5 py-3 text-left text-[11px] uppercase tracking-wide"
-                style={{ color: "var(--text-sub)" }}
+                className="px-5 py-3 text-left text-[11px] uppercase tracking-wide text-app-sub"
               >
                 {column}
               </th>
@@ -114,9 +113,9 @@ const ReportDetailTable = ({ value, onColumnsReady }) => {
         </thead>
         <tbody>
           {rows.map((row, index) => (
-            <tr key={`${index}-${JSON.stringify(row)}`} style={{ borderBottom: "1px solid var(--line-soft)" }}>
+            <tr key={`${index}-${JSON.stringify(row)}`} className="border-b border-line-soft">
               {columns.map((column) => (
-                <td key={column} className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>
+                <td key={column} className="px-5 py-3 text-sm text-app-text">
                   {formatValue(row[column])}
                 </td>
               ))}
@@ -224,26 +223,25 @@ const ReportDetailView = ({
 
   return (
     <>
-      <div className="px-5 py-3 flex items-center justify-between" style={{ background: "var(--surface-bg)", borderBottom: "1px solid var(--line)" }}>
+      <div className="px-5 py-3 flex items-center justify-between border-b border-line bg-surface">
         <div className="flex items-center gap-3">
           <button
-            className="w-9 h-9 rounded-lg flex items-center justify-center"
-            style={{ border: "1px solid var(--accent-field-border)", background: "var(--surface-hover)" }}
+            className="w-9 h-9 rounded-lg flex items-center justify-center border border-brand-field-border bg-surface-hover"
             onClick={onBack}
           >
-            <MdArrowBack size={18} style={{ color: "var(--text-heading)" }} />
+            <MdArrowBack size={18} className="text-app-heading" />
           </button>
           <div>
-            <p className="text-xs" style={{ color: "var(--text-sub)" }}>{selectedReport?.category || "Report"}</p>
-            <h2 className="text-3xl font-semibold" style={{ color: "var(--text-main)" }}>{selectedReport?.name || "Report"}</h2>
-            <p className="text-xs mt-1" style={{ color: "var(--text-sub)" }}>
+            <p className="text-xs text-app-sub">{selectedReport?.category || "Report"}</p>
+            <h2 className="text-3xl font-semibold text-app-text">{selectedReport?.name || "Report"}</h2>
+            <p className="text-xs mt-1 text-app-sub">
               From {formatDatePretty(startDate)} to {formatDatePretty(endDate)}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="inline-flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--accent-field-border)" }}>
+          <div className="inline-flex rounded-lg overflow-hidden border border-brand-field-border">
             <button
               className="px-3 py-2 text-sm"
               style={{
@@ -269,23 +267,22 @@ const ReportDetailView = ({
 
           <div className="relative">
             <button
-              className="px-3 py-2 rounded-lg text-sm inline-flex items-center gap-1"
-              style={{ border: "1px solid var(--accent-field-border)", color: "var(--text-heading)", background: "var(--surface-bg)" }}
+              className="px-3 py-2 rounded-lg text-sm inline-flex items-center gap-1 border border-brand-field-border bg-surface text-app-heading"
               onClick={() => setExportOpen((prev) => !prev)}
             >
               Export
               <MdKeyboardArrowDown size={16} />
             </button>
             {exportOpen && (
-              <div className="absolute right-0 mt-1 w-32 rounded-lg shadow-lg z-20" style={{ background: "var(--surface-bg)", border: "1px solid var(--accent-field-border)" }}>
+              <div className="absolute right-0 mt-1 w-32 rounded-lg shadow-lg z-20 border border-brand-field-border bg-surface">
                 <button
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-[var(--surface-hover)]"
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-surface-hover"
                   onClick={exportExcel}
                 >
                   Excel
                 </button>
                 <button
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-[var(--surface-hover)]"
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-surface-hover"
                   onClick={exportPdf}
                 >
                   PDF
@@ -295,8 +292,7 @@ const ReportDetailView = ({
           </div>
 
           <button
-            className="w-9 h-9 rounded-lg flex items-center justify-center"
-            style={{ border: "1px solid var(--accent-field-border)", color: "var(--text-heading)", background: "var(--surface-bg)" }}
+            className="w-9 h-9 rounded-lg flex items-center justify-center border border-brand-field-border bg-surface text-app-heading"
             onClick={loadReports}
             disabled={loading}
           >
@@ -305,12 +301,12 @@ const ReportDetailView = ({
         </div>
       </div>
 
-      <div className="px-5 py-3 flex flex-wrap items-center gap-2" style={{ background: "var(--surface-hover)", borderBottom: "1px solid var(--line)" }}>
-        <span className="inline-flex items-center gap-1 text-sm font-semibold" style={{ color: "var(--text-heading)" }}>
+      <div className="px-5 py-3 flex flex-wrap items-center gap-2 border-b border-line bg-surface-hover">
+        <span className="inline-flex items-center gap-1 text-sm font-semibold text-app-heading">
           <MdFilterList size={18} /> Filters:
         </span>
 
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm" style={{ border: "1px solid var(--accent-field-border)", background: "var(--surface-bg)", color: "var(--text-heading)" }}>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm border border-brand-field-border bg-surface text-app-heading">
           <MdCalendarToday size={14} />
           <span>Date Range</span>
           <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="text-xs outline-none" />
@@ -319,8 +315,7 @@ const ReportDetailView = ({
         </div>
 
         <button
-          className="px-4 py-2 rounded-lg text-sm font-semibold"
-          style={{ background: "var(--accent)", color: "var(--surface-bg)" }}
+          className="px-4 py-2 rounded-lg text-sm font-semibold bg-brand text-surface"
           onClick={loadReports}
           disabled={loading}
         >
@@ -328,21 +323,21 @@ const ReportDetailView = ({
         </button>
       </div>
 
-      <div className="p-4 h-[calc(100vh-235px)] overflow-auto" style={{ background: "var(--app-bg)" }}>
+      <div className="p-4 h-[calc(100vh-235px)] overflow-auto bg-app">
         {error && (
-          <div className="mb-3 px-3 py-2 rounded text-sm" style={{ background: "var(--red-alert-bg)", border: "1px solid var(--red-alert-border)", color: "var(--red-alert-text)" }}>
+          <div className="mb-3 px-3 py-2 rounded text-sm border border-danger-alert-border bg-danger-alert-bg text-danger-alert-text">
             {error}
           </div>
         )}
 
-        <div className="rounded-xl p-4" style={{ border: "1px solid var(--line)", background: "var(--surface-bg)" }}>
+        <div className="rounded-xl p-4 border border-line bg-surface">
           <div className="mb-5">
-            <p className="text-sm" style={{ color: "var(--text-sub)" }}>{companyName}</p>
+            <p className="text-sm text-app-sub">{companyName}</p>
           </div>
 
           <div className="text-center mb-4">
-            <h3 className="text-4xl font-semibold" style={{ color: "var(--text-main)" }}>{selectedReport?.name || "Report"}</h3>
-            <p className="text-sm mt-1" style={{ color: "var(--text-sub)" }}>
+            <h3 className="text-4xl font-semibold text-app-text">{selectedReport?.name || "Report"}</h3>
+            <p className="text-sm mt-1 text-app-sub">
               From {formatDatePretty(startDate)} To {formatDatePretty(endDate)}
             </p>
           </div>
@@ -358,9 +353,9 @@ const ReportDetailView = ({
           )}
 
           {viewMode === "graph" && (
-            <div className="mt-6 rounded-lg p-4" style={{ background: "var(--surface-hover)", border: "1px solid var(--accent-border)" }}>
+            <div className="mt-6 rounded-lg p-4 border border-brand-border bg-surface-hover">
               {!graphPayload.data.length ? (
-                <p className="text-sm text-center" style={{ color: "var(--text-sub)" }}>
+                <p className="text-sm text-center text-app-sub">
                   Graph view is not available for this dataset.
                 </p>
               ) : (

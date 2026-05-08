@@ -22,13 +22,12 @@ const ItemsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--app-bg)]">
+    <div className="min-h-screen bg-app">
       <div className="flex items-center justify-between mb-5">
         <select
           value={itemsType}
           onChange={handleItemsTypeChange}
-          className="text-sm font-semibold focus:outline-none bg-transparent cursor-pointer"
-          style={{ color: "var(--text-main)" }}
+          className="cursor-pointer bg-transparent text-sm font-semibold text-app-text focus:outline-none"
         >
           <option value="active">Active Items</option>
           <option value="deleted">Deleted Items</option>
@@ -38,15 +37,13 @@ const ItemsPage = () => {
           <div className="relative">
             <MdSearch
               size={14}
-              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-              style={{ color: "var(--text-muted)" }}
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-app-muted"
             />
             <input
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
               placeholder="Search items..."
-              className="form-input pl-8 text-xs py-1.5"
-              style={{ width: 220 }}
+              className="form-input w-[220px] pl-8 text-xs py-1.5"
             />
           </div>
           <button
@@ -58,18 +55,17 @@ const ItemsPage = () => {
         </div>
       </div>
 
-      <div className="p-4" style={{ background: "var(--surface-bg)" }}>
-        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--line)" }}>
+      <div className="bg-surface p-4">
+        <div className="overflow-hidden rounded-xl border border-line">
           <table className="w-full min-w-[780px]">
           <thead>
-            <tr style={{ background: "var(--surface-muted)", borderBottom: "1px solid var(--line)" }}>
+            <tr className="border-b border-line bg-surface-muted">
               {table.getHeaderGroups().map((hg) =>
                 hg.headers.map((header) => (
                   <th
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
-                    className="px-5 py-3 text-left cursor-pointer select-none"
-                    style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-sub)" }}
+                    className="cursor-pointer select-none px-5 py-3 text-left text-[11px] font-bold uppercase tracking-[0.05em] text-app-sub"
                   >
                     <div className="flex gap-1">
                       {flexRender(header.column.columnDef.header, header.getContext())}
@@ -83,33 +79,30 @@ const ItemsPage = () => {
             {table.getRowModel().rows.length === 0 ? (
               <tr>
                 <td colSpan={table.getAllColumns().length} className="py-16 text-center">
-                  <p className="text-sm" style={{ color: "var(--text-sub)" }}>No items found</p>
+                  <p className="text-sm text-app-sub">No items found</p>
                 </td>
               </tr>
             ) : (
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="cursor-pointer"
-                  style={{ borderBottom: "1px solid var(--line-soft)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-hover)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "var(--surface-bg)")}
+                  className="cursor-pointer border-b border-line-soft hover:bg-surface-hover"
                   onClick={() => navigate(`/cf/company/${companyId}/items/${row.original.itemId}/detail`)}
                 >
-                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-sub)" }}>{row.index + 1}</td>
-                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "var(--accent-hover)" }}>
+                  <td className="px-5 py-3 text-sm text-app-sub">{row.index + 1}</td>
+                  <td className="px-5 py-3 text-sm font-medium text-brand-hover">
                     {row.getValue("itemName")}
                   </td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>
+                  <td className="px-5 py-3 text-sm text-app-text">
                     {row.getValue("itemType")}
                   </td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>
+                  <td className="px-5 py-3 text-sm text-app-text">
                     {row.getValue("unit")}
                   </td>
-                  <td className="px-5 py-3 text-sm tabular-nums font-medium" style={{ color: "var(--text-main)" }}>
+                  <td className="px-5 py-3 text-sm font-medium tabular-nums text-app-text">
                     {row.getValue("baseSalesPrice")}
                   </td>
-                  <td className="px-5 py-3 text-sm tabular-nums font-medium" style={{ color: "var(--text-main)" }}>
+                  <td className="px-5 py-3 text-sm font-medium tabular-nums text-app-text">
                     {row.getValue("basePurchasePrice")}
                   </td>
                   <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>

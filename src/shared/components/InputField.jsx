@@ -24,8 +24,8 @@ const InputField = ({
 
   return (
     <>
-      <label className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
-        {label}{required && <span style={{ color: "var(--red)" }}> *</span>}
+      <label className="text-[11px] font-semibold uppercase tracking-wide text-app-muted">
+        {label}{required && <span className="text-danger"> *</span>}
       </label>
 
       <div>
@@ -36,10 +36,9 @@ const InputField = ({
           placeholder={placeholder}
           onChange={onChange}
           onBlur={handleBlur}
-          className={`form-input text-xs py-1.5 ${className}`}
-          style={{ borderColor: error ? "var(--red)" : undefined }}
+          className={`form-input text-xs py-1.5 ${error ? "border-danger" : ""} ${className}`}
         />
-        {error && <p className="text-[10px] mt-0.5" style={{ color: "var(--red)" }}>{error}</p>}
+        {error && <p className="text-[10px] mt-0.5 text-danger">{error}</p>}
       </div>
     </>
   );

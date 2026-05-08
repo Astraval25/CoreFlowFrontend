@@ -1,6 +1,49 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
+@theme inline {
+  --color-app: var(--app-bg);
+  --color-panel: var(--panel-bg);
+  --color-surface: var(--surface-bg);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-hover: var(--surface-hover);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-line-muted: var(--line-muted);
+  --color-app-text: var(--text-main);
+  --color-app-heading: var(--text-heading);
+  --color-app-sub: var(--text-sub);
+  --color-app-muted: var(--text-muted);
+  --color-app-soft: var(--text-soft);
+  --color-brand: var(--accent);
+  --color-brand-hover: var(--accent-hover);
+  --color-brand-soft: var(--accent-soft);
+  --color-brand-soft-hover: var(--accent-soft-hover);
+  --color-brand-border: var(--accent-border);
+  --color-brand-selected-border: var(--accent-selected-border);
+  --color-brand-field-border: var(--accent-field-border);
+  --color-brand-secondary: var(--accent-secondary);
+  --color-brand-secondary-bg: var(--accent-secondary-bg);
+  --color-overlay: var(--overlay-bg);
+  --color-overlay-strong: var(--overlay-bg-strong);
+  --color-sidebar-group: var(--sidebar-group-bg);
+  --color-danger: var(--red);
+  --color-danger-tint: var(--red-tint);
+  --color-danger-bg: var(--red-bg);
+  --color-danger-soft: var(--red-soft);
+  --color-danger-text: var(--red-text);
+  --color-danger-border: var(--red-border);
+  --color-danger-alert-bg: var(--red-alert-bg);
+  --color-danger-alert-border: var(--red-alert-border);
+  --color-danger-alert-text: var(--red-alert-text);
+  --color-warning: var(--orange);
+  --color-warning-bg: var(--orange-bg);
+  --color-warning-text: var(--orange-text);
+  --color-warning-border: var(--orange-border);
+  --color-info: var(--blue);
+}
+
 :root {
   --main-color: #1849b8;
   

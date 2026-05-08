@@ -28,14 +28,12 @@ const ProductLandingPage = () => {
 
   return (
       <div
-          className="min-h-screen flex flex-col"
-          style={{ background: "var(--surface-hover)" }}
+          className="min-h-screen flex flex-col bg-surface-hover"
       >
           {/* Nav */}
           <header className="w-full py-5 px-6 md:px-12 flex items-center justify-between">
               <div
-                  className="text-2xl font-extrabold tracking-tight"
-                  style={{ color: "var(--accent)" }}
+                  className="text-2xl font-extrabold tracking-tight text-brand"
               >
                   CoreFlow
               </div>
@@ -166,46 +164,40 @@ const ProductLandingPage = () => {
                           }}
                       >
                           <span
-                              className="w-2 h-2 rounded-full animate-pulse"
-                              style={{ background: "var(--accent)" }}
+                              className="w-2 h-2 rounded-full animate-pulse bg-brand"
                           />
                           {t("badge")}
                       </div>
 
                       <h1
-                          className="text-4xl md:text-5xl font-extrabold leading-tight mb-5"
-                          style={{ color: "var(--text-main)" }}
+                          className="text-4xl md:text-5xl font-extrabold leading-tight mb-5 text-app-text"
                       >
                           {t("hero.title1")}{" "}
-                          <span style={{ color: "var(--accent)" }}>
+                          <span className="text-brand">
                               {t("hero.title2")}
                           </span>
                           <br />
                           <span
-                              className="text-3xl md:text-4xl font-bold"
-                              style={{ color: "var(--text-heading)" }}
+                              className="text-3xl md:text-4xl font-bold text-app-heading"
                           >
                               {t("hero.subtitle")}
                           </span>
                       </h1>
 
                       <p
-                          className="text-base md:text-lg leading-relaxed mb-4"
-                          style={{ color: "var(--text-sub)" }}
+                          className="text-base md:text-lg leading-relaxed mb-4 text-app-sub"
                       >
                           {t("hero.desc1")}
                       </p>
                       <p
-                          className="text-base md:text-lg leading-relaxed mb-8"
-                          style={{ color: "var(--text-sub)" }}
+                          className="text-base md:text-lg leading-relaxed mb-8 text-app-sub"
                       >
                           {t("hero.desc2")}
                       </p>
 
                       {/* WhatsApp CTA */}
                       <p
-                          className="text-base font-semibold mb-4"
-                          style={{ color: "var(--text-main)" }}
+                          className="text-base font-semibold mb-4 text-app-text"
                       >
                           {t("waitlist.cta")}
                       </p>
@@ -236,7 +228,7 @@ const ProductLandingPage = () => {
                           </svg>
                           {t("waitlist.button")}
                       </a>
-                      <p className="text-xs mt-4" style={{ color: "var(--text-muted)" }}>
+                      <p className="text-xs mt-4 text-app-muted">
                           {t("waitlist.note")}
                       </p>
                   </div>
@@ -258,14 +250,13 @@ const ProductLandingPage = () => {
           </section>
 
           {/* Features */}
-          <section className="py-20 px-6" style={{ background: "var(--surface-bg)" }}>
+          <section className="py-20 px-6 bg-surface">
               <div className="max-w-6xl mx-auto">
                   <h2
-                      className="text-2xl font-bold text-center mb-12"
-                      style={{ color: "var(--text-main)" }}
+                      className="text-2xl font-bold text-center mb-12 text-app-text"
                   >
                       {t("features.heading")}{" "}
-                      <span style={{ color: "var(--accent)" }}>
+                      <span className="text-brand">
                           {t("features.headingAccent")}
                       </span>
                   </h2>
@@ -291,18 +282,16 @@ const ProductLandingPage = () => {
                                       >
                                           <Icon
                                               size={26}
-                                              style={{ color: "var(--accent)" }}
+                                              className="text-brand"
                                           />
                                       </div>
                                       <h3
-                                          className="font-bold text-base"
-                                          style={{ color: "var(--text-main)" }}
+                                          className="font-bold text-base text-app-text"
                                       >
                                           {title}
                                       </h3>
                                       <p
-                                          className="text-sm leading-relaxed"
-                                          style={{ color: "var(--text-sub)" }}
+                                          className="text-sm leading-relaxed text-app-sub"
                                       >
                                           {desc}
                                       </p>
@@ -314,7 +303,7 @@ const ProductLandingPage = () => {
           </section>
 
           {/* Pills */}
-          <section className="py-10 px-6" style={{ background: "var(--surface-hover)" }}>
+          <section className="py-10 px-6 bg-surface-hover">
               <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
                   {t("pills", { returnObjects: true }).map((f) => (
                       <span
@@ -333,8 +322,8 @@ const ProductLandingPage = () => {
           </section>
 
           {/* Footer */}
-          <footer className="py-6 text-center" style={{ background: "var(--surface-bg)" }}>
-              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+          <footer className="py-6 text-center bg-surface">
+              <p className="text-xs text-app-muted">
                   &copy; {new Date().getFullYear()} {t("footer")}
               </p>
           </footer>

@@ -62,14 +62,14 @@ const CreateItemPage = () => {
   ];
 
   return (
-    <div className="rounded-2xl border border-[var(--line)] bg-white p-5 shadow-sm">
-      <h1 className="mb-6 text-lg font-bold text-[var(--text-main)]">
+    <div className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+      <h1 className="mb-6 text-lg font-bold text-app-text">
         {isEditMode ? "Edit Item" : "New Item"}
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-7">
-        <div className="rounded-xl border border-[var(--line)] bg-[var(--app-bg)] p-4">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">
+        <div className="rounded-xl border border-line bg-app p-4">
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-app-sub">
             Item Details
           </p>
           <div className="grid max-w-3xl grid-cols-[180px_1fr] gap-4">
@@ -149,8 +149,8 @@ const CreateItemPage = () => {
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="rounded-xl border border-[var(--line)] bg-[var(--app-bg)] p-4">
-            <h3 className="mb-4 text-base font-semibold text-[var(--accent)]">Descriptions</h3>
+          <div className="rounded-xl border border-line bg-app p-4">
+            <h3 className="mb-4 text-base font-semibold text-brand">Descriptions</h3>
             <div className="grid grid-cols-[180px_1fr] gap-y-4">
               <div className="col-span-2">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -162,7 +162,7 @@ const CreateItemPage = () => {
                   onChange={handleInputChange}
                   placeholder="Enter sales description"
                   rows={3}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
                 />
               </div>
 
@@ -176,14 +176,14 @@ const CreateItemPage = () => {
                   onChange={handleInputChange}
                   placeholder="Enter purchase description"
                   rows={3}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
                 />
               </div>
             </div>
           </div>
 
-          <div className="rounded-xl border border-[var(--line)] bg-[var(--app-bg)] p-4">
-            <h3 className="mb-4 text-base font-semibold text-[var(--accent)]">Item Image</h3>
+          <div className="rounded-xl border border-line bg-app p-4">
+            <h3 className="mb-4 text-base font-semibold text-brand">Item Image</h3>
             <div className="grid grid-cols-[180px_1fr] gap-y-4">
               {isEditMode && imageUrl && (
                 <div className="col-span-2 mb-4">
@@ -204,7 +204,7 @@ const CreateItemPage = () => {
                   type="file"
                   onChange={handleFileChange}
                   accept="image/*"
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
                 />
                 {file && (
                   <p className="text-sm text-gray-600 mt-1">
@@ -225,7 +225,7 @@ const CreateItemPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="cursor-pointer rounded-lg bg-[var(--accent)] px-6 py-2 text-white transition hover:bg-[var(--accent-hover)]"
+            className="cursor-pointer rounded-lg bg-brand px-6 py-2 text-white transition hover:bg-brand-hover"
           >
             {loading ? "Saving..." : isEditMode ? "Update Item" : "Create Item"}
           </button>

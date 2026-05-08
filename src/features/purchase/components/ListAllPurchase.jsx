@@ -16,14 +16,14 @@ const ListAllPurchase = ({ onSelectOrder, selectedOrderId }) => {
   if (error) return <p>Error loading purchase orders</p>;
 
   return (
-    <div className="thin-scroll h-[calc(100vh-108px)] overflow-y-auto rounded-2xl border-r border-[var(--line)] bg-white p-3 shadow-sm">
-      <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">
+    <div className="thin-scroll h-[calc(100vh-108px)] overflow-y-auto rounded-2xl border-r border-line bg-white p-3 shadow-sm">
+      <p className="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-app-sub">
         Purchase Orders
       </p>
       <select
         value={statusFilter}
         onChange={(e) => setStatusFilter(e.target.value)}
-        className="mb-3 w-full rounded-lg border border-[var(--accent-field-border)] bg-[var(--surface-hover)] px-3 py-2 text-sm font-medium text-[var(--accent)] focus:outline-none"
+        className="mb-3 w-full rounded-lg border border-brand-field-border bg-surface-hover px-3 py-2 text-sm font-medium text-brand focus:outline-none"
       >
         <option value="all">All Orders</option>
         <option value="active">Active Orders</option>
@@ -41,21 +41,21 @@ const ListAllPurchase = ({ onSelectOrder, selectedOrderId }) => {
               className={`cursor-pointer rounded-xl border px-3 py-3 transition
                 ${
                   String(selectedOrderId) === String(order.orderId)
-                    ? "border-[var(--accent-selected-border)] bg-[var(--accent-soft)]"
-                    : "border-[var(--line)] bg-[var(--app-bg)] hover:bg-[var(--surface-soft)]"
+                    ? "border-brand-selected-border bg-brand-soft"
+                    : "border-line bg-app hover:bg-surface-soft"
                 }`}
             >
               <div className="mb-1 flex items-center justify-between">
-                <p className="truncate text-sm font-semibold text-[var(--text-main)]">
+                <p className="truncate text-sm font-semibold text-app-text">
                 {order.orderNumber || "No Order Number"}
                 </p>
                 <span
                   className={`h-2.5 w-2.5 rounded-full ${
-                    order.isActive ? "bg-[var(--accent)]" : "bg-[var(--red)]"
+                    order.isActive ? "bg-brand" : "bg-danger"
                   }`}
                 />
               </div>
-              <div className="flex justify-between text-xs text-[var(--text-sub)]">
+              <div className="flex justify-between text-xs text-app-sub">
                 <p className="truncate">{order.customerName || "No Customer"}</p>
                 <p>Total: Rs. {order.totalAmount ?? 0}</p>
               </div>

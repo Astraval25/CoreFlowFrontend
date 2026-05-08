@@ -24,6 +24,13 @@ import { coreApi } from "../../shared/services/coreApi";
 const fmt = (val) =>
   `₹${Number(val ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}`;
 
+const textClassForThemeColor = (color) =>
+  ({
+    "var(--accent)": "text-brand",
+    "var(--red)": "text-danger",
+    "var(--blue)": "text-info",
+    "var(--text-main)": "text-app-text",
+  }[color] || "text-app-text");
 const shortMonth = (s) => {
   if (!s) return "";
   const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -98,8 +105,7 @@ const AdBanner = () => {
         >
           <button
             onClick={(e) => { e.stopPropagation(); setDismissed((prev) => new Set(prev).add(ad.adId)); }}
-            className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center z-10"
-            style={{ background: "var(--overlay-bg-strong)", color: "var(--surface-bg)" }}
+            className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center z-10 bg-overlay-strong text-surface"
           >
             <MdClose size={14} />
           </button>
@@ -108,14 +114,14 @@ const AdBanner = () => {
           ) : (
             <div className="flex items-center gap-3 p-4 h-32">
               <div className="flex-1">
-                <p className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>
+                <p className="text-sm font-semibold text-app-text">
                   {ad.companyName}{ad.itemName ? ` — ${ad.itemName}` : ""}
                 </p>
                 {ad.description && (
-                  <p className="text-xs mt-1" style={{ color: "var(--text-sub)" }}>{ad.description}</p>
+                  <p className="text-xs mt-1 text-app-sub">{ad.description}</p>
                 )}
               </div>
-              <FiArrowUpRight size={18} style={{ color: "var(--accent)", flexShrink: 0 }} />
+              <FiArrowUpRight size={18} className="shrink-0 text-brand" />
             </div>
           )}
         </div>
@@ -127,21 +133,18 @@ const AdBanner = () => {
 /* ─── Detail Modal ─── */
 const DetailModal = ({ title, rows, onClose }) => (
   <div
-    className="fixed inset-0 z-50 flex items-center justify-center"
-    style={{ background: "var(--overlay-bg)" }}
+    className="fixed inset-0 z-50 flex items-center justify-center bg-overlay"
     onClick={onClose}
   >
     <div
       className="card w-full max-w-sm mx-4 p-5"
-      style={{ boxShadow: "var(--shadow-md)" }}
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex items-center justify-between mb-4">
-        <p className="font-bold text-sm" style={{ color: "var(--text-main)" }}>{title}</p>
+        <p className="font-bold text-sm text-app-text">{title}</p>
         <button
           onClick={onClose}
-          className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors"
-          style={{ color: "var(--text-sub)" }}
+          className="w-7 h-7 rounded-lg flex items-center justify-center transition-colors text-app-sub"
           onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
         >
@@ -150,13 +153,9 @@ const DetailModal = ({ title, rows, onClose }) => (
       </div>
       <div className="space-y-2.5">
         {rows.map(({ label, value, accent }) => (
-          <div key={label} className="flex items-center justify-between py-2"
-            style={{ borderBottom: "1px solid var(--line)" }}>
-            <span className="text-xs" style={{ color: "var(--text-sub)" }}>{label}</span>
-            <span
-              className="text-xs font-bold"
-              style={{ color: accent ?? "var(--text-main)" }}
-            >
+          <div key={label} className="flex items-center justify-between py-2 border-b border-line">
+            <span className="text-xs text-app-sub">{label}</span>
+            <span className={`text-xs font-bold ${textClassForThemeColor(accent)}`}>
               {value}
             </span>
           </div>
@@ -171,11 +170,8 @@ const CashFlowTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   const d = payload[0]?.payload ?? {};
   return (
-    <div
-      className="card px-4 py-3 text-xs space-y-1.5"
-      style={{ minWidth: 190, boxShadow: "var(--shadow-md)" }}
-    >
-      <p className="font-bold mb-2" style={{ color: "var(--text-main)" }}>{label}</p>
+    <div className="card min-w-[190px] px-4 py-3 text-xs space-y-1.5">
+      <p className="font-bold mb-2 text-app-text">{label}</p>
       {[
         { label: "Opening Balance", value: fmt(d.openingBalance), color: "var(--blue)" },
         { label: "Incoming",        value: fmt(d.incoming),       color: "var(--accent)" },
@@ -183,8 +179,8 @@ const CashFlowTooltip = ({ active, payload, label }) => {
         { label: "Closing Balance", value: fmt(d.closingBalance), color: "var(--text-main)" },
       ].map(({ label: l, value, color }) => (
         <div key={l} className="flex justify-between gap-4">
-          <span style={{ color: "var(--text-sub)" }}>{l}</span>
-          <span style={{ color, fontWeight: 600 }}>{value}</span>
+          <span className="text-app-sub">{l}</span>
+          <span className={`font-semibold ${textClassForThemeColor(color)}`}>{value}</span>
         </div>
       ))}
     </div>
@@ -195,15 +191,12 @@ const CashFlowTooltip = ({ active, payload, label }) => {
 const RevExpTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div
-      className="card px-4 py-3 text-xs space-y-1.5"
-      style={{ minWidth: 175, boxShadow: "var(--shadow-md)" }}
-    >
-      <p className="font-bold mb-2" style={{ color: "var(--text-main)" }}>{label}</p>
+    <div className="card min-w-[175px] px-4 py-3 text-xs space-y-1.5">
+      <p className="font-bold mb-2 text-app-text">{label}</p>
       {payload.map(({ name, value, color }) => (
         <div key={name} className="flex justify-between gap-4">
-          <span style={{ color: "var(--text-sub)" }}>{name}</span>
-          <span style={{ color, fontWeight: 600 }}>{fmt(value)}</span>
+          <span className="text-app-sub">{name}</span>
+          <span className={`font-semibold ${textClassForThemeColor(color)}`}>{fmt(value)}</span>
         </div>
       ))}
     </div>
@@ -218,29 +211,28 @@ const KpiCard = ({ title, amount, current, overdue }) => {
   return (
     <div className="card p-5 flex flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>{title}</span>
+        <span className="text-sm font-semibold text-app-text">{title}</span>
         <button className="btn-outline text-xs py-1 px-2.5">+ New</button>
       </div>
-      <p className="text-xs" style={{ color: "var(--text-sub)" }}>
+      <p className="text-xs text-app-sub">
         {title === "Total Receivables" ? "Total Unpaid Invoices" : "Total Unpaid Bills"}
       </p>
-      <p className="text-2xl font-extrabold" style={{ color: "var(--text-main)" }}>{fmt(amount)}</p>
+      <p className="text-2xl font-extrabold text-app-text">{fmt(amount)}</p>
       <div
-        className="h-1.5 rounded-full overflow-hidden"
-        style={{ background: "var(--surface-soft)" }}
+        className="h-1.5 rounded-full overflow-hidden bg-surface-soft"
       >
-        <div
-          className="h-full rounded-full transition-all"
-          style={{ width: `${pct}%`, background: "var(--orange)" }}
+          <div
+          className="h-full rounded-full transition-all bg-warning"
+          style={{ width: `${pct}%` }}
         />
       </div>
-      <div className="flex items-center gap-5 text-xs" style={{ color: "var(--text-sub)" }}>
+      <div className="flex items-center gap-5 text-xs text-app-sub">
         <span className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full inline-block" style={{ background: "var(--accent)" }} />
+          <span className="w-2 h-2 rounded-full inline-block bg-brand" />
           Current : {fmt(current)}
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full inline-block" style={{ background: "var(--orange)" }} />
+          <span className="w-2 h-2 rounded-full inline-block bg-warning" />
           Overdue : {fmt(overdue)} ▾
         </span>
       </div>
@@ -286,9 +278,9 @@ const CashFlowCard = ({ data, range, onRangeChange, dateRange, loading = false }
       {modal && <DetailModal {...modal} onClose={() => setModal(null)} />}
       <div className="card p-5">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Cash Flow</span>
+          <span className="text-sm font-semibold text-app-text">Cash Flow</span>
           <div className="flex items-center gap-2">
-            {loading && <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Updating...</span>}
+            {loading && <span className="text-[10px] text-app-muted">Updating...</span>}
             <StyledDropdown value={range} onChange={onRangeChange} options={RANGE_OPTIONS} disabled={loading} />
           </div>
         </div>
@@ -326,24 +318,23 @@ const CashFlowCard = ({ data, range, onRangeChange, dateRange, loading = false }
 
           {/* Summary panel */}
           <div className="flex flex-col gap-2 lg:w-52 justify-center text-xs">
-            <p className="text-[11px] font-medium mb-1" style={{ color: "var(--text-sub)" }}>
+            <p className="text-[11px] font-medium mb-1 text-app-sub">
               Cash as on {startLabel}
             </p>
             {[
-              { dot: "var(--accent)", label: "Incoming",        value: `${fmt(incoming)} (+)` },
-              { dot: "var(--red)",    label: "Outgoing",        value: `${fmt(outgoing)} (−)` },
-              { dot: "var(--blue)",   label: `Cash as on ${endLabel}`, value: `${fmt(closing)} (=)` },
-            ].map(({ dot, label, value }) => (
+              { dotClass: "bg-brand", label: "Incoming",        value: `${fmt(incoming)} (+)` },
+              { dotClass: "bg-danger", label: "Outgoing",       value: `${fmt(outgoing)} (−)` },
+              { dotClass: "bg-info", label: `Cash as on ${endLabel}`, value: `${fmt(closing)} (=)` },
+            ].map(({ dotClass, label, value }) => (
               <div
                 key={label}
-                className="flex justify-between items-start py-2.5"
-                style={{ borderBottom: "1px solid var(--line)" }}
+                className="flex justify-between items-start py-2.5 border-b border-line"
               >
-                <span className="flex items-center gap-1.5" style={{ color: "var(--text-sub)" }}>
-                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: dot }} />
+                <span className="flex items-center gap-1.5 text-app-sub">
+                  <span className={`w-2 h-2 rounded-full shrink-0 ${dotClass}`} />
                   {label}
                 </span>
-                <span className="font-semibold ml-2 text-right" style={{ color: "var(--text-main)" }}>
+                <span className="font-semibold ml-2 text-right text-app-text">
                   {value}
                 </span>
               </div>
@@ -388,16 +379,16 @@ const RevenueExpenseCard = ({ data, range, onRangeChange, loading = false }) => 
       {modal && <DetailModal {...modal} onClose={() => setModal(null)} />}
       <div className="card p-5 flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Income and Expense</span>
+          <span className="text-sm font-semibold text-app-text">Income and Expense</span>
           <div className="flex items-center gap-2">
-            {loading && <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Updating...</span>}
+            {loading && <span className="text-[10px] text-app-muted">Updating...</span>}
             <StyledDropdown value={range} onChange={onRangeChange} options={RANGE_OPTIONS} disabled={loading} />
           </div>
         </div>
 
         <div className="flex items-center gap-4 text-sm font-extrabold">
-          <span style={{ color: "var(--accent)" }}>{fmt(totalRevenue)}</span>
-          <span style={{ color: "var(--red)" }}>{fmt(totalExpense)}</span>
+          <span className="text-brand">{fmt(totalRevenue)}</span>
+          <span className="text-danger">{fmt(totalExpense)}</span>
         </div>
 
         <div className="cursor-pointer" title="Click a bar for details">
@@ -421,7 +412,7 @@ const RevenueExpenseCard = ({ data, range, onRangeChange, loading = false }) => 
           </ResponsiveContainer>
         </div>
 
-        <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>
+        <p className="text-[10px] text-app-muted">
           * Income and expense values are exclusive of taxes.
         </p>
       </div>
@@ -455,9 +446,9 @@ const TopExpensesCard = ({ kpi, range, onRangeChange, loading = false }) => {
       {modal && <DetailModal {...modal} onClose={() => setModal(null)} />}
       <div className="card p-5 flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Top Expenses</span>
+          <span className="text-sm font-semibold text-app-text">Top Expenses</span>
           <div className="flex items-center gap-2">
-            {loading && <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>Updating...</span>}
+            {loading && <span className="text-[10px] text-app-muted">Updating...</span>}
             <StyledDropdown value={range} onChange={onRangeChange} options={RANGE_OPTIONS} disabled={loading} />
           </div>
         </div>
@@ -477,18 +468,18 @@ const TopExpensesCard = ({ kpi, range, onRangeChange, loading = false }) => {
               </Pie>
             </PieChart>
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-              <span className="text-[10px]" style={{ color: "var(--text-sub)" }}>All Expenses</span>
-              <span className="text-sm font-extrabold" style={{ color: "var(--text-main)" }}>{fmt(totalExpense)}</span>
+              <span className="text-[10px] text-app-sub">All Expenses</span>
+              <span className="text-sm font-extrabold text-app-text">{fmt(totalExpense)}</span>
             </div>
           </div>
           {totalExpense > 0 && (
-            <div className="flex items-center gap-2 text-xs mt-1" style={{ color: "var(--text-sub)" }}>
-              <span className="w-2.5 h-2.5 rounded-sm" style={{ background: "var(--accent)" }} />
+            <div className="flex items-center gap-2 text-xs mt-1 text-app-sub">
+              <span className="w-2.5 h-2.5 rounded-sm bg-brand" />
               Cost of Goods Sold
-              <span className="font-bold" style={{ color: "var(--text-main)" }}>{fmt(totalExpense)}</span>
+              <span className="font-bold text-app-text">{fmt(totalExpense)}</span>
             </div>
           )}
-          <p className="text-[10px] mt-2" style={{ color: "var(--text-muted)" }}>Click for details</p>
+          <p className="text-[10px] mt-2 text-app-muted">Click for details</p>
         </div>
       </div>
     </>
@@ -510,10 +501,10 @@ const KpiStrip = ({ kpi }) => {
       {items.map(({ label, value, icon, color }) => (
         <div key={label} className="card p-4 flex flex-col gap-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-[11px]" style={{ color: "var(--text-sub)" }}>{label}</span>
-            {icon && <span style={{ color }}>{icon}</span>}
+            <span className="text-[11px] text-app-sub">{label}</span>
+            {icon && <span className={textClassForThemeColor(color)}>{icon}</span>}
           </div>
-          <span className="text-base font-extrabold" style={{ color }}>{value}</span>
+          <span className={`text-base font-extrabold ${textClassForThemeColor(color)}`}>{value}</span>
         </div>
       ))}
     </div>
@@ -522,9 +513,9 @@ const KpiStrip = ({ kpi }) => {
 
 /* ─── Skeleton ─── */
 const Skeleton = ({ h = "h-40" }) => (
-  <div className={`card p-5 ${h} animate-pulse`} style={{ background: "var(--surface-bg)" }}>
-    <div className="h-4 rounded mb-3 w-1/3" style={{ background: "var(--surface-soft)" }} />
-    <div className="h-full rounded" style={{ background: "var(--surface-soft)" }} />
+  <div className={`card p-5 ${h} animate-pulse bg-surface`}>
+    <div className="h-4 rounded mb-3 w-1/3 bg-surface-soft" />
+    <div className="h-full rounded bg-surface-soft" />
   </div>
 );
 
@@ -571,13 +562,13 @@ export const DashboardPage = () => {
       {/* Header */}
       <div className="pt-1 flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-extrabold" style={{ color: "var(--text-main)" }}>
+          <h1 className="text-xl font-extrabold text-app-text">
             Hello, {userName}
           </h1>
-          <p className="text-xs mt-0.5" style={{ color: "var(--text-sub)" }}>{companyName}</p>
+          <p className="text-xs mt-0.5 text-app-sub">{companyName}</p>
         </div>
         <div className="flex items-center gap-2">
-          {/* <span className="text-xs font-medium" style={{ color: "var(--text-sub)" }}>
+          {/* <span className="text-xs font-medium text-app-sub">
             Overall Duration:
           </span> */}
           <StyledDropdown
@@ -590,7 +581,7 @@ export const DashboardPage = () => {
       </div>
 
       {/* Tabs */}
-      <div style={{ borderBottom: "1px solid var(--line)" }} className="flex gap-0">
+      <div className="border-b border-line flex gap-0">
         {TABS.map((tab) => (
           <button
             key={tab}
@@ -671,17 +662,17 @@ export const DashboardPage = () => {
           <div className="card p-6">
             <div className="flex flex-col md:flex-row items-start gap-6">
               <div className="flex-1">
-                <h3 className="text-sm font-extrabold mb-1" style={{ color: "var(--text-main)" }}>
+                <h3 className="text-sm font-extrabold mb-1 text-app-text">
                   Account on the go!
                 </h3>
-                <p className="text-xs max-w-xs" style={{ color: "var(--text-sub)" }}>
+                <p className="text-xs max-w-xs text-app-sub">
                   Download the CoreFlow app for Android and iOS to manage your finances from anywhere, anytime!
                 </p>
-                <button className="mt-3 text-xs font-semibold flex items-center gap-1" style={{ color: "var(--accent)" }}>
+                <button className="mt-3 text-xs font-semibold flex items-center gap-1 text-brand">
                   Learn More <FiArrowUpRight size={13} />
                 </button>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs" style={{ color: "var(--text-sub)" }}>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-xs text-app-sub">
                 {[
                   { heading: "Other", links: ["Ecommerce Software","Expense Reporting","Subscription Billing","100% Free Invoicing","Inventory Mgmt","CRM & Other Apps"] },
                   { heading: "Apps",  links: ["Knowledge Base","Mobile apps","Add-ons","What's New?","Developers API"] },
@@ -689,15 +680,14 @@ export const DashboardPage = () => {
                   { heading: "Quick Links",    links: ["Getting Started","Mobile apps","Add-ons","What's New?","Developers API"] },
                 ].map(({ heading, links }) => (
                   <div key={heading}>
-                    <p className="font-bold mb-2 text-[10px] uppercase tracking-wider" style={{ color: "var(--text-main)" }}>
+                    <p className="font-bold mb-2 text-[10px] uppercase tracking-wider text-app-text">
                       {heading}
                     </p>
                     <ul className="space-y-1.5">
                       {links.map((l) => (
                         <li
                           key={l}
-                          className="cursor-pointer transition-colors hover:underline"
-                          style={{ color: "var(--text-sub)" }}
+                          className="cursor-pointer transition-colors hover:underline text-app-sub"
                           onMouseEnter={(e) => (e.currentTarget.style.color = "var(--accent)")}
                           onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-sub)")}
                         >
@@ -710,8 +700,7 @@ export const DashboardPage = () => {
               </div>
             </div>
             <div
-              className="mt-5 pt-4 flex justify-between text-[10px]"
-              style={{ borderTop: "1px solid var(--line)", color: "var(--text-muted)" }}
+              className="mt-5 pt-4 flex justify-between text-[10px] border-t border-line text-app-muted"
             >
               <span>© 2026.</span>
               <span>All Rights Reserved.</span>
@@ -721,13 +710,13 @@ export const DashboardPage = () => {
       )}
 
       {activeTab === "Getting Started" && (
-        <div className="card p-10 text-center text-sm" style={{ color: "var(--text-sub)" }}>
+        <div className="card p-10 text-center text-sm text-app-sub">
           Getting Started content coming soon.
         </div>
       )}
 
       {activeTab === "Recent Updates" && (
-        <div className="card p-10 text-center text-sm" style={{ color: "var(--text-sub)" }}>
+        <div className="card p-10 text-center text-sm text-app-sub">
           No recent updates.
         </div>
       )}

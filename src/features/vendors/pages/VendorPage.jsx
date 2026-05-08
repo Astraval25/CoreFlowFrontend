@@ -29,13 +29,12 @@ const VendorPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--app-bg)]">
+    <div className="min-h-screen bg-app">
       <div className="flex items-center justify-between mb-5">
         <select
           value={vendorType}
           onChange={handleVendorTypeChange}
-          className="text-sm font-semibold focus:outline-none bg-transparent cursor-pointer"
-          style={{ color: "var(--text-main)" }}
+          className="text-sm font-semibold focus:outline-none bg-transparent cursor-pointer text-app-text"
         >
           <option value="active">Active Vendors</option>
           <option value="deleted">Deleted Vendors</option>
@@ -45,8 +44,7 @@ const VendorPage = () => {
           <div className="relative">
             <MdSearch
               size={14}
-              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-              style={{ color: "var(--text-muted)" }}
+              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted"
             />
             <input
               value={globalFilter ?? ""}
@@ -65,18 +63,17 @@ const VendorPage = () => {
         </div>
       </div>
 
-      <div className="p-4" style={{ background: "var(--surface-bg)" }}>
-        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--line)" }}>
+      <div className="p-4 bg-surface">
+        <div className="rounded-xl overflow-hidden border border-line">
           <table className="w-full min-w-[780px]">
           <thead>
-            <tr style={{ background: "var(--surface-muted)", borderBottom: "1px solid var(--line)" }}>
+            <tr className="border-b border-line bg-surface-muted">
               {table.getHeaderGroups().map((hg) =>
                 hg.headers.map((header) => (
                   <th
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
-                    className="px-5 py-3 text-left cursor-pointer select-none"
-                    style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-sub)" }}
+                    className="px-5 py-3 text-left cursor-pointer select-none text-[11px] font-bold uppercase tracking-[0.05em] text-app-sub"
                   >
                     <div className="flex gap-1">
                       {flexRender(header.column.columnDef.header, header.getContext())}
@@ -90,30 +87,28 @@ const VendorPage = () => {
             {table.getRowModel().rows.length === 0 ? (
               <tr>
                 <td colSpan={table.getAllColumns().length} className="py-16 text-center">
-                  <p className="text-sm" style={{ color: "var(--text-sub)" }}>No vendors found</p>
+                  <p className="text-sm text-app-sub">No vendors found</p>
                 </td>
               </tr>
             ) : (
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="cursor-pointer"
-                  style={{ borderBottom: "1px solid var(--line-soft)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-hover)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "var(--surface-bg)")}
+                  className="cursor-pointer border-b border-line-soft"
+                  
                   onClick={() => navigate(`/cf/company/${companyId}/vendors/${row.original.vendorId}/detail`)}
                 >
-                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-sub)" }}>{row.index + 1}</td>
-                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "var(--accent-hover)" }}>
+                  <td className="px-5 py-3 text-sm text-app-sub">{row.index + 1}</td>
+                  <td className="px-5 py-3 text-sm font-medium text-brand-hover">
                     {row.getValue("displayName")}
                   </td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>
+                  <td className="px-5 py-3 text-sm text-app-text">
                     {row.getValue("email") || "-"}
                   </td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>
+                  <td className="px-5 py-3 text-sm text-app-text">
                     {row.original.company?.vendorCompany || row.original.vendorCompany?.companyName || "-"}
                   </td>
-                  <td className="px-5 py-3 text-sm tabular-nums font-medium" style={{ color: row.original.dueAmount > 0 ? "var(--orange-text)" : "var(--text-main)" }}>
+                  <td className={`px-5 py-3 text-sm tabular-nums font-medium ${row.original.dueAmount > 0 ? "text-warning-text" : "text-app-text"}`}>
                     {row.original.dueAmount != null ? `Rs ${Number(row.original.dueAmount).toLocaleString("en-IN", { minimumFractionDigits: 2 })}` : "-"}
                   </td>
                   <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
@@ -135,21 +130,19 @@ const VendorPage = () => {
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="p-2 rounded-lg disabled:opacity-30"
-            style={{ color: "var(--accent-secondary)" }}
+            className="p-2 rounded-lg disabled:opacity-30 text-brand-secondary"
             onMouseEnter={(e) => { if (table.getCanPreviousPage()) e.currentTarget.style.background = "var(--surface-muted)"; }}
             onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
           >
             <MdChevronLeft size={18} />
           </button>
-          <span className="text-xs px-2 py-1 rounded-full font-bold" style={{ background: "var(--accent-secondary-bg)", color: "var(--accent-secondary)" }}>
+          <span className="text-xs px-2 py-1 rounded-full font-bold bg-brand-secondary-bg text-brand-secondary">
             {table.getState().pagination.pageIndex + 1}
           </span>
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="p-2 rounded-lg disabled:opacity-30"
-            style={{ color: "var(--accent-secondary)" }}
+            className="p-2 rounded-lg disabled:opacity-30 text-brand-secondary"
             onMouseEnter={(e) => { if (table.getCanNextPage()) e.currentTarget.style.background = "var(--surface-muted)"; }}
             onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
           >

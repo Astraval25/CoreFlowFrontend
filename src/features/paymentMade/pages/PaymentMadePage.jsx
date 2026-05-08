@@ -20,9 +20,9 @@ const PaymentMadePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[var(--app-bg)]">
+    <div className="min-h-screen bg-app">
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-sm font-bold" style={{ color: "var(--text-main)" }}>
+        <h1 className="text-sm font-bold text-app-text">
           Payment Made
         </h1>
 
@@ -30,8 +30,7 @@ const PaymentMadePage = () => {
           <div className="relative">
             <MdSearch
               size={14}
-              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-              style={{ color: "var(--text-muted)" }}
+              className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted"
             />
             <input
               value={globalFilter}
@@ -50,16 +49,15 @@ const PaymentMadePage = () => {
         </div>
       </div>
 
-      <div className="p-4" style={{ background: "var(--surface-bg)" }}>
-        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--line)" }}>
+      <div className="p-4 bg-surface">
+        <div className="rounded-xl overflow-hidden border border-line">
           <table className="w-full min-w-[980px]">
           <thead>
-            <tr style={{ background: "var(--surface-muted)", borderBottom: "1px solid var(--line)" }}>
+            <tr className="border-b border-line bg-surface-muted">
               {["S.No", "Payment No.", "Date", "Vendor", "Orders", "Mode", "Status", "Amount", "Action"].map((header, index) => (
                 <th
                   key={header}
-                  className={`px-5 py-3 text-[11px] font-bold uppercase tracking-wide ${index === 7 ? "text-right" : "text-left"}`}
-                  style={{ color: "var(--text-sub)" }}
+                  className={`px-5 py-3 text-[11px] font-bold uppercase tracking-wide ${index === 7 ? "text-right" : "text-left"} text-app-sub`}
                 >
                   {header}
                 </th>
@@ -71,8 +69,8 @@ const PaymentMadePage = () => {
               <tr>
                 <td colSpan={9} className="py-16 text-center">
                   <div className="flex flex-col items-center gap-2">
-                    <MdInbox size={28} style={{ color: "var(--text-sub)" }} />
-                    <p className="text-sm" style={{ color: "var(--text-sub)" }}>
+                    <MdInbox size={28} className="text-app-sub" />
+                    <p className="text-sm text-app-sub">
                       No payments found
                     </p>
                   </div>
@@ -82,20 +80,18 @@ const PaymentMadePage = () => {
               filteredPayments.map((p, index) => (
                 <tr
                   key={p.paymentId}
-                  className="cursor-pointer"
-                  style={{ borderBottom: "1px solid var(--line-soft)" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-hover)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "var(--surface-bg)")}
+                  className="cursor-pointer border-b border-line-soft"
+                  
                   onClick={() => navigate(`/cf/company/${companyId}/payment-made/${p.paymentId}/detail`)}
                 >
-                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-sub)" }}>{index + 1}</td>
-                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "var(--accent-hover)" }}>{p.paymentNumber || "-"}</td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>{p.paymentDate ? new Date(p.paymentDate).toLocaleString() : "-"}</td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>{p.vendorName || "-"}</td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>{p.orderIds || "-"}</td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>{p.modeOfPayment || "-"}</td>
+                  <td className="px-5 py-3 text-sm text-app-sub">{index + 1}</td>
+                  <td className="px-5 py-3 text-sm font-medium text-brand-hover">{p.paymentNumber || "-"}</td>
+                  <td className="px-5 py-3 text-sm text-app-text">{p.paymentDate ? new Date(p.paymentDate).toLocaleString() : "-"}</td>
+                  <td className="px-5 py-3 text-sm text-app-text">{p.vendorName || "-"}</td>
+                  <td className="px-5 py-3 text-sm text-app-text">{p.orderIds || "-"}</td>
+                  <td className="px-5 py-3 text-sm text-app-text">{p.modeOfPayment || "-"}</td>
                   <td className="px-5 py-3"><span className="badge badge-blue">{p.paymentStatus || "-"}</span></td>
-                  <td className="px-5 py-3 text-sm font-medium tabular-nums text-right" style={{ color: "var(--text-main)" }}>{fmtMoney(p.amount)}</td>
+                  <td className="px-5 py-3 text-sm font-medium tabular-nums text-right text-app-text">{fmtMoney(p.amount)}</td>
                   <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                     <button
                       type="button"
