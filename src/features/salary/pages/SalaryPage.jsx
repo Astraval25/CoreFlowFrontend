@@ -12,12 +12,12 @@ const SalaryPage = () => {
   } = useSalary();
 
   const statusBadge = (s) => {
-    const map = { DRAFT: "orange", APPROVED: "blue", PAID: "green" };
+    const map = { DRAFT: "orange", APPROVED: "blue", PAID: "blue" };
     return <span className={`badge badge-${map[s] || "gray"}`}>{s}</span>;
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f9fc]">
+    <div className="min-h-screen bg-[var(--app-bg)]">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
           <h1 className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Salary</h1>
@@ -39,17 +39,17 @@ const SalaryPage = () => {
         </div>
       </div>
 
-      <div className="p-4" style={{ background: "#ffffff" }}>
-        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #e3e7f1" }}>
+      <div className="p-4" style={{ background: "var(--surface-bg)" }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--line)" }}>
           {loading ? (
-            <p className="text-sm p-8 text-center" style={{ color: "#6a7693" }}>Loading...</p>
+            <p className="text-sm p-8 text-center" style={{ color: "var(--text-sub)" }}>Loading...</p>
           ) : (
             <table className="w-full min-w-[980px]">
             <thead>
-              <tr style={{ background: "#f7f8fc", borderBottom: "1px solid #e3e7f1" }}>
+              <tr style={{ background: "var(--surface-muted)", borderBottom: "1px solid var(--line)" }}>
                 {table.getHeaderGroups().map((hg) =>
                   hg.headers.map((header) => (
-                    <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="px-4 py-3 text-left cursor-pointer select-none" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#6a7693" }}>
+                    <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="px-4 py-3 text-left cursor-pointer select-none" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-sub)" }}>
                       <div className="flex gap-1">{flexRender(header.column.columnDef.header, header.getContext())}</div>
                     </th>
                   ))
@@ -58,24 +58,24 @@ const SalaryPage = () => {
             </thead>
             <tbody>
               {table.getRowModel().rows.length === 0 ? (
-                <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-sm" style={{ color: "#6a7693" }}>No salary periods found</p></td></tr>
+                <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-sm" style={{ color: "var(--text-sub)" }}>No salary periods found</p></td></tr>
               ) : (
                 table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} style={{ borderBottom: "1px solid #edf1f8" }} onMouseEnter={(e) => (e.currentTarget.style.background = "#f8faff")} onMouseLeave={(e) => (e.currentTarget.style.background = "#ffffff")}>
-                    <td className="px-4 py-3 text-sm font-medium" style={{ color: "#202c45" }}>{row.original.employeeName}</td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "#1b5fcc" }}>{row.original.employeeCode}</td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "#202c45" }}>{row.original.fromDate}</td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "#202c45" }}>{row.original.toDate}</td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "#202c45" }}>{row.original.salaryType}</td>
-                    <td className="px-4 py-3 text-sm tabular-nums font-medium" style={{ color: "#202c45" }}>Rs {row.original.grossAmount?.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-sm tabular-nums font-medium" style={{ color: "#1b5fcc" }}>Rs {row.original.netAmount?.toLocaleString()}</td>
+                  <tr key={row.id} style={{ borderBottom: "1px solid var(--line-soft)" }} onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-hover)")} onMouseLeave={(e) => (e.currentTarget.style.background = "var(--surface-bg)")}>
+                    <td className="px-4 py-3 text-sm font-medium" style={{ color: "var(--text-main)" }}>{row.original.employeeName}</td>
+                    <td className="px-4 py-3 text-sm" style={{ color: "var(--accent-hover)" }}>{row.original.employeeCode}</td>
+                    <td className="px-4 py-3 text-sm" style={{ color: "var(--text-main)" }}>{row.original.fromDate}</td>
+                    <td className="px-4 py-3 text-sm" style={{ color: "var(--text-main)" }}>{row.original.toDate}</td>
+                    <td className="px-4 py-3 text-sm" style={{ color: "var(--text-main)" }}>{row.original.salaryType}</td>
+                    <td className="px-4 py-3 text-sm tabular-nums font-medium" style={{ color: "var(--text-main)" }}>Rs {row.original.grossAmount?.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-sm tabular-nums font-medium" style={{ color: "var(--accent-hover)" }}>Rs {row.original.netAmount?.toLocaleString()}</td>
                     <td className="px-4 py-3">{statusBadge(row.original.status)}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1">
                         <button onClick={() => viewDetail(row.original.salaryPeriodId)} className="p-1 rounded hover:bg-gray-100" title="View Detail"><MdVisibility size={16} style={{ color: "var(--text-sub)" }} /></button>
                         <button onClick={() => downloadSlip(row.original.salaryPeriodId)} className="p-1 rounded hover:bg-gray-100" title="Download Slip"><MdDownload size={16} style={{ color: "var(--text-sub)" }} /></button>
                         {row.original.status === "DRAFT" && (
-                          <button onClick={() => { if (window.confirm("Approve this salary period?")) approvePeriod(row.original.salaryPeriodId); }} className="p-1 rounded hover:bg-green-50" title="Approve"><MdCheck size={16} style={{ color: "var(--accent)" }} /></button>
+                          <button onClick={() => { if (window.confirm("Approve this salary period?")) approvePeriod(row.original.salaryPeriodId); }} className="p-1 rounded hover:bg-blue-50" title="Approve"><MdCheck size={16} style={{ color: "var(--accent)" }} /></button>
                         )}
                         {row.original.status === "APPROVED" && (
                           <button onClick={() => { if (window.confirm("Mark as paid?")) markPaid(row.original.salaryPeriodId); }} className="p-1 rounded hover:bg-blue-50" title="Mark Paid"><MdPayment size={16} style={{ color: "var(--blue)" }} /></button>
@@ -92,13 +92,13 @@ const SalaryPage = () => {
       </div>
 
       {showCalcModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.35)" }} onClick={() => setShowCalcModal(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "var(--overlay-bg)" }} onClick={() => setShowCalcModal(false)}>
           <div className="card w-full max-w-md mx-4 p-5" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Calculate Salary</p>
               <button onClick={() => setShowCalcModal(false)} className="p-1 rounded hover:bg-gray-100"><MdClose size={18} /></button>
             </div>
-            {calcError && <p className="text-xs mb-3 p-2 rounded" style={{ color: "var(--red)", background: "rgba(239,68,68,0.08)" }}>{calcError}</p>}
+            {calcError && <p className="text-xs mb-3 p-2 rounded" style={{ color: "var(--red)", background: "var(--red-tint)" }}>{calcError}</p>}
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-medium mb-1 block" style={{ color: "var(--text-sub)" }}>Employee (optional - leave blank for all)</label>
@@ -127,7 +127,7 @@ const SalaryPage = () => {
       )}
 
       {selectedDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.35)" }} onClick={() => setSelectedDetail(null)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "var(--overlay-bg)" }} onClick={() => setSelectedDetail(null)}>
           <div className="card w-full max-w-lg mx-4 p-5 max-h-[80vh] overflow-y-auto thin-scroll" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Salary Detail - {selectedDetail.employeeName}</p>
@@ -171,7 +171,7 @@ const SalaryPage = () => {
                       <tbody>
                         {selectedDetail.lines.map((line) => (
                           <tr key={line.lineId} style={{ borderBottom: "1px solid var(--line)" }}>
-                            <td className="px-3 py-2 text-xs"><span className={`badge badge-${line.lineType === "DEDUCTION" ? "red" : line.lineType === "FIXED" ? "blue" : "green"}`}>{line.lineType}</span></td>
+                            <td className="px-3 py-2 text-xs"><span className={`badge badge-${line.lineType === "DEDUCTION" ? "red" : line.lineType === "FIXED" ? "blue" : "blue"}`}>{line.lineType}</span></td>
                             <td className="px-3 py-2 text-xs" style={{ color: "var(--text-sub)" }}>{line.description}</td>
                             <td className="px-3 py-2 text-xs tabular-nums font-semibold" style={{ color: line.amount < 0 ? "var(--red)" : "var(--text-main)" }}>Rs {line.amount?.toLocaleString()}</td>
                           </tr>

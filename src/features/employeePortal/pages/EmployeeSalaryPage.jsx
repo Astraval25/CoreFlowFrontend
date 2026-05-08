@@ -11,7 +11,7 @@ const EmployeeSalaryPage = () => {
   } = useEmployeeSalary();
 
   const statusBadge = (s) => {
-    const map = { DRAFT: "orange", APPROVED: "blue", PAID: "green" };
+    const map = { DRAFT: "orange", APPROVED: "blue", PAID: "blue" };
     return <span className={`badge badge-${map[s] || "gray"}`}>{s}</span>;
   };
 
@@ -78,7 +78,7 @@ const EmployeeSalaryPage = () => {
 
       {/* Detail Modal */}
       {selectedDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.35)" }} onClick={() => setSelectedDetail(null)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "var(--overlay-bg)" }} onClick={() => setSelectedDetail(null)}>
           <div className="card w-full max-w-lg mx-4 p-5 max-h-[80vh] overflow-y-auto thin-scroll" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Salary Detail</p>
@@ -121,7 +121,7 @@ const EmployeeSalaryPage = () => {
                       <tbody>
                         {selectedDetail.lines.map((line) => (
                           <tr key={line.lineId} style={{ borderBottom: "1px solid var(--line)" }}>
-                            <td className="px-3 py-2 text-xs"><span className={`badge badge-${line.lineType === "DEDUCTION" ? "red" : line.lineType === "FIXED" ? "blue" : "green"}`}>{line.lineType}</span></td>
+                            <td className="px-3 py-2 text-xs"><span className={`badge badge-${line.lineType === "DEDUCTION" ? "red" : line.lineType === "FIXED" ? "blue" : "blue"}`}>{line.lineType}</span></td>
                             <td className="px-3 py-2 text-xs" style={{ color: "var(--text-sub)" }}>{line.description}</td>
                             <td className="px-3 py-2 text-xs tabular-nums font-semibold" style={{ color: line.amount < 0 ? "var(--red)" : "var(--text-main)" }}>₹{line.amount?.toLocaleString()}</td>
                           </tr>

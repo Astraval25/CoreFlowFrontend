@@ -20,7 +20,7 @@ const PaymentMadePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#f8f9fc]">
+    <div className="min-h-screen bg-[var(--app-bg)]">
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-sm font-bold" style={{ color: "var(--text-main)" }}>
           Payment Made
@@ -50,16 +50,16 @@ const PaymentMadePage = () => {
         </div>
       </div>
 
-      <div className="p-4" style={{ background: "#ffffff" }}>
-        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #e3e7f1" }}>
+      <div className="p-4" style={{ background: "var(--surface-bg)" }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--line)" }}>
           <table className="w-full min-w-[980px]">
           <thead>
-            <tr style={{ background: "#f7f8fc", borderBottom: "1px solid #e3e7f1" }}>
+            <tr style={{ background: "var(--surface-muted)", borderBottom: "1px solid var(--line)" }}>
               {["S.No", "Payment No.", "Date", "Vendor", "Orders", "Mode", "Status", "Amount", "Action"].map((header, index) => (
                 <th
                   key={header}
                   className={`px-5 py-3 text-[11px] font-bold uppercase tracking-wide ${index === 7 ? "text-right" : "text-left"}`}
-                  style={{ color: "#6a7693" }}
+                  style={{ color: "var(--text-sub)" }}
                 >
                   {header}
                 </th>
@@ -71,8 +71,8 @@ const PaymentMadePage = () => {
               <tr>
                 <td colSpan={9} className="py-16 text-center">
                   <div className="flex flex-col items-center gap-2">
-                    <MdInbox size={28} style={{ color: "#6a7693" }} />
-                    <p className="text-sm" style={{ color: "#6a7693" }}>
+                    <MdInbox size={28} style={{ color: "var(--text-sub)" }} />
+                    <p className="text-sm" style={{ color: "var(--text-sub)" }}>
                       No payments found
                     </p>
                   </div>
@@ -83,19 +83,19 @@ const PaymentMadePage = () => {
                 <tr
                   key={p.paymentId}
                   className="cursor-pointer"
-                  style={{ borderBottom: "1px solid #edf1f8" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f8faff")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "#ffffff")}
+                  style={{ borderBottom: "1px solid var(--line-soft)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-hover)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "var(--surface-bg)")}
                   onClick={() => navigate(`/cf/company/${companyId}/payment-made/${p.paymentId}/detail`)}
                 >
-                  <td className="px-5 py-3 text-sm" style={{ color: "#6a7693" }}>{index + 1}</td>
-                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "#1b5fcc" }}>{p.paymentNumber || "-"}</td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>{p.paymentDate ? new Date(p.paymentDate).toLocaleString() : "-"}</td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>{p.vendorName || "-"}</td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>{p.orderIds || "-"}</td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>{p.modeOfPayment || "-"}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-sub)" }}>{index + 1}</td>
+                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "var(--accent-hover)" }}>{p.paymentNumber || "-"}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>{p.paymentDate ? new Date(p.paymentDate).toLocaleString() : "-"}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>{p.vendorName || "-"}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>{p.orderIds || "-"}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>{p.modeOfPayment || "-"}</td>
                   <td className="px-5 py-3"><span className="badge badge-blue">{p.paymentStatus || "-"}</span></td>
-                  <td className="px-5 py-3 text-sm font-medium tabular-nums text-right" style={{ color: "#202c45" }}>{fmtMoney(p.amount)}</td>
+                  <td className="px-5 py-3 text-sm font-medium tabular-nums text-right" style={{ color: "var(--text-main)" }}>{fmtMoney(p.amount)}</td>
                   <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                     <button
                       type="button"

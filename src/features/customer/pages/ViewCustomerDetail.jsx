@@ -117,7 +117,7 @@ const CustomerInvitationSection = ({ companyId, customerId }) => {
               <span
                 className="inline-flex select-all items-center rounded-lg border border-dashed px-3 py-2 text-base font-extrabold tracking-[0.24em]"
                 style={{
-                  borderColor: "rgba(99, 102, 241, 0.32)",
+                  borderColor: "var(--accent-ring-medium)",
                   background: "var(--surface-bg)",
                   color: "var(--accent)",
                 }}

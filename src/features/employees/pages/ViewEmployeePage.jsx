@@ -26,7 +26,7 @@ const ViewEmployeePage = () => {
         <div className="flex items-center gap-3">
           <button onClick={() => navigate(-1)} className="btn-ghost p-1.5"><MdArrowBack size={18} /></button>
           <h1 className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>{employee.employeeName}</h1>
-          <span className={`badge badge-${employee.isActive ? "green" : "red"}`}>{employee.isActive ? "Active" : "Inactive"}</span>
+          <span className={`badge badge-${employee.isActive ? "blue" : "red"}`}>{employee.isActive ? "Active" : "Inactive"}</span>
         </div>
         <button onClick={() => navigate(`/cf/company/${companyId}/employees/${employeeId}/update`)} className="btn-outline text-xs">
           <MdEdit size={14} /> Edit
@@ -120,7 +120,7 @@ const ViewEmployeePage = () => {
               </div>
               <div>
                 <p className="text-[10px] uppercase font-semibold mb-0.5" style={{ color: "var(--text-muted)" }}>Status</p>
-                <span className={`badge badge-${portalUser.isActive ? "green" : "red"}`}>{portalUser.isActive ? "Active" : "Inactive"}</span>
+                <span className={`badge badge-${portalUser.isActive ? "blue" : "red"}`}>{portalUser.isActive ? "Active" : "Inactive"}</span>
               </div>
               <div>
                 <p className="text-[10px] uppercase font-semibold mb-0.5" style={{ color: "var(--text-muted)" }}>Last Login</p>

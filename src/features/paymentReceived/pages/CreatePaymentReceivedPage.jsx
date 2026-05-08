@@ -293,7 +293,7 @@ const CreatePaymentReceivedPage = () => {
         style={{
           background: "var(--surface-bg)",
           borderTop: "1px solid var(--line)",
-          boxShadow: "0 -2px 10px 0 rgba(30,50,30,0.05)",
+          boxShadow: "0 -2px 10px 0 var(--shadow-soft)",
         }}
       >
         <div className="flex items-center gap-3">

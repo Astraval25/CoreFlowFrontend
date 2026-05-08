@@ -200,7 +200,7 @@ const Toolbar = () => {
             }}
             onFocus={(e) => {
               e.target.style.borderColor = "var(--accent)";
-              e.target.style.boxShadow = "0 0 0 3px rgba(58,155,90,0.12)";
+              e.target.style.boxShadow = "0 0 0 3px var(--accent-tint)";
             }}
             onBlur={(e) => {
               e.target.style.borderColor = "var(--line)";
@@ -214,12 +214,12 @@ const Toolbar = () => {
         {/* Upgrade pill */}
         <div
           className="hidden md:flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full"
-          style={{ background: "#fff7ed", color: "#c2410c", border: "1px solid #fed7aa" }}
+          style={{ background: "var(--orange-bg)", color: "var(--orange-text)", border: "1px solid var(--orange-border)" }}
         >
           <span>You are on Free Plan</span>
           <button
             className="font-bold text-xs px-2 py-0.5 rounded-full"
-            style={{ background: "#fb923c", color: "#fff" }}
+            style={{ background: "var(--orange)", color: "var(--surface-bg)" }}
           >
             Upgrade
           </button>
@@ -249,8 +249,8 @@ const Toolbar = () => {
             className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
             style={{
               background: "var(--accent)",
-              color: "#fff",
-              boxShadow: "0 6px 14px rgba(58, 155, 90, 0.18)",
+              color: "var(--surface-bg)",
+              boxShadow: "0 6px 14px var(--accent-shadow)",
             }}
             title="Create shortcut"
             onClick={() => {
@@ -268,7 +268,7 @@ const Toolbar = () => {
               style={{
                 borderColor: "var(--line)",
                 background: "var(--surface-bg)",
-                boxShadow: "0 18px 36px rgba(16, 24, 40, 0.16)",
+                boxShadow: "0 18px 36px var(--shadow-floating)",
               }}
             >
               
@@ -286,7 +286,7 @@ const Toolbar = () => {
                       <span
                         className="w-7 h-7 rounded-md shrink-0 flex items-center justify-center"
                         style={{
-                          background: "rgba(58, 155, 90, 0.12)",
+                          background: "var(--accent-tint)",
                           color: "var(--accent)",
                         }}
                       >
@@ -322,7 +322,7 @@ const Toolbar = () => {
           {unreadCount > 0 && (
             <span
               className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full text-[10px] font-bold flex items-center justify-center"
-              style={{ background: "var(--red)", color: "#fff" }}
+              style={{ background: "var(--red)", color: "var(--surface-bg)" }}
             >
               {unreadCount > 99 ? "99+" : unreadCount}
             </span>
@@ -349,7 +349,7 @@ const Toolbar = () => {
             className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
             style={{ color: "var(--text-sub)" }}
             title="Logout"
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#fee2e2")}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "var(--red-soft)")}
             onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
           >
             <FiLogOut size={16} />

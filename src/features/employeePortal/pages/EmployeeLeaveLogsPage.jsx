@@ -14,7 +14,7 @@ const EmployeeLeaveLogsPage = () => {
   } = useEmployeeLeaveLogs();
 
   const statusBadge = (s) => {
-    const map = { PENDING: "orange", APPROVED: "green", REJECTED: "red" };
+    const map = { PENDING: "orange", APPROVED: "blue", REJECTED: "red" };
     return <span className={`badge badge-${map[s] || "gray"}`}>{s}</span>;
   };
 
@@ -79,13 +79,13 @@ const EmployeeLeaveLogsPage = () => {
 
       {/* Create/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.35)" }} onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "var(--overlay-bg)" }} onClick={() => setShowModal(false)}>
           <div className="card w-full max-w-md mx-4 p-5" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>{editingLog ? "Edit Leave" : "Apply Leave"}</p>
               <button onClick={() => setShowModal(false)} className="p-1 rounded hover:bg-gray-100"><MdClose size={18} /></button>
             </div>
-            {error && <p className="text-xs mb-3 p-2 rounded" style={{ color: "var(--red)", background: "rgba(239,68,68,0.08)" }}>{error}</p>}
+            {error && <p className="text-xs mb-3 p-2 rounded" style={{ color: "var(--red)", background: "var(--red-tint)" }}>{error}</p>}
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-medium mb-1 block" style={{ color: "var(--text-sub)" }}>Leave Date</label>

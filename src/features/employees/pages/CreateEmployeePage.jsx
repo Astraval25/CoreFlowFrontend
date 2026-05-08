@@ -30,7 +30,7 @@ const CreateEmployeePage = () => {
 
       <form onSubmit={handleSubmit} className="card p-6 max-w-2xl space-y-4">
         {errors.submit && (
-          <p className="text-xs p-3 rounded" style={{ color: "var(--red)", background: "rgba(239,68,68,0.08)" }}>{errors.submit}</p>
+          <p className="text-xs p-3 rounded" style={{ color: "var(--red)", background: "var(--red-tint)" }}>{errors.submit}</p>
         )}
 
         <div className="grid grid-cols-2 gap-4">

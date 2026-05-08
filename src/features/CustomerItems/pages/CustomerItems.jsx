@@ -70,7 +70,7 @@ const CustomerItems = ({ customerId }) => {
                       <button
                         onClick={() => handleToggleActive(item)}
                         className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer ${
-                          item.isActive ? "bg-green-500" : "bg-gray-300"
+                          item.isActive ? "bg-blue-600" : "bg-gray-300"
                         }`}
                         title={
                           item.isActive

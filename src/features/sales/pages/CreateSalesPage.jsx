@@ -88,7 +88,7 @@ const CreateSalesPage = () => {
         {submitError && (
           <div
             className="px-3 py-2 rounded text-xs"
-            style={{ background: "rgba(239,68,68,0.08)", color: "var(--red)", border: "1px solid var(--red)" }}
+            style={{ background: "var(--red-tint)", color: "var(--red)", border: "1px solid var(--red)" }}
           >
             {submitError}
           </div>
@@ -413,7 +413,7 @@ const CreateSalesPage = () => {
         style={{
           background: "var(--surface-bg)",
           borderTop: "1px solid var(--line)",
-          boxShadow: "0 -2px 10px 0 rgba(30,50,30,0.05)",
+          boxShadow: "0 -2px 10px 0 var(--shadow-soft)",
         }}
       >
         <div className="flex items-center gap-3">

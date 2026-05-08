@@ -65,25 +65,25 @@ const VendorInvitationSection = ({ companyId, vendorId }) => {
   };
 
   return (
-    <div className="rounded-lg bg-[#f8faf8] p-4">
-      <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+    <div className="rounded-lg bg-[var(--app-bg)] p-4">
+      <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--text-heading)]">
         <MdLink size={18} />
         Company Linking
       </h3>
 
       <div className="grid gap-4 md:grid-cols-2">
         {/* Generate / Show invitation code */}
-        <div className="rounded-lg p-3 bg-white border border-[#e2e8e2]">
-          <p className="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[#758275]">
+        <div className="rounded-lg p-3 bg-white border border-[var(--line)]">
+          <p className="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-sub)]">
             Invite Code for this Vendor
           </p>
-          <p className="text-[11px] mb-3 text-[#8fa490]">
+          <p className="text-[11px] mb-3 text-[var(--text-muted)]">
             Share this code with the customer company so they can link to this vendor.
           </p>
           {inviteCode ? (
             <div className="flex items-center gap-2">
               <span
-                className="inline-flex items-center rounded-lg px-4 py-2 text-lg font-bold tracking-[0.3em] select-all border border-dashed border-[#cfe0cf] bg-[#f8faf8] text-[#2f7a47]"
+                className="inline-flex items-center rounded-lg px-4 py-2 text-lg font-bold tracking-[0.3em] select-all border border-dashed border-[var(--accent-border)] bg-[var(--app-bg)] text-[var(--accent)]"
               >
                 {inviteCode}
               </span>
@@ -107,11 +107,11 @@ const VendorInvitationSection = ({ companyId, vendorId }) => {
         </div>
 
         {/* Accept invitation from customer */}
-        <div className="rounded-lg p-3 bg-white border border-[#e2e8e2]">
-          <p className="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[#758275]">
+        <div className="rounded-lg p-3 bg-white border border-[var(--line)]">
+          <p className="text-[11px] font-semibold uppercase tracking-wide mb-2 text-[var(--text-sub)]">
             Accept Customer Invitation
           </p>
-          <p className="text-[11px] mb-3 text-[#8fa490]">
+          <p className="text-[11px] mb-3 text-[var(--text-muted)]">
             Enter a code from a customer company to link this vendor to their customer record.
           </p>
           <div className="flex items-center gap-2">
@@ -158,22 +158,22 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
       <section className="p-5 space-y-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7b887b]">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-sub)]">
               Vendor Profile
             </p>
-            <h2 className="text-2xl font-bold text-[#1f2b1f]">{vendor.displayName}</h2>
-            <p className="text-sm font-medium text-[#627062]">{vendor.vendorName || "No legal name"}</p>
+            <h2 className="text-2xl font-bold text-[var(--text-main)]">{vendor.displayName}</h2>
+            <p className="text-sm font-medium text-[var(--text-sub)]">{vendor.vendorName || "No legal name"}</p>
 
             <div className="flex flex-wrap gap-2 pt-1">
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent)]">
                 <MdPhone size={14} /> {vendor.phone || "No phone"}
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+              <span className="inline-flex items-center gap-1 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent)]">
                 <MdEmail size={14} /> {vendor.email || "No email"}
               </span>
               <span
                 className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                  vendor.isActive ? "bg-[#e8f3ea] text-[#2f7a47]" : "bg-[#fbe9e9] text-[#9a3d3d]"
+                  vendor.isActive ? "bg-[var(--accent-soft)] text-[var(--accent)]" : "bg-[var(--red-bg)] text-[var(--red-text)]"
                 }`}
               >
                 {vendor.isActive ? "Active" : "Inactive"}
@@ -182,7 +182,7 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
           </div>
 
           <button
-            className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-4 py-2 text-sm font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-lg border border-[var(--accent-border)] bg-[var(--accent-soft)] px-4 py-2 text-sm font-semibold text-[var(--accent)] transition hover:bg-[var(--accent-soft-hover)] cursor-pointer"
             onClick={handleEdit}
           >
             <MdEdit size={17} />
@@ -191,42 +191,42 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg bg-[#f8faf8] p-4">
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+          <div className="rounded-lg bg-[var(--app-bg)] p-4">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--text-heading)]">
               <MdLocationOn size={18} />
               Addresses
             </h3>
-            <div className="space-y-3 text-sm text-[#4f5d4f]">
+            <div className="space-y-3 text-sm text-[var(--text-soft)]">
               <div>
-                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#758275]">Billing</p>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">Billing</p>
                 <p>{formatAddress(billing)}</p>
               </div>
               <div>
-                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#758275]">Shipping</p>
+                <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[var(--text-sub)]">Shipping</p>
                 <p>{shipping ? formatAddress(shipping) : billing ? "Same as billing" : "Not available"}</p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-lg bg-[#f8faf8] p-4">
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+          <div className="rounded-lg bg-[var(--app-bg)] p-4">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--text-heading)]">
               <MdBusiness size={18} />
               Business Details
             </h3>
             <div className="grid grid-cols-2 gap-y-3 text-sm">
-              <span className="text-[#748274]">GST</span>
-              <span className="font-semibold text-[#1f2b1f]">{vendor.gst || "-"}</span>
+              <span className="text-[var(--text-sub)]">GST</span>
+              <span className="font-semibold text-[var(--text-main)]">{vendor.gst || "-"}</span>
 
-              <span className="text-[#748274]">PAN</span>
-              <span className="font-semibold text-[#1f2b1f]">{vendor.pan || "-"}</span>
+              <span className="text-[var(--text-sub)]">PAN</span>
+              <span className="font-semibold text-[var(--text-main)]">{vendor.pan || "-"}</span>
 
-              <span className="text-[#748274]">Company</span>
-              <span className="font-semibold text-[#2f7a47]">
+              <span className="text-[var(--text-sub)]">Company</span>
+              <span className="font-semibold text-[var(--accent)]">
                 {vendor.company?.vendorCompany || vendor.vendorCompany?.companyName || "-"}
               </span>
 
-              <span className="text-[#748274]">Created</span>
-              <span className="font-semibold text-[#1f2b1f]">
+              <span className="text-[var(--text-sub)]">Created</span>
+              <span className="font-semibold text-[var(--text-main)]">
                 {vendor.createdDt ? new Date(vendor.createdDt).toLocaleDateString() : "-"}
               </span>
             </div>
@@ -236,7 +236,7 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
           <VendorInvitationSection companyId={companyId} vendorId={vendorId} />
         )}
 
-        <div className="border-t border-[#e3e9e3] pt-2">
+        <div className="border-t border-[var(--line)] pt-2">
           <div className="flex flex-wrap gap-2">
           {[
             { key: "overview", label: "Overview" },
@@ -248,8 +248,8 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
               key={tab.key}
               className={`rounded-lg px-4 py-2 text-sm font-semibold cursor-pointer transition ${
                 activeTab === tab.key
-                  ? "bg-[#e8f3ea] text-[#2f7a47]"
-                  : "text-[#596759] hover:bg-[#f2f5f2]"
+                  ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                  : "text-[var(--text-sub)] hover:bg-[var(--surface-soft)]"
               }`}
               onClick={() => setActiveTab(tab.key)}
             >
@@ -259,7 +259,7 @@ const ViewVendorDetails = ({ companyId, vendorId }) => {
           </div>
         </div>
 
-        <div className="rounded-lg bg-[#f8faf8] p-4">
+        <div className="rounded-lg bg-[var(--app-bg)] p-4">
           {activeTab === "items" && <VendorItems vendorId={vendorId} />}
           {activeTab === "overview" && <div className="text-gray-600">Overview content coming soon...</div>}
           {activeTab === "ordertrack" && <div className="text-gray-600">Order Track content coming soon...</div>}

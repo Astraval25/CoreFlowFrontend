@@ -100,12 +100,12 @@ const ReportDetailTable = ({ value, onColumnsReady }) => {
     <div className="overflow-auto">
       <table className="w-full min-w-[560px]">
         <thead>
-          <tr style={{ background: "#f6f7fb", borderBottom: "1px solid var(--line)" }}>
+          <tr style={{ background: "var(--surface-muted)", borderBottom: "1px solid var(--line)" }}>
             {columns.map((column) => (
               <th
                 key={column}
                 className="px-5 py-3 text-left text-[11px] uppercase tracking-wide"
-                style={{ color: "#666c8f" }}
+                style={{ color: "var(--text-sub)" }}
               >
                 {column}
               </th>
@@ -114,9 +114,9 @@ const ReportDetailTable = ({ value, onColumnsReady }) => {
         </thead>
         <tbody>
           {rows.map((row, index) => (
-            <tr key={`${index}-${JSON.stringify(row)}`} style={{ borderBottom: "1px solid #edf0f6" }}>
+            <tr key={`${index}-${JSON.stringify(row)}`} style={{ borderBottom: "1px solid var(--line-soft)" }}>
               {columns.map((column) => (
-                <td key={column} className="px-5 py-3 text-sm" style={{ color: "#111827" }}>
+                <td key={column} className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>
                   {formatValue(row[column])}
                 </td>
               ))}
@@ -190,10 +190,10 @@ const ReportDetailView = ({
           <style>
             body { font-family: Arial, sans-serif; padding: 24px; }
             h1 { margin: 0 0 8px 0; font-size: 20px; }
-            p { margin: 0 0 16px 0; color: #555; }
+            p { margin: 0 0 16px 0; color: var(--text-sub); }
             table { width: 100%; border-collapse: collapse; font-size: 12px; }
-            th, td { border: 1px solid #d9dee8; padding: 8px; text-align: left; }
-            th { background: #f4f6fb; }
+            th, td { border: 1px solid var(--line); padding: 8px; text-align: left; }
+            th { background: var(--surface-muted); }
           </style>
         </head>
         <body>
@@ -224,31 +224,31 @@ const ReportDetailView = ({
 
   return (
     <>
-      <div className="px-5 py-3 flex items-center justify-between" style={{ background: "#ffffff", borderBottom: "1px solid #e5e7ef" }}>
+      <div className="px-5 py-3 flex items-center justify-between" style={{ background: "var(--surface-bg)", borderBottom: "1px solid var(--line)" }}>
         <div className="flex items-center gap-3">
           <button
             className="w-9 h-9 rounded-lg flex items-center justify-center"
-            style={{ border: "1px solid #d8deed", background: "#f8faff" }}
+            style={{ border: "1px solid var(--accent-field-border)", background: "var(--surface-hover)" }}
             onClick={onBack}
           >
-            <MdArrowBack size={18} style={{ color: "#304268" }} />
+            <MdArrowBack size={18} style={{ color: "var(--text-heading)" }} />
           </button>
           <div>
-            <p className="text-xs" style={{ color: "#667390" }}>{selectedReport?.category || "Report"}</p>
-            <h2 className="text-3xl font-semibold" style={{ color: "#1f2b46" }}>{selectedReport?.name || "Report"}</h2>
-            <p className="text-xs mt-1" style={{ color: "#667390" }}>
+            <p className="text-xs" style={{ color: "var(--text-sub)" }}>{selectedReport?.category || "Report"}</p>
+            <h2 className="text-3xl font-semibold" style={{ color: "var(--text-main)" }}>{selectedReport?.name || "Report"}</h2>
+            <p className="text-xs mt-1" style={{ color: "var(--text-sub)" }}>
               From {formatDatePretty(startDate)} to {formatDatePretty(endDate)}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="inline-flex rounded-lg overflow-hidden" style={{ border: "1px solid #d8deed" }}>
+          <div className="inline-flex rounded-lg overflow-hidden" style={{ border: "1px solid var(--accent-field-border)" }}>
             <button
               className="px-3 py-2 text-sm"
               style={{
-                background: viewMode === "table" ? "#eef3ff" : "#fff",
-                color: "#2e3d62",
+                background: viewMode === "table" ? "var(--surface-soft)" : "var(--surface-bg)",
+                color: "var(--text-heading)",
               }}
               onClick={() => setViewMode("table")}
             >
@@ -257,9 +257,9 @@ const ReportDetailView = ({
             <button
               className="px-3 py-2 text-sm"
               style={{
-                background: viewMode === "graph" ? "#eef3ff" : "#fff",
-                color: "#2e3d62",
-                borderLeft: "1px solid #d8deed",
+                background: viewMode === "graph" ? "var(--surface-soft)" : "var(--surface-bg)",
+                color: "var(--text-heading)",
+                borderLeft: "1px solid var(--accent-field-border)",
               }}
               onClick={() => setViewMode("graph")}
             >
@@ -270,22 +270,22 @@ const ReportDetailView = ({
           <div className="relative">
             <button
               className="px-3 py-2 rounded-lg text-sm inline-flex items-center gap-1"
-              style={{ border: "1px solid #d8deed", color: "#2e3d62", background: "#fff" }}
+              style={{ border: "1px solid var(--accent-field-border)", color: "var(--text-heading)", background: "var(--surface-bg)" }}
               onClick={() => setExportOpen((prev) => !prev)}
             >
               Export
               <MdKeyboardArrowDown size={16} />
             </button>
             {exportOpen && (
-              <div className="absolute right-0 mt-1 w-32 rounded-lg shadow-lg z-20" style={{ background: "#fff", border: "1px solid #d8deed" }}>
+              <div className="absolute right-0 mt-1 w-32 rounded-lg shadow-lg z-20" style={{ background: "var(--surface-bg)", border: "1px solid var(--accent-field-border)" }}>
                 <button
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-[#f4f7ff]"
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-[var(--surface-hover)]"
                   onClick={exportExcel}
                 >
                   Excel
                 </button>
                 <button
-                  className="w-full text-left px-3 py-2 text-sm hover:bg-[#f4f7ff]"
+                  className="w-full text-left px-3 py-2 text-sm hover:bg-[var(--surface-hover)]"
                   onClick={exportPdf}
                 >
                   PDF
@@ -296,7 +296,7 @@ const ReportDetailView = ({
 
           <button
             className="w-9 h-9 rounded-lg flex items-center justify-center"
-            style={{ border: "1px solid #d8deed", color: "#2e3d62", background: "#fff" }}
+            style={{ border: "1px solid var(--accent-field-border)", color: "var(--text-heading)", background: "var(--surface-bg)" }}
             onClick={loadReports}
             disabled={loading}
           >
@@ -305,12 +305,12 @@ const ReportDetailView = ({
         </div>
       </div>
 
-      <div className="px-5 py-3 flex flex-wrap items-center gap-2" style={{ background: "#f9faff", borderBottom: "1px solid #e3e7f1" }}>
-        <span className="inline-flex items-center gap-1 text-sm font-semibold" style={{ color: "#2a3a5d" }}>
+      <div className="px-5 py-3 flex flex-wrap items-center gap-2" style={{ background: "var(--surface-hover)", borderBottom: "1px solid var(--line)" }}>
+        <span className="inline-flex items-center gap-1 text-sm font-semibold" style={{ color: "var(--text-heading)" }}>
           <MdFilterList size={18} /> Filters:
         </span>
 
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm" style={{ border: "1px solid #d8deed", background: "#fff", color: "#25355a" }}>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm" style={{ border: "1px solid var(--accent-field-border)", background: "var(--surface-bg)", color: "var(--text-heading)" }}>
           <MdCalendarToday size={14} />
           <span>Date Range</span>
           <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="text-xs outline-none" />
@@ -320,7 +320,7 @@ const ReportDetailView = ({
 
         <button
           className="px-4 py-2 rounded-lg text-sm font-semibold"
-          style={{ background: "#6fa2ff", color: "#fff" }}
+          style={{ background: "var(--accent)", color: "var(--surface-bg)" }}
           onClick={loadReports}
           disabled={loading}
         >
@@ -328,21 +328,21 @@ const ReportDetailView = ({
         </button>
       </div>
 
-      <div className="p-4 h-[calc(100vh-235px)] overflow-auto" style={{ background: "#f6f7fc" }}>
+      <div className="p-4 h-[calc(100vh-235px)] overflow-auto" style={{ background: "var(--app-bg)" }}>
         {error && (
-          <div className="mb-3 px-3 py-2 rounded text-sm" style={{ background: "#fff1f2", border: "1px solid #fecdd3", color: "#be123c" }}>
+          <div className="mb-3 px-3 py-2 rounded text-sm" style={{ background: "var(--red-alert-bg)", border: "1px solid var(--red-alert-border)", color: "var(--red-alert-text)" }}>
             {error}
           </div>
         )}
 
-        <div className="rounded-xl p-4" style={{ border: "1px solid #e2e7f3", background: "#ffffff" }}>
+        <div className="rounded-xl p-4" style={{ border: "1px solid var(--line)", background: "var(--surface-bg)" }}>
           <div className="mb-5">
-            <p className="text-sm" style={{ color: "#68789b" }}>{companyName}</p>
+            <p className="text-sm" style={{ color: "var(--text-sub)" }}>{companyName}</p>
           </div>
 
           <div className="text-center mb-4">
-            <h3 className="text-4xl font-semibold" style={{ color: "#1f2b46" }}>{selectedReport?.name || "Report"}</h3>
-            <p className="text-sm mt-1" style={{ color: "#657594" }}>
+            <h3 className="text-4xl font-semibold" style={{ color: "var(--text-main)" }}>{selectedReport?.name || "Report"}</h3>
+            <p className="text-sm mt-1" style={{ color: "var(--text-sub)" }}>
               From {formatDatePretty(startDate)} To {formatDatePretty(endDate)}
             </p>
           </div>
@@ -358,9 +358,9 @@ const ReportDetailView = ({
           )}
 
           {viewMode === "graph" && (
-            <div className="mt-6 rounded-lg p-4" style={{ background: "#f8faff", border: "1px solid #dbe6ff" }}>
+            <div className="mt-6 rounded-lg p-4" style={{ background: "var(--surface-hover)", border: "1px solid var(--accent-border)" }}>
               {!graphPayload.data.length ? (
-                <p className="text-sm text-center" style={{ color: "#667390" }}>
+                <p className="text-sm text-center" style={{ color: "var(--text-sub)" }}>
                   Graph view is not available for this dataset.
                 </p>
               ) : (
@@ -368,7 +368,7 @@ const ReportDetailView = ({
                   <ResponsiveContainer width="100%" height="100%">
                     {graphPayload.chartType === "multi-line" ? (
                       <LineChart data={graphPayload.data}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f5" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--line)" />
                         <XAxis dataKey={graphPayload.xKey} tick={{ fontSize: 11 }} />
                         <YAxis tick={{ fontSize: 11 }} />
                         <Tooltip />
@@ -378,7 +378,7 @@ const ReportDetailView = ({
                             key={key}
                             type="monotone"
                             dataKey={key}
-                            stroke={["#2563eb", "#16a34a", "#dc2626", "#7c3aed", "#0891b2"][index % 5]}
+                            stroke={["var(--accent)", "var(--blue)", "var(--red)", "var(--accent-secondary)", "var(--orange)"][index % 5]}
                             strokeWidth={2}
                             dot={{ r: 3 }}
                           />
@@ -386,7 +386,7 @@ const ReportDetailView = ({
                       </LineChart>
                     ) : (
                       <BarChart data={graphPayload.data}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f5" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="var(--line)" />
                         <XAxis dataKey={graphPayload.xKey} tick={{ fontSize: 11 }} />
                         <YAxis tick={{ fontSize: 11 }} />
                         <Tooltip />
@@ -395,7 +395,7 @@ const ReportDetailView = ({
                           <Bar
                             key={key}
                             dataKey={key}
-                            fill={["#2563eb", "#16a34a", "#dc2626", "#7c3aed", "#0891b2"][index % 5]}
+                            fill={["var(--accent)", "var(--blue)", "var(--red)", "var(--accent-secondary)", "var(--orange)"][index % 5]}
                             radius={[4, 4, 0, 0]}
                           />
                         ))}

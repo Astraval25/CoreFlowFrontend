@@ -99,7 +99,7 @@ const AdBanner = () => {
           <button
             onClick={(e) => { e.stopPropagation(); setDismissed((prev) => new Set(prev).add(ad.adId)); }}
             className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center z-10"
-            style={{ background: "rgba(0,0,0,0.45)", color: "#fff" }}
+            style={{ background: "var(--overlay-bg-strong)", color: "var(--surface-bg)" }}
           >
             <MdClose size={14} />
           </button>
@@ -128,7 +128,7 @@ const AdBanner = () => {
 const DetailModal = ({ title, rows, onClose }) => (
   <div
     className="fixed inset-0 z-50 flex items-center justify-center"
-    style={{ background: "rgba(0,0,0,0.35)" }}
+    style={{ background: "var(--overlay-bg)" }}
     onClick={onClose}
   >
     <div
@@ -302,8 +302,8 @@ const CashFlowCard = ({ data, range, onRangeChange, dateRange, loading = false }
               >
                 <defs>
                   <linearGradient id="cashGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="#3a9b5a" stopOpacity={0.18} />
-                    <stop offset="95%" stopColor="#3a9b5a" stopOpacity={0} />
+                    <stop offset="5%"  stopColor="var(--accent)" stopOpacity={0.18} />
+                    <stop offset="95%" stopColor="var(--accent)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--line)" vertical={false} />
@@ -316,8 +316,8 @@ const CashFlowCard = ({ data, range, onRangeChange, dateRange, loading = false }
                 <Area
                   type="monotone" dataKey="closingBalance" stroke="var(--accent)" strokeWidth={2}
                   fill="url(#cashGrad)"
-                  dot={{ r: 4, fill: "var(--accent)", strokeWidth: 2, stroke: "#fff", cursor: "pointer" }}
-                  activeDot={{ r: 6, fill: "var(--accent)", stroke: "#fff", strokeWidth: 2, cursor: "pointer" }}
+                  dot={{ r: 4, fill: "var(--accent)", strokeWidth: 2, stroke: "var(--surface-bg)", cursor: "pointer" }}
+                  activeDot={{ r: 6, fill: "var(--accent)", stroke: "var(--surface-bg)", strokeWidth: 2, cursor: "pointer" }}
                 />
               </AreaChart>
             </ResponsiveContainer>

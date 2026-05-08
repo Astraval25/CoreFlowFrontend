@@ -62,7 +62,7 @@ const PurchasePage = () => {
   const filteredOrders = getFilteredOrders();
 
   return (
-    <div className="min-h-screen bg-[#f8f9fc]">
+    <div className="min-h-screen bg-[var(--app-bg)]">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-6">
           <h1 className="text-sm font-bold" style={{ color: "var(--text-main)" }}>Purchase</h1>
@@ -111,18 +111,18 @@ const PurchasePage = () => {
         </div>
       </div>
 
-      <div className="p-4" style={{ background: "#ffffff" }}>
-        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #e3e7f1" }}>
+      <div className="p-4" style={{ background: "var(--surface-bg)" }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--line)" }}>
           <table className="w-full min-w-[980px]">
           <thead>
-            <tr style={{ background: "#f7f8fc", borderBottom: "1px solid #e3e7f1" }}>
+            <tr style={{ background: "var(--surface-muted)", borderBottom: "1px solid var(--line)" }}>
               {table.getHeaderGroups().map((hg) =>
                 hg.headers.map((header) => (
                   <th
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
                     className="px-5 py-3 text-left cursor-pointer select-none"
-                    style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#6a7693" }}
+                    style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-sub)" }}
                   >
                     {flexRender(header.column.columnDef.header, header.getContext())}
                   </th>
@@ -135,8 +135,8 @@ const PurchasePage = () => {
               <tr>
                 <td colSpan={table.getAllColumns().length} className="py-16 text-center">
                   <div className="flex flex-col items-center gap-2">
-                    <MdInbox size={28} style={{ color: "#6a7693" }} />
-                    <p className="text-sm" style={{ color: "#6a7693" }}>No orders found</p>
+                    <MdInbox size={28} style={{ color: "var(--text-sub)" }} />
+                    <p className="text-sm" style={{ color: "var(--text-sub)" }}>No orders found</p>
                   </div>
                 </td>
               </tr>
@@ -145,18 +145,18 @@ const PurchasePage = () => {
                 <tr
                   key={order.orderId}
                   className="cursor-pointer"
-                  style={{ borderBottom: "1px solid #edf1f8" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f8faff")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "#ffffff")}
+                  style={{ borderBottom: "1px solid var(--line-soft)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-hover)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "var(--surface-bg)")}
                   onClick={() => navigate(`/cf/company/${companyId}/purchase/${order.orderId}/detail`)}
                 >
-                  <td className="px-5 py-3 text-sm" style={{ color: "#6a7693" }}>{index + 1}</td>
-                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "#1b5fcc" }}>{order.orderNumber}</td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>{order.orderDate}</td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>{order.sellerCompanyName}</td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>{order.customerName}</td>
-                  <td className="px-5 py-3 text-sm font-medium tabular-nums" style={{ color: "#202c45" }}>Rs {order.totalAmount}</td>
-                  <td className="px-5 py-3 text-sm font-medium tabular-nums" style={{ color: "#202c45" }}>Rs {order.paidAmount}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-sub)" }}>{index + 1}</td>
+                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "var(--accent-hover)" }}>{order.orderNumber}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>{order.orderDate}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>{order.sellerCompanyName}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>{order.customerName}</td>
+                  <td className="px-5 py-3 text-sm font-medium tabular-nums" style={{ color: "var(--text-main)" }}>Rs {order.totalAmount}</td>
+                  <td className="px-5 py-3 text-sm font-medium tabular-nums" style={{ color: "var(--text-main)" }}>Rs {order.paidAmount}</td>
                   <td className="px-5 py-3">
                     <span className="badge badge-blue">{order.orderStatus}</span>
                   </td>

@@ -33,7 +33,7 @@ const StatusDropdown = ({ onSelect }) => {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-3 py-1.5 text-xs font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--accent)] transition hover:bg-[var(--accent-soft-hover)] cursor-pointer"
       >
         Update Status <MdKeyboardArrowDown size={16} />
       </button>
@@ -91,23 +91,23 @@ const ViewPaymentMadePage = () => {
   }
 
   return (
-    <div className="w-full rounded-2xl border border-[#d9e1d9] bg-white shadow-sm p-5 space-y-6">
+    <div className="w-full rounded-2xl border border-[var(--line)] bg-white shadow-sm p-5 space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7b887b]">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-sub)]">
             Payment Made
           </p>
-          <h2 className="text-2xl font-bold text-[#1f2b1f]">{payment.paymentNumber || "-"}</h2>
+          <h2 className="text-2xl font-bold text-[var(--text-main)]">{payment.paymentNumber || "-"}</h2>
           <div className="flex flex-wrap gap-2 pt-1">
-            <span className="inline-flex rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+            <span className="inline-flex rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent)]">
               Date: {payment.paymentDate ? new Date(payment.paymentDate).toLocaleString() : "-"}
             </span>
-            <span className="inline-flex rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+            <span className="inline-flex rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent)]">
               Status: {payment.paymentStatus || "-"}
             </span>
             <span
               className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                payment.isActive ? "bg-[#e8f3ea] text-[#2f7a47]" : "bg-[#fbe9e9] text-[#9a3d3d]"
+                payment.isActive ? "bg-[var(--accent-soft)] text-[var(--accent)]" : "bg-[var(--red-bg)] text-[var(--red-text)]"
               }`}
             >
               {payment.isActive ? "Active" : "Inactive"}
@@ -118,7 +118,7 @@ const ViewPaymentMadePage = () => {
         <div className="flex items-center gap-2">
           <StatusDropdown onSelect={updateStatus} />
           <button
-            className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-4 py-2 text-sm font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-lg border border-[var(--accent-border)] bg-[var(--accent-soft)] px-4 py-2 text-sm font-semibold text-[var(--accent)] transition hover:bg-[var(--accent-soft-hover)] cursor-pointer"
             onClick={() => navigate(`/cf/company/${companyId}/payment-made/${payment.paymentId}/update`)}
           >
             <MdEdit size={17} />
@@ -128,37 +128,37 @@ const ViewPaymentMadePage = () => {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-lg bg-[#f8faf8] p-4">
-          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+        <div className="rounded-lg bg-[var(--app-bg)] p-4">
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--text-heading)]">
             <MdPayments size={18} />
             Payment Info
           </h3>
           <dl className="space-y-2 text-sm">
             <div className="flex items-center justify-between">
-              <dt className="text-[#748274]">Vendor</dt>
-              <dd className="font-semibold text-[#1f2b1f]">{payment.vendorDisplayName || "-"}</dd>
+              <dt className="text-[var(--text-sub)]">Vendor</dt>
+              <dd className="font-semibold text-[var(--text-main)]">{payment.vendorDisplayName || "-"}</dd>
             </div>
             <div className="flex items-center justify-between">
-              <dt className="text-[#748274]">Mode</dt>
-              <dd className="font-semibold text-[#1f2b1f]">{payment.modeOfPayment || "-"}</dd>
+              <dt className="text-[var(--text-sub)]">Mode</dt>
+              <dd className="font-semibold text-[var(--text-main)]">{payment.modeOfPayment || "-"}</dd>
             </div>
             <div className="flex items-center justify-between">
-              <dt className="text-[#748274]">Reference</dt>
-              <dd className="font-semibold text-[#1f2b1f]">{payment.referenceNumber || "-"}</dd>
+              <dt className="text-[var(--text-sub)]">Reference</dt>
+              <dd className="font-semibold text-[var(--text-main)]">{payment.referenceNumber || "-"}</dd>
             </div>
             <div className="flex items-center justify-between">
-              <dt className="text-[#748274]">Platform Ref</dt>
-              <dd className="font-semibold text-[#1f2b1f]">{payment.platformRef || "-"}</dd>
+              <dt className="text-[var(--text-sub)]">Platform Ref</dt>
+              <dd className="font-semibold text-[var(--text-main)]">{payment.platformRef || "-"}</dd>
             </div>
-            <div className="mt-1 border-t border-[#d8e0d8] pt-2 flex items-center justify-between">
-              <dt className="font-semibold text-[#2d3b2d]">Amount</dt>
-              <dd className="text-base font-bold text-[#2f7a47]">{money(payment.amount)}</dd>
+            <div className="mt-1 border-t border-[var(--line)] pt-2 flex items-center justify-between">
+              <dt className="font-semibold text-[var(--text-heading)]">Amount</dt>
+              <dd className="text-base font-bold text-[var(--accent)]">{money(payment.amount)}</dd>
             </div>
           </dl>
         </div>
 
-        <div className="rounded-lg bg-[#f8faf8] p-4">
-          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+        <div className="rounded-lg bg-[var(--app-bg)] p-4">
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--text-heading)]">
             <MdUploadFile size={18} />
             Payment Proof
           </h3>
@@ -166,7 +166,7 @@ const ViewPaymentMadePage = () => {
             Upload a receipt, screenshot, or document as proof of payment.
           </p>
           <label
-            className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-white px-3 py-2 text-xs font-semibold text-[#2f7a47] cursor-pointer transition hover:bg-[#edf4ee]"
+            className="inline-flex items-center gap-2 rounded-lg border border-[var(--accent-border)] bg-white px-3 py-2 text-xs font-semibold text-[var(--accent)] cursor-pointer transition hover:bg-[var(--accent-soft)]"
           >
             <MdUploadFile size={15} />
             {uploading ? "Uploading..." : "Upload Proof"}
@@ -175,14 +175,14 @@ const ViewPaymentMadePage = () => {
         </div>
       </div>
 
-      <div className="border-t border-[#e3e9e3] pt-4">
-        <h3 className="mb-4 text-sm font-semibold text-[#2d3b2d]">Order Allocations</h3>
+      <div className="border-t border-[var(--line)] pt-4">
+        <h3 className="mb-4 text-sm font-semibold text-[var(--text-heading)]">Order Allocations</h3>
         {(payment.orderAllocations || []).length === 0 ? (
           <p className="text-sm text-gray-600">No order allocations found.</p>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-[#e2e8e2]">
+          <div className="overflow-x-auto rounded-lg border border-[var(--line)]">
             <table className="min-w-full text-sm">
-              <thead className="bg-[#f2f6f2] text-[#617061]">
+              <thead className="bg-[var(--surface-muted)] text-[var(--text-sub)]">
                 <tr>
                   <th className="px-4 py-3 text-left font-semibold">Order</th>
                   <th className="px-4 py-3 text-left font-semibold">Amount Applied</th>
@@ -192,13 +192,13 @@ const ViewPaymentMadePage = () => {
               </thead>
               <tbody>
                 {payment.orderAllocations.map((a) => (
-                  <tr key={a.paymentOrderAllocationId} className="border-t border-[#e4ebe4]">
-                    <td className="px-4 py-3 font-medium text-[#1f2b1f]">{a.orderNumber || a.orderId}</td>
-                    <td className="px-4 py-3 text-[#4f5d4f]">{money(a.amountApplied)}</td>
-                    <td className="px-4 py-3 text-[#4f5d4f]">
+                  <tr key={a.paymentOrderAllocationId} className="border-t border-[var(--line-muted)]">
+                    <td className="px-4 py-3 font-medium text-[var(--text-main)]">{a.orderNumber || a.orderId}</td>
+                    <td className="px-4 py-3 text-[var(--text-soft)]">{money(a.amountApplied)}</td>
+                    <td className="px-4 py-3 text-[var(--text-soft)]">
                       {a.allocationDate ? new Date(a.allocationDate).toLocaleString() : "-"}
                     </td>
-                    <td className="px-4 py-3 text-[#4f5d4f]">{a.allocationRemarks || "-"}</td>
+                    <td className="px-4 py-3 text-[var(--text-soft)]">{a.allocationRemarks || "-"}</td>
                   </tr>
                 ))}
               </tbody>

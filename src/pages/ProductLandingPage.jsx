@@ -29,13 +29,13 @@ const ProductLandingPage = () => {
   return (
       <div
           className="min-h-screen flex flex-col"
-          style={{ background: "#f0f7f1" }}
+          style={{ background: "var(--surface-hover)" }}
       >
           {/* Nav */}
           <header className="w-full py-5 px-6 md:px-12 flex items-center justify-between">
               <div
                   className="text-2xl font-extrabold tracking-tight"
-                  style={{ color: "#2f7a47" }}
+                  style={{ color: "var(--accent)" }}
               >
                   CoreFlow
               </div>
@@ -48,11 +48,11 @@ const ProductLandingPage = () => {
                           className="flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-xl transition-all"
                           style={{
                               background:
-                                  "linear-gradient(135deg, #2f7a47, #3d9e5f)",
-                              color: "#fff",
+                                  "linear-gradient(135deg, var(--accent), var(--accent-hover))",
+                              color: "var(--surface-bg)",
                               boxShadow: langOpen
-                                  ? "0 0 0 3px rgba(47,122,71,0.35), 0 4px 15px rgba(47,122,71,0.4)"
-                                  : "0 0 0 2px rgba(47,122,71,0.2), 0 2px 8px rgba(47,122,71,0.25)",
+                                  ? "0 0 0 3px var(--accent-ring-strong), 0 4px 15px var(--accent-shadow)"
+                                  : "0 0 0 2px var(--accent-ring-medium), 0 2px 8px var(--accent-ring-medium)",
                           }}
                       >
                           <MdLanguage size={17} />
@@ -66,10 +66,10 @@ const ProductLandingPage = () => {
                           <div
                               className="absolute right-0 mt-2 rounded-2xl overflow-hidden z-50"
                               style={{
-                                  background: "#fff",
-                                  border: "1.5px solid rgba(47,122,71,0.2)",
+                                  background: "var(--surface-bg)",
+                                  border: "1.5px solid var(--accent-ring-medium)",
                                   boxShadow:
-                                      "0 8px 30px rgba(47,122,71,0.18), 0 2px 8px rgba(0,0,0,0.08)",
+                                      "0 8px 30px var(--accent-shadow), 0 2px 8px var(--shadow-black-soft)",
                                   minWidth: "145px",
                               }}
                           >
@@ -84,27 +84,27 @@ const ProductLandingPage = () => {
                                           className="w-full text-left px-4 py-3 text-sm flex items-center justify-between gap-2 transition-all"
                                           style={{
                                               color: active
-                                                  ? "#2f7a47"
-                                                  : "#1a2e1a",
+                                                  ? "var(--accent)"
+                                                  : "var(--text-main)",
                                               fontWeight: active
                                                   ? "700"
                                                   : "400",
                                               background: active
-                                                  ? "rgba(47,122,71,0.08)"
-                                                  : "#fff",
+                                                  ? "var(--accent-tint)"
+                                                  : "var(--surface-bg)",
                                               borderLeft: active
-                                                  ? "3px solid #2f7a47"
+                                                  ? "3px solid var(--accent)"
                                                   : "3px solid transparent",
                                           }}
                                           onMouseEnter={(e) => {
                                               if (!active)
                                                   e.currentTarget.style.background =
-                                                      "rgba(47,122,71,0.04)";
+                                                      "var(--surface-hover)";
                                           }}
                                           onMouseLeave={(e) => {
                                               if (!active)
                                                   e.currentTarget.style.background =
-                                                      "#fff";
+                                                      "var(--surface-bg)";
                                           }}
                                       >
                                           {lang.label}
@@ -114,7 +114,7 @@ const ProductLandingPage = () => {
                                                       width: 7,
                                                       height: 7,
                                                       borderRadius: "50%",
-                                                      background: "#2f7a47",
+                                                      background: "var(--accent)",
                                                       display: "inline-block",
                                                   }}
                                               />
@@ -130,16 +130,16 @@ const ProductLandingPage = () => {
                       onClick={() => navigate("/cf/auth/login")}
                       className="text-sm font-semibold px-5 py-2 rounded-lg transition"
                       style={{
-                          color: "#2f7a47",
-                          border: "1.5px solid #2f7a47",
+                          color: "var(--accent)",
+                          border: "1.5px solid var(--accent)",
                       }}
                       onMouseEnter={(e) => {
-                          e.currentTarget.style.background = "#2f7a47";
-                          e.currentTarget.style.color = "#fff";
+                          e.currentTarget.style.background = "var(--accent)";
+                          e.currentTarget.style.color = "var(--surface-bg)";
                       }}
                       onMouseLeave={(e) => {
                           e.currentTarget.style.background = "transparent";
-                          e.currentTarget.style.color = "#2f7a47";
+                          e.currentTarget.style.color = "var(--accent)";
                       }}
                   >
                       {t("nav.login")}
@@ -152,7 +152,7 @@ const ProductLandingPage = () => {
               className="w-full px-6 md:px-12 py-16"
               style={{
                   background:
-                      "linear-gradient(135deg, #f0f7f1 0%, #e8f3ea 100%)",
+                      "linear-gradient(135deg, var(--surface-hover) 0%, var(--accent-soft) 100%)",
               }}
           >
               <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10">
@@ -161,29 +161,29 @@ const ProductLandingPage = () => {
                       <div
                           className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold mb-6"
                           style={{
-                              background: "rgba(47,122,71,0.08)",
-                              color: "#2f7a47",
+                              background: "var(--accent-tint)",
+                              color: "var(--accent)",
                           }}
                       >
                           <span
                               className="w-2 h-2 rounded-full animate-pulse"
-                              style={{ background: "#2f7a47" }}
+                              style={{ background: "var(--accent)" }}
                           />
                           {t("badge")}
                       </div>
 
                       <h1
                           className="text-4xl md:text-5xl font-extrabold leading-tight mb-5"
-                          style={{ color: "#1a2e1a" }}
+                          style={{ color: "var(--text-main)" }}
                       >
                           {t("hero.title1")}{" "}
-                          <span style={{ color: "#2f7a47" }}>
+                          <span style={{ color: "var(--accent)" }}>
                               {t("hero.title2")}
                           </span>
                           <br />
                           <span
                               className="text-3xl md:text-4xl font-bold"
-                              style={{ color: "#3d6b4a" }}
+                              style={{ color: "var(--text-heading)" }}
                           >
                               {t("hero.subtitle")}
                           </span>
@@ -191,13 +191,13 @@ const ProductLandingPage = () => {
 
                       <p
                           className="text-base md:text-lg leading-relaxed mb-4"
-                          style={{ color: "#5a6b5a" }}
+                          style={{ color: "var(--text-sub)" }}
                       >
                           {t("hero.desc1")}
                       </p>
                       <p
                           className="text-base md:text-lg leading-relaxed mb-8"
-                          style={{ color: "#5a6b5a" }}
+                          style={{ color: "var(--text-sub)" }}
                       >
                           {t("hero.desc2")}
                       </p>
@@ -205,7 +205,7 @@ const ProductLandingPage = () => {
                       {/* WhatsApp CTA */}
                       <p
                           className="text-base font-semibold mb-4"
-                          style={{ color: "#1a2e1a" }}
+                          style={{ color: "var(--text-main)" }}
                       >
                           {t("waitlist.cta")}
                       </p>
@@ -215,14 +215,14 @@ const ProductLandingPage = () => {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-3 rounded-xl px-7 py-4 text-sm font-bold text-white transition"
                           style={{
-                              background: "#25D366",
-                              boxShadow: "0 4px 15px rgba(37,211,102,0.35)",
+                              background: "var(--accent)",
+                              boxShadow: "0 4px 15px var(--accent-ring-strong)",
                           }}
                           onMouseEnter={(e) => {
-                              e.currentTarget.style.background = "#1ebe5d";
+                              e.currentTarget.style.background = "var(--accent-hover)";
                           }}
                           onMouseLeave={(e) => {
-                              e.currentTarget.style.background = "#25D366";
+                              e.currentTarget.style.background = "var(--accent)";
                           }}
                       >
                           <svg
@@ -236,7 +236,7 @@ const ProductLandingPage = () => {
                           </svg>
                           {t("waitlist.button")}
                       </a>
-                      <p className="text-xs mt-4" style={{ color: "#8a9b8a" }}>
+                      <p className="text-xs mt-4" style={{ color: "var(--text-muted)" }}>
                           {t("waitlist.note")}
                       </p>
                   </div>
@@ -250,7 +250,7 @@ const ProductLandingPage = () => {
                           style={{
                               maxWidth: "560px",
                               height: "420px",
-                              border: "2px solid rgba(47,122,71,0.12)",
+                              border: "2px solid var(--accent-tint)",
                           }}
                       />
                   </div>
@@ -258,14 +258,14 @@ const ProductLandingPage = () => {
           </section>
 
           {/* Features */}
-          <section className="py-20 px-6" style={{ background: "#fff" }}>
+          <section className="py-20 px-6" style={{ background: "var(--surface-bg)" }}>
               <div className="max-w-6xl mx-auto">
                   <h2
                       className="text-2xl font-bold text-center mb-12"
-                      style={{ color: "#1a2e1a" }}
+                      style={{ color: "var(--text-main)" }}
                   >
                       {t("features.heading")}{" "}
-                      <span style={{ color: "#2f7a47" }}>
+                      <span style={{ color: "var(--accent)" }}>
                           {t("features.headingAccent")}
                       </span>
                   </h2>
@@ -279,30 +279,30 @@ const ProductLandingPage = () => {
                                       key={title}
                                       className="rounded-2xl p-7 flex flex-col gap-4"
                                       style={{
-                                          background: "#f4faf6",
-                                          border: "1px solid rgba(47,122,71,0.12)",
+                                          background: "var(--app-bg)",
+                                          border: "1px solid var(--accent-tint)",
                                       }}
                                   >
                                       <div
                                           className="w-12 h-12 rounded-xl flex items-center justify-center"
                                           style={{
-                                              background: "rgba(47,122,71,0.1)",
+                                              background: "var(--accent-tint)",
                                           }}
                                       >
                                           <Icon
                                               size={26}
-                                              style={{ color: "#2f7a47" }}
+                                              style={{ color: "var(--accent)" }}
                                           />
                                       </div>
                                       <h3
                                           className="font-bold text-base"
-                                          style={{ color: "#1a2e1a" }}
+                                          style={{ color: "var(--text-main)" }}
                                       >
                                           {title}
                                       </h3>
                                       <p
                                           className="text-sm leading-relaxed"
-                                          style={{ color: "#5a6b5a" }}
+                                          style={{ color: "var(--text-sub)" }}
                                       >
                                           {desc}
                                       </p>
@@ -314,16 +314,16 @@ const ProductLandingPage = () => {
           </section>
 
           {/* Pills */}
-          <section className="py-10 px-6" style={{ background: "#f0f7f1" }}>
+          <section className="py-10 px-6" style={{ background: "var(--surface-hover)" }}>
               <div className="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
                   {t("pills", { returnObjects: true }).map((f) => (
                       <span
                           key={f}
                           className="rounded-full px-4 py-2 text-xs font-medium"
                           style={{
-                              background: "#fff",
-                              color: "#3d6b4a",
-                              border: "1px solid rgba(47,122,71,0.18)",
+                              background: "var(--surface-bg)",
+                              color: "var(--text-heading)",
+                              border: "1px solid var(--accent-shadow)",
                           }}
                       >
                           {f}
@@ -333,8 +333,8 @@ const ProductLandingPage = () => {
           </section>
 
           {/* Footer */}
-          <footer className="py-6 text-center" style={{ background: "#fff" }}>
-              <p className="text-xs" style={{ color: "#8a9b8a" }}>
+          <footer className="py-6 text-center" style={{ background: "var(--surface-bg)" }}>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                   &copy; {new Date().getFullYear()} {t("footer")}
               </p>
           </footer>

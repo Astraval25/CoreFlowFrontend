@@ -14,12 +14,12 @@ const LeaveLogsPage = () => {
   } = useLeaveLogs();
 
   const statusBadge = (s) => {
-    const map = { PENDING: "orange", APPROVED: "green", REJECTED: "red" };
+    const map = { PENDING: "orange", APPROVED: "blue", REJECTED: "red" };
     return <span className={`badge badge-${map[s] || "gray"}`}>{s}</span>;
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f9fc]">
+    <div className="min-h-screen bg-[var(--app-bg)]">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
           <h1 className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Leave Logs</h1>
@@ -43,17 +43,17 @@ const LeaveLogsPage = () => {
         </div>
       </div>
 
-      <div className="p-4" style={{ background: "#ffffff" }}>
-        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #e3e7f1" }}>
+      <div className="p-4" style={{ background: "var(--surface-bg)" }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--line)" }}>
           {loading ? (
-            <p className="text-sm p-8 text-center" style={{ color: "#6a7693" }}>Loading...</p>
+            <p className="text-sm p-8 text-center" style={{ color: "var(--text-sub)" }}>Loading...</p>
           ) : (
             <table className="w-full min-w-[980px]">
             <thead>
-              <tr style={{ background: "#f7f8fc", borderBottom: "1px solid #e3e7f1" }}>
+              <tr style={{ background: "var(--surface-muted)", borderBottom: "1px solid var(--line)" }}>
                 {table.getHeaderGroups().map((hg) =>
                   hg.headers.map((header) => (
-                    <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="px-4 py-3 text-left cursor-pointer select-none" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#6a7693" }}>
+                    <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="px-4 py-3 text-left cursor-pointer select-none" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-sub)" }}>
                       <div className="flex gap-1">{flexRender(header.column.columnDef.header, header.getContext())}</div>
                     </th>
                   ))
@@ -62,24 +62,24 @@ const LeaveLogsPage = () => {
             </thead>
             <tbody>
               {table.getRowModel().rows.length === 0 ? (
-                <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-sm" style={{ color: "#6a7693" }}>No leave logs found</p></td></tr>
+                <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-sm" style={{ color: "var(--text-sub)" }}>No leave logs found</p></td></tr>
               ) : (
                 table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} style={{ borderBottom: "1px solid #edf1f8" }} onMouseEnter={(e) => (e.currentTarget.style.background = "#f8faff")} onMouseLeave={(e) => (e.currentTarget.style.background = "#ffffff")}>
-                    <td className="px-4 py-3 text-sm" style={{ color: "#202c45" }}>{row.original.leaveDate}</td>
-                    <td className="px-4 py-3 text-sm font-medium" style={{ color: "#202c45" }}>{row.original.employeeName}</td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "#202c45" }}>{row.original.leaveType}</td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "#202c45" }}>
+                  <tr key={row.id} style={{ borderBottom: "1px solid var(--line-soft)" }} onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-hover)")} onMouseLeave={(e) => (e.currentTarget.style.background = "var(--surface-bg)")}>
+                    <td className="px-4 py-3 text-sm" style={{ color: "var(--text-main)" }}>{row.original.leaveDate}</td>
+                    <td className="px-4 py-3 text-sm font-medium" style={{ color: "var(--text-main)" }}>{row.original.employeeName}</td>
+                    <td className="px-4 py-3 text-sm" style={{ color: "var(--text-main)" }}>{row.original.leaveType}</td>
+                    <td className="px-4 py-3 text-sm" style={{ color: "var(--text-main)" }}>
                       <span className={`badge badge-${row.original.leaveCategory === "SICK" ? "red" : row.original.leaveCategory === "CASUAL" ? "blue" : "orange"}`}>
                         {row.original.leaveCategory}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-sm" style={{ color: "#202c45" }}>{row.original.reason || "-"}</td>
+                    <td className="px-4 py-3 text-sm" style={{ color: "var(--text-main)" }}>{row.original.reason || "-"}</td>
                     <td className="px-4 py-3">{statusBadge(row.original.status)}</td>
                     <td className="px-4 py-3">
                       {row.original.status === "PENDING" && (
                         <div className="flex gap-1">
-                          <button onClick={() => reviewLog(row.original.leaveId, "APPROVED")} className="p-1 rounded hover:bg-green-50" title="Approve"><MdCheck size={16} style={{ color: "var(--accent)" }} /></button>
+                          <button onClick={() => reviewLog(row.original.leaveId, "APPROVED")} className="p-1 rounded hover:bg-blue-50" title="Approve"><MdCheck size={16} style={{ color: "var(--accent)" }} /></button>
                           <button onClick={() => reviewLog(row.original.leaveId, "REJECTED")} className="p-1 rounded hover:bg-red-50" title="Reject"><MdClose size={16} style={{ color: "var(--red)" }} /></button>
                         </div>
                       )}
@@ -94,13 +94,13 @@ const LeaveLogsPage = () => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.35)" }} onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "var(--overlay-bg)" }} onClick={() => setShowModal(false)}>
           <div className="card w-full max-w-md mx-4 p-5" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>New Leave Log</p>
               <button onClick={() => setShowModal(false)} className="p-1 rounded hover:bg-gray-100"><MdClose size={18} /></button>
             </div>
-            {error && <p className="text-xs mb-3 p-2 rounded" style={{ color: "var(--red)", background: "rgba(239,68,68,0.08)" }}>{error}</p>}
+            {error && <p className="text-xs mb-3 p-2 rounded" style={{ color: "var(--red)", background: "var(--red-tint)" }}>{error}</p>}
             <div className="space-y-3">
               <div>
                 <label className="text-xs font-medium mb-1 block" style={{ color: "var(--text-sub)" }}>Employee</label>

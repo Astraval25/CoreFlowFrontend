@@ -82,7 +82,7 @@ const NotificationsDrawer = ({ open, onClose }) => {
           <div className="flex items-center gap-2">
             <h2 className="font-semibold text-gray-800">Notifications</h2>
             {unreadCount > 0 && (
-              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#fef2f2] text-[#b91c1c]">
+              <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[var(--red-soft)] text-[var(--red-text)]">
                 {unreadCount} unread
               </span>
             )}
@@ -91,7 +91,7 @@ const NotificationsDrawer = ({ open, onClose }) => {
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
-                className="text-[11px] font-medium px-2 py-1 rounded hover:bg-gray-200 text-[#2f7a47] flex items-center gap-1"
+                className="text-[11px] font-medium px-2 py-1 rounded hover:bg-gray-200 text-[var(--accent)] flex items-center gap-1"
               >
                 <MdDoneAll size={13} />
                 Mark all
@@ -123,9 +123,9 @@ const NotificationsDrawer = ({ open, onClose }) => {
                     key={n.notificationId}
                     onClick={() => handleNotificationClick(n)}
                     className="flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors border-b border-gray-100"
-                    style={{ background: n.isRead ? "#fff" : "var(--surface-soft)" }}
+                    style={{ background: n.isRead ? "var(--surface-bg)" : "var(--surface-soft)" }}
                     onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = n.isRead ? "#fff" : "var(--surface-soft)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = n.isRead ? "var(--surface-bg)" : "var(--surface-soft)")}
                   >
                     <div className="pt-1 shrink-0">
                       {n.isRead ? (

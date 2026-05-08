@@ -42,8 +42,8 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
     const base =
       "inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 cursor-pointer";
     const styles = variant === "danger"
-      ? "border border-[#f0c2c2] bg-[#fbe9e9] text-[#9a3d3d] hover:bg-[#f6d9d9]"
-      : "border border-[#cfe0cf] bg-[#edf4ee] text-[#2f7a47] hover:bg-[#e3eee4]";
+      ? "border border-[var(--red-border)] bg-[var(--red-bg)] text-[var(--red-text)] hover:bg-[var(--red-soft)]"
+      : "border border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--accent)] hover:bg-[var(--accent-soft-hover)]";
     return (
       <button onClick={onClick} disabled={statusUpdating} className={`${base} ${styles}`}>
         {children}
@@ -56,18 +56,18 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
       <section className="p-5 space-y-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7b887b]">Sales Order</p>
-            <h2 className="text-2xl font-bold text-[#1f2b1f]">{order.orderNumber}</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--text-sub)]">Sales Order</p>
+            <h2 className="text-2xl font-bold text-[var(--text-main)]">{order.orderNumber}</h2>
             <div className="flex flex-wrap gap-2 pt-1">
-              <span className="inline-flex rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+              <span className="inline-flex rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent)]">
                 Date: {new Date(order.orderDate).toLocaleDateString()}
               </span>
-              <span className="inline-flex rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+              <span className="inline-flex rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold text-[var(--accent)]">
                 Status: {order.orderStatus || "-"}
               </span>
               <span
                 className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                  order.isActive ? "bg-[#e8f3ea] text-[#2f7a47]" : "bg-[#fbe9e9] text-[#9a3d3d]"
+                  order.isActive ? "bg-[var(--accent-soft)] text-[var(--accent)]" : "bg-[var(--red-bg)] text-[var(--red-text)]"
                 }`}
               >
                 {order.isActive ? "Active" : "Inactive"}
@@ -77,7 +77,7 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
 
           <div className="flex flex-wrap items-center gap-2">
             <button
-              className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-3 py-1.5 text-xs font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-lg border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--accent)] transition hover:bg-[var(--accent-soft-hover)] cursor-pointer"
               onClick={handleEdit}
             >
               <MdEdit size={15} />
@@ -87,7 +87,7 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
             {/* Actions dropdown */}
             <div className="relative">
               <button
-                className="inline-flex items-center gap-1.5 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-3 py-1.5 text-xs font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-semibold text-[var(--accent)] transition hover:bg-[var(--accent-soft-hover)] cursor-pointer"
                 onClick={() => setDropdownOpen((o) => !o)}
               >
                 Actions <MdExpandMore size={15} />
@@ -95,17 +95,17 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
               {dropdownOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
-                  <div className="absolute right-0 z-20 mt-1 w-48 rounded-lg border border-[#e2e8e2] bg-white shadow-lg overflow-hidden">
+                  <div className="absolute right-0 z-20 mt-1 w-48 rounded-lg border border-[var(--line)] bg-white shadow-lg overflow-hidden">
                     {(status === "QUOTATION" || status === "QUOTATION_VIEWED") && (
                       <>
                         <button onClick={() => { acceptQuotation(); setDropdownOpen(false); }}
                           disabled={statusUpdating}
-                          className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#2f7a47] hover:bg-[#f2f6f2] disabled:opacity-50">
+                          className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--accent)] hover:bg-[var(--surface-muted)] disabled:opacity-50">
                           Accept Quote
                         </button>
                         <button onClick={() => { declineQuotation(); setDropdownOpen(false); }}
                           disabled={statusUpdating}
-                          className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#9a3d3d] hover:bg-[#fdf4f4] disabled:opacity-50">
+                          className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--red-text)] hover:bg-[var(--red-bg)] disabled:opacity-50">
                           Decline
                         </button>
                       </>
@@ -113,33 +113,33 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
                     {(status === "QUOTATION_ACCEPTED" || status === "QUOTATION") && (
                       <button onClick={() => { convertToSalesOrder(); setDropdownOpen(false); }}
                         disabled={statusUpdating}
-                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#2f7a47] hover:bg-[#f2f6f2] disabled:opacity-50">
+                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--accent)] hover:bg-[var(--surface-muted)] disabled:opacity-50">
                         Convert to Order
                       </button>
                     )}
                     {(status === "ORDER" || status === "ORDER_VIEWED") && (
                       <button onClick={() => { convertToInvoice(); setDropdownOpen(false); }}
                         disabled={statusUpdating}
-                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#2f7a47] hover:bg-[#f2f6f2] disabled:opacity-50">
+                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--accent)] hover:bg-[var(--surface-muted)] disabled:opacity-50">
                         Convert to Invoice
                       </button>
                     )}
                     {status === "ORDER_INVOICED" && (
                       <button onClick={() => { markPaid(); setDropdownOpen(false); }}
                         disabled={statusUpdating}
-                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#2f7a47] hover:bg-[#f2f6f2] disabled:opacity-50">
+                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--accent)] hover:bg-[var(--surface-muted)] disabled:opacity-50">
                         Mark Paid
                       </button>
                     )}
                     {status !== "ORDER_PAYED" && status !== "ORDER_CANCELLED" && (
                       <button onClick={() => { cancelOrder(); setDropdownOpen(false); }}
                         disabled={statusUpdating}
-                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#9a3d3d] hover:bg-[#fdf4f4] disabled:opacity-50">
+                        className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--red-text)] hover:bg-[var(--red-bg)] disabled:opacity-50">
                         Cancel
                       </button>
                     )}
                     <button onClick={() => { handleDownloadBill(); setDropdownOpen(false); }}
-                      className="w-full px-4 py-2.5 text-left text-xs font-medium text-[#2f7a47] hover:bg-[#f2f6f2] flex items-center gap-2">
+                      className="w-full px-4 py-2.5 text-left text-xs font-medium text-[var(--accent)] hover:bg-[var(--surface-muted)] flex items-center gap-2">
                       <MdDownload size={13} /> View / Print Bill
                     </button>
                   </div>
@@ -150,72 +150,72 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg bg-[#f8faf8] p-4">
-            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+          <div className="rounded-lg bg-[var(--app-bg)] p-4">
+            <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[var(--text-heading)]">
               <MdPointOfSale size={18} />
               Parties
             </h3>
             <dl className="space-y-2 text-sm">
               <div className="flex items-center justify-between">
-                <dt className="text-[#748274]">Seller</dt>
-                <dd className="font-semibold text-[#1f2b1f]">{order.sellerCompanyName || "-"}</dd>
+                <dt className="text-[var(--text-sub)]">Seller</dt>
+                <dd className="font-semibold text-[var(--text-main)]">{order.sellerCompanyName || "-"}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-[#748274]">Customer</dt>
-                <dd className="font-semibold text-[#1f2b1f]">{order.customerDisplayName || "-"}</dd>
+                <dt className="text-[var(--text-sub)]">Customer</dt>
+                <dd className="font-semibold text-[var(--text-main)]">{order.customerDisplayName || "-"}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-[#748274]">Vendor</dt>
-                <dd className="font-semibold text-[#1f2b1f]">{order.vendorDisplayName || "-"}</dd>
+                <dt className="text-[var(--text-sub)]">Vendor</dt>
+                <dd className="font-semibold text-[var(--text-main)]">{order.vendorDisplayName || "-"}</dd>
               </div>
             </dl>
           </div>
 
-          <div className="rounded-lg bg-[#f8faf8] p-4">
-            <h3 className="mb-3 text-sm font-semibold text-[#2d3b2d]">Amount Summary</h3>
+          <div className="rounded-lg bg-[var(--app-bg)] p-4">
+            <h3 className="mb-3 text-sm font-semibold text-[var(--text-heading)]">Amount Summary</h3>
             <dl className="space-y-2 text-sm">
               <div className="flex items-center justify-between">
-                <dt className="text-[#748274]">Order Amount</dt>
-                <dd className="font-semibold text-[#1f2b1f]">{money(order.orderAmount)}</dd>
+                <dt className="text-[var(--text-sub)]">Order Amount</dt>
+                <dd className="font-semibold text-[var(--text-main)]">{money(order.orderAmount)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-[#748274]">Tax</dt>
-                <dd className="font-semibold text-[#1f2b1f]">{money(order.taxAmount)}</dd>
+                <dt className="text-[var(--text-sub)]">Tax</dt>
+                <dd className="font-semibold text-[var(--text-main)]">{money(order.taxAmount)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-[#748274]">Delivery</dt>
-                <dd className="font-semibold text-[#1f2b1f]">{money(order.deliveryCharge)}</dd>
+                <dt className="text-[var(--text-sub)]">Delivery</dt>
+                <dd className="font-semibold text-[var(--text-main)]">{money(order.deliveryCharge)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-[#748274]">Discount</dt>
-                <dd className="font-semibold text-[#1f2b1f]">{money(order.discountAmount)}</dd>
+                <dt className="text-[var(--text-sub)]">Discount</dt>
+                <dd className="font-semibold text-[var(--text-main)]">{money(order.discountAmount)}</dd>
               </div>
-              <div className="mt-1 border-t border-[#d8e0d8] pt-2 flex items-center justify-between">
-                <dt className="font-semibold text-[#2d3b2d]">Total</dt>
-                <dd className="text-base font-bold text-[#2f7a47]">{money(order.totalAmount)}</dd>
-              </div>
-              <div className="flex items-center justify-between">
-                <dt className="text-[#748274]">Paid</dt>
-                <dd className="font-semibold text-[#1f2b1f]">{money(order.paidAmount)}</dd>
+              <div className="mt-1 border-t border-[var(--line)] pt-2 flex items-center justify-between">
+                <dt className="font-semibold text-[var(--text-heading)]">Total</dt>
+                <dd className="text-base font-bold text-[var(--accent)]">{money(order.totalAmount)}</dd>
               </div>
               <div className="flex items-center justify-between">
-                <dt className="text-[#748274]">Has Bill</dt>
-                <dd className="font-semibold text-[#1f2b1f]">{order.hasBill ? "Yes" : "No"}</dd>
+                <dt className="text-[var(--text-sub)]">Paid</dt>
+                <dd className="font-semibold text-[var(--text-main)]">{money(order.paidAmount)}</dd>
+              </div>
+              <div className="flex items-center justify-between">
+                <dt className="text-[var(--text-sub)]">Has Bill</dt>
+                <dd className="font-semibold text-[var(--text-main)]">{order.hasBill ? "Yes" : "No"}</dd>
               </div>
             </dl>
           </div>
         </div>
-        <div className="border-t border-[#e3e9e3] pt-4">
-          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+        <div className="border-t border-[var(--line)] pt-4">
+          <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-[var(--text-heading)]">
           <MdInventory2 size={18} />
           Sales Items
           </h3>
           {items.length === 0 ? (
             <p className="text-sm text-gray-600">No items available for this order.</p>
           ) : (
-            <div className="overflow-x-auto rounded-lg border border-[#e2e8e2]">
+            <div className="overflow-x-auto rounded-lg border border-[var(--line)]">
               <table className="min-w-full text-sm">
-                <thead className="bg-[#f2f6f2] text-[#617061]">
+                <thead className="bg-[var(--surface-muted)] text-[var(--text-sub)]">
                   <tr>
                     <th className="px-4 py-3 text-left font-semibold">Item</th>
                     <th className="px-4 py-3 text-left font-semibold">Qty</th>
@@ -225,11 +225,11 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
                 </thead>
                 <tbody>
                   {items.map((item) => (
-                    <tr key={item.orderItemId} className="border-t border-[#e4ebe4]">
-                      <td className="px-4 py-3 font-medium text-[#1f2b1f]">{item.itemName || item.itemId?.itemName || "-"}</td>
-                      <td className="px-4 py-3 text-[#4f5d4f]">{item.quantity ?? 0}</td>
-                      <td className="px-4 py-3 text-[#4f5d4f]">{money(item.updatedPrice)}</td>
-                      <td className="px-4 py-3 font-semibold text-[#1f2b1f]">{money(item.itemTotal)}</td>
+                    <tr key={item.orderItemId} className="border-t border-[var(--line-muted)]">
+                      <td className="px-4 py-3 font-medium text-[var(--text-main)]">{item.itemName || item.itemId?.itemName || "-"}</td>
+                      <td className="px-4 py-3 text-[var(--text-soft)]">{item.quantity ?? 0}</td>
+                      <td className="px-4 py-3 text-[var(--text-soft)]">{money(item.updatedPrice)}</td>
+                      <td className="px-4 py-3 font-semibold text-[var(--text-main)]">{money(item.itemTotal)}</td>
                     </tr>
                   ))}
                 </tbody>

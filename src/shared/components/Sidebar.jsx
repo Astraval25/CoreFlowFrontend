@@ -167,8 +167,8 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
             to={item.to}
             className={() => nestedItemClass({ isActive: active })}
             style={{
-              background: active ? "#e9eefc" : "transparent",
-              color: active ? "#1849b8" : "#2d3b5f",
+              background: active ? "var(--accent-soft)" : "transparent",
+              color: active ? "var(--accent)" : "var(--text-heading)",
             }}
           >
             <span className="shrink-0">{item.icon}</span>
@@ -182,7 +182,7 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
   return (
     <aside
       className="h-full flex flex-col thin-scroll overflow-y-auto"
-      style={{ background: "#f8f9fc" }}
+      style={{ background: "var(--app-bg)" }}
     >
       <div
         className={`flex items-center h-16 shrink-0 border-b border-gray-200 bg-white ${minimized ? "justify-center px-2" : "gap-2.5 px-4"}`}
@@ -215,8 +215,8 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
                 title={item.label}
                 className={compactItemClass}
                 style={({ isActive }) => ({
-                  background: isActive ? "#e9eefc" : "transparent",
-                  color: isActive ? "#1849b8" : "#2d3b5f",
+                  background: isActive ? "var(--accent-soft)" : "transparent",
+                  color: isActive ? "var(--accent)" : "var(--text-heading)",
                 })}
               >
                 {item.icon}
@@ -229,21 +229,21 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
               to={homePath}
               className={expandedItemClass}
               style={({ isActive }) => ({
-                background: isActive ? "#e9eefc" : "transparent",
-                color: isActive ? "#1849b8" : "#2d3b5f",
+                background: isActive ? "var(--accent-soft)" : "transparent",
+                color: isActive ? "var(--accent)" : "var(--text-heading)",
               })}
             >
               <MdDashboard size={17} />
               <span>Home</span>
             </NavLink>
 
-            <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div className="rounded-xl p-1" style={{ background: "var(--sidebar-group-bg)" }}>
               <button
                 onClick={() => toggleGroup("manage")}
                 className={groupButtonClass(isManageActive)}
                 style={{
                   background: "transparent",
-                  color: "#2d3b5f",
+                  color: "var(--text-heading)",
                 }}
               >
                 <span className="flex items-center gap-2.5">
@@ -264,13 +264,13 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
               </div>
             </div>
 
-            <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div className="rounded-xl p-1" style={{ background: "var(--sidebar-group-bg)" }}>
               <button
                 onClick={() => toggleGroup("sales")}
                 className={groupButtonClass(isSalesActive)}
                 style={{
                   background: "transparent",
-                  color: "#2d3b5f",
+                  color: "var(--text-heading)",
                 }}
               >
                 <span className="flex items-center gap-2.5">
@@ -291,13 +291,13 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
               </div>
             </div>
 
-            <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div className="rounded-xl p-1" style={{ background: "var(--sidebar-group-bg)" }}>
               <button
                 onClick={() => toggleGroup("purchase")}
                 className={groupButtonClass(isPurchaseActive)}
                 style={{
                   background: "transparent",
-                  color: "#2d3b5f",
+                  color: "var(--text-heading)",
                 }}
               >
                 <span className="flex items-center gap-2.5">
@@ -318,13 +318,13 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
               </div>
             </div>
 
-            <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div className="rounded-xl p-1" style={{ background: "var(--sidebar-group-bg)" }}>
               <button
                 onClick={() => toggleGroup("payments")}
                 className={groupButtonClass(isPaymentsActive)}
                 style={{
                   background: "transparent",
-                  color: "#2d3b5f",
+                  color: "var(--text-heading)",
                 }}
               >
                 <span className="flex items-center gap-2.5">
@@ -345,13 +345,13 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
               </div>
             </div>
 
-            <div className="rounded-xl p-1" style={{ background: "rgba(255,255,255,0.02)" }}>
+            <div className="rounded-xl p-1" style={{ background: "var(--sidebar-group-bg)" }}>
               <button
                 onClick={() => toggleGroup("employees")}
                 className={groupButtonClass(isEmployeesActive)}
                 style={{
                   background: "transparent",
-                  color: "#2d3b5f",
+                  color: "var(--text-heading)",
                 }}
               >
                 <span className="flex items-center gap-2.5">
@@ -376,8 +376,8 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
               to={reportPath}
               className={expandedItemClass}
               style={({ isActive }) => ({
-                background: isActive ? "#e9eefc" : "transparent",
-                color: isActive ? "#1849b8" : "#2d3b5f",
+                background: isActive ? "var(--accent-soft)" : "transparent",
+                color: isActive ? "var(--accent)" : "var(--text-heading)",
               })}
             >
               <MdAssessment size={17} />

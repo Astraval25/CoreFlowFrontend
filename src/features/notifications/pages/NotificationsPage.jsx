@@ -55,7 +55,7 @@ const NotificationsPage = () => {
             Notifications
           </h1>
           {unreadCount > 0 && (
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#fef2f2] text-[#b91c1c]">
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[var(--red-soft)] text-[var(--red-text)]">
               {unreadCount} unread
             </span>
           )}

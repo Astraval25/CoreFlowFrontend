@@ -9,7 +9,7 @@ const WorkDefinitionsPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#f8f9fc]">
+    <div className="min-h-screen bg-[var(--app-bg)]">
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>Work Definitions</h1>
         <div className="flex items-center gap-3">
@@ -23,14 +23,14 @@ const WorkDefinitionsPage = () => {
         </div>
       </div>
 
-      <div className="p-4" style={{ background: "#ffffff" }}>
-        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #e3e7f1" }}>
+      <div className="p-4" style={{ background: "var(--surface-bg)" }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: "1px solid var(--line)" }}>
           <table className="w-full min-w-[780px]">
           <thead>
-            <tr style={{ background: "#f7f8fc", borderBottom: "1px solid #e3e7f1" }}>
+            <tr style={{ background: "var(--surface-muted)", borderBottom: "1px solid var(--line)" }}>
               {table.getHeaderGroups().map((hg) =>
                 hg.headers.map((header) => (
-                  <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="px-5 py-3 text-left cursor-pointer select-none" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "#6a7693" }}>
+                  <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="px-5 py-3 text-left cursor-pointer select-none" style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-sub)" }}>
                     <div className="flex gap-1">{flexRender(header.column.columnDef.header, header.getContext())}</div>
                   </th>
                 ))
@@ -39,15 +39,15 @@ const WorkDefinitionsPage = () => {
           </thead>
           <tbody>
             {table.getRowModel().rows.length === 0 ? (
-              <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-sm" style={{ color: "#6a7693" }}>No work definitions found</p></td></tr>
+              <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-sm" style={{ color: "var(--text-sub)" }}>No work definitions found</p></td></tr>
             ) : (
               table.getRowModel().rows.map((row) => (
-                <tr key={row.id} style={{ borderBottom: "1px solid #edf1f8" }} onMouseEnter={(e) => (e.currentTarget.style.background = "#f8faff")} onMouseLeave={(e) => (e.currentTarget.style.background = "#ffffff")}>
-                  <td className="px-5 py-3 text-sm" style={{ color: "#6a7693" }}>{row.index + 1}</td>
-                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "#1b5fcc" }}>{row.original.workCode}</td>
-                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "#202c45" }}>{row.original.workName}</td>
-                  <td className="px-5 py-3 text-sm tabular-nums font-medium" style={{ color: "#202c45" }}>Rs {row.original.ratePerUnit}</td>
-                  <td className="px-5 py-3 text-sm" style={{ color: "#202c45" }}>{row.original.unit}</td>
+                <tr key={row.id} style={{ borderBottom: "1px solid var(--line-soft)" }} onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-hover)")} onMouseLeave={(e) => (e.currentTarget.style.background = "var(--surface-bg)")}>
+                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-sub)" }}>{row.index + 1}</td>
+                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "var(--accent-hover)" }}>{row.original.workCode}</td>
+                  <td className="px-5 py-3 text-sm font-medium" style={{ color: "var(--text-main)" }}>{row.original.workName}</td>
+                  <td className="px-5 py-3 text-sm tabular-nums font-medium" style={{ color: "var(--text-main)" }}>Rs {row.original.ratePerUnit}</td>
+                  <td className="px-5 py-3 text-sm" style={{ color: "var(--text-main)" }}>{row.original.unit}</td>
                   <td className="px-5 py-3" onClick={(e) => e.stopPropagation()}>
                     <ActionMenu
                       row={row}
