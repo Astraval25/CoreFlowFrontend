@@ -21,18 +21,18 @@ const ViewItemDetail = ({ companyId, itemId }) => {
       <section className="p-5">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="space-y-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7b887b]">Item Profile</p>
-            <h2 className="text-2xl font-bold text-[#1f2b1f]">{item.itemName}</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-app-sub">Item Profile</p>
+            <h2 className="text-2xl font-bold text-app-text">{item.itemName}</h2>
             <div className="flex flex-wrap gap-2 pt-1">
-              <span className="inline-flex rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+              <span className="inline-flex rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
                 {item.itemType || "Type not set"}
               </span>
-              <span className="inline-flex rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+              <span className="inline-flex rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
                 Unit: {item.unit || "-"}
               </span>
               <span
                 className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                  item.isActive ? "bg-[#e8f3ea] text-[#2f7a47]" : "bg-[#fbe9e9] text-[#9a3d3d]"
+                  item.isActive ? "bg-brand-soft text-brand" : "bg-danger-bg text-danger-text"
                 }`}
               >
                 {item.isActive ? "Active" : "Inactive"}
@@ -41,7 +41,7 @@ const ViewItemDetail = ({ companyId, itemId }) => {
           </div>
 
           <button
-            className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-4 py-2 text-sm font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-lg border border-brand-border bg-brand-soft px-4 py-2 text-sm font-semibold text-brand transition hover:bg-brand-soft-hover cursor-pointer"
             onClick={handleEdit}
           >
             <MdEdit size={17} />
@@ -50,49 +50,49 @@ const ViewItemDetail = ({ companyId, itemId }) => {
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-[220px_1fr]">
-          <div className="overflow-hidden rounded-xl border border-[#dce4dc] bg-[#f8faf8]">
+          <div className="overflow-hidden rounded-xl border border-line bg-app">
             {imageUrl ? (
               <img src={imageUrl} alt={item.itemName} className="h-52 w-full object-cover" />
             ) : (
-              <div className="flex h-52 items-center justify-center bg-gradient-to-br from-[#4ca567] to-[#2f7a47] text-white">
+              <div className="flex h-52 items-center justify-center bg-gradient-to-br from-brand-secondary to-brand text-white">
                 <MdInventory2 size={56} />
               </div>
             )}
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-lg bg-[#f8faf8] p-4">
-              <h3 className="mb-3 text-sm font-semibold text-[#2d3b2d]">Pricing</h3>
+            <div className="rounded-lg bg-app p-4">
+              <h3 className="mb-3 text-sm font-semibold text-app-heading">Pricing</h3>
               <dl className="space-y-2 text-sm">
                 <div className="flex items-center justify-between">
-                  <dt className="text-[#748274]">Sales Price</dt>
-                  <dd className="font-semibold text-[#1f2b1f]">{money(item.baseSalesPrice)}</dd>
+                  <dt className="text-app-sub">Sales Price</dt>
+                  <dd className="font-semibold text-app-text">{money(item.baseSalesPrice)}</dd>
                 </div>
                 <div className="flex items-center justify-between">
-                  <dt className="text-[#748274]">Purchase Price</dt>
-                  <dd className="font-semibold text-[#1f2b1f]">{money(item.basePurchasePrice)}</dd>
+                  <dt className="text-app-sub">Purchase Price</dt>
+                  <dd className="font-semibold text-app-text">{money(item.basePurchasePrice)}</dd>
                 </div>
                 <div className="flex items-center justify-between">
-                  <dt className="text-[#748274]">Tax Rate</dt>
-                  <dd className="font-semibold text-[#1f2b1f]">{item.taxRate ?? 0}%</dd>
+                  <dt className="text-app-sub">Tax Rate</dt>
+                  <dd className="font-semibold text-app-text">{item.taxRate ?? 0}%</dd>
                 </div>
               </dl>
             </div>
 
-            <div className="rounded-lg bg-[#f8faf8] p-4">
-              <h3 className="mb-3 text-sm font-semibold text-[#2d3b2d]">Configuration</h3>
+            <div className="rounded-lg bg-app p-4">
+              <h3 className="mb-3 text-sm font-semibold text-app-heading">Configuration</h3>
               <dl className="space-y-2 text-sm">
                 <div className="flex items-center justify-between">
-                  <dt className="text-[#748274]">HSN Code</dt>
-                  <dd className="font-semibold text-[#1f2b1f]">{item.hsnCode || "-"}</dd>
+                  <dt className="text-app-sub">HSN Code</dt>
+                  <dd className="font-semibold text-app-text">{item.hsnCode || "-"}</dd>
                 </div>
                 <div className="flex items-center justify-between">
-                  <dt className="text-[#748274]">Sellable</dt>
-                  <dd className="font-semibold text-[#1f2b1f]">{item.isSellable ? "Yes" : "No"}</dd>
+                  <dt className="text-app-sub">Sellable</dt>
+                  <dd className="font-semibold text-app-text">{item.isSellable ? "Yes" : "No"}</dd>
                 </div>
                 <div className="flex items-center justify-between">
-                  <dt className="text-[#748274]">Purchasable</dt>
-                  <dd className="font-semibold text-[#1f2b1f]">{item.isPurchasable ? "Yes" : "No"}</dd>
+                  <dt className="text-app-sub">Purchasable</dt>
+                  <dd className="font-semibold text-app-text">{item.isPurchasable ? "Yes" : "No"}</dd>
                 </div>
               </dl>
             </div>
@@ -100,17 +100,17 @@ const ViewItemDetail = ({ companyId, itemId }) => {
         </div>
 
         <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <div className="rounded-lg bg-[#f8faf8] p-4">
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#758275]">Sales Description</p>
-            <p className="text-sm text-[#445244]">{item.salesDescription || "No sales description."}</p>
+          <div className="rounded-lg bg-app p-4">
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-app-sub">Sales Description</p>
+            <p className="text-sm text-app-soft">{item.salesDescription || "No sales description."}</p>
           </div>
-          <div className="rounded-lg bg-[#f8faf8] p-4">
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-[#758275]">Purchase Description</p>
-            <p className="text-sm text-[#445244]">{item.purchaseDescription || "No purchase description."}</p>
+          <div className="rounded-lg bg-app p-4">
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-app-sub">Purchase Description</p>
+            <p className="text-sm text-app-soft">{item.purchaseDescription || "No purchase description."}</p>
           </div>
         </div>
 
-        <p className="mt-4 text-xs font-medium text-[#7a877a]">
+        <p className="mt-4 text-xs font-medium text-app-muted">
           Last updated on {new Date(item.lastModifiedDt).toLocaleDateString()} at{" "}
           {new Date(item.lastModifiedDt).toLocaleTimeString()}
         </p>

@@ -9,8 +9,8 @@ const SelectField = ({
 }) => {
   return (
     <>
-      <label className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
-        {label}{required && <span style={{ color: "var(--red)" }}> *</span>}
+      <label className="text-[11px] font-semibold uppercase tracking-wide text-app-muted">
+        {label}{required && <span className="text-danger"> *</span>}
       </label>
 
       <div>
@@ -18,8 +18,7 @@ const SelectField = ({
           name={name}
           value={value}
           onChange={onChange}
-          className="form-input text-xs py-1.5"
-          style={{ borderColor: error ? "var(--red)" : undefined }}
+          className={`form-input text-xs py-1.5 ${error ? "border-danger" : ""}`}
         >
           <option value="" disabled>Select {label}</option>
           {options.map((opt, index) => {
@@ -32,7 +31,7 @@ const SelectField = ({
             );
           })}
         </select>
-        {error && <p className="text-[10px] mt-0.5" style={{ color: "var(--red)" }}>{error}</p>}
+        {error && <p className="text-[10px] mt-0.5 text-danger">{error}</p>}
       </div>
     </>
   );

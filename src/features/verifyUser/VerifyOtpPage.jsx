@@ -62,7 +62,7 @@ const VerifyOtpPage = () => {
         />
 
         {message && (
-          <div className="mt-4 text-green-600 text-center">{message}</div>
+          <div className="mt-4 text-blue-600 text-center">{message}</div>
         )}
 
         <p className="text-center mt-5 text-sm">

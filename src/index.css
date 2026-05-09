@@ -1,41 +1,120 @@
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
+@theme inline {
+  --color-app: var(--app-bg);
+  --color-panel: var(--panel-bg);
+  --color-surface: var(--surface-bg);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-hover: var(--surface-hover);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-line-muted: var(--line-muted);
+  --color-app-text: var(--text-main);
+  --color-app-heading: var(--text-heading);
+  --color-app-sub: var(--text-sub);
+  --color-app-muted: var(--text-muted);
+  --color-app-soft: var(--text-soft);
+  --color-brand: var(--accent);
+  --color-brand-hover: var(--accent-hover);
+  --color-brand-soft: var(--accent-soft);
+  --color-brand-soft-hover: var(--accent-soft-hover);
+  --color-brand-border: var(--accent-border);
+  --color-brand-selected-border: var(--accent-selected-border);
+  --color-brand-field-border: var(--accent-field-border);
+  --color-brand-secondary: var(--accent-secondary);
+  --color-brand-secondary-bg: var(--accent-secondary-bg);
+  --color-overlay: var(--overlay-bg);
+  --color-overlay-strong: var(--overlay-bg-strong);
+  --color-sidebar-group: var(--sidebar-group-bg);
+  --color-danger: var(--red);
+  --color-danger-tint: var(--red-tint);
+  --color-danger-bg: var(--red-bg);
+  --color-danger-soft: var(--red-soft);
+  --color-danger-text: var(--red-text);
+  --color-danger-border: var(--red-border);
+  --color-danger-alert-bg: var(--red-alert-bg);
+  --color-danger-alert-border: var(--red-alert-border);
+  --color-danger-alert-text: var(--red-alert-text);
+  --color-warning: var(--orange);
+  --color-warning-bg: var(--orange-bg);
+  --color-warning-text: var(--orange-text);
+  --color-warning-border: var(--orange-border);
+  --color-info: var(--blue);
+}
+
 :root {
-  --main-color: #6366F1;
+  --main-color: #1849b8;
   
   /* ── Main content surfaces ── */
-  --app-bg: #f0f2f1;
-  --panel-bg: #f5f7f5;
+  --app-bg: #f8f9fc;
+  --panel-bg: #f8f9fc;
   --surface-bg: #ffffff;
-  --surface-soft: #f0f3f0;
-  --line: #e0e6e0;
+  --surface-soft: #f1f3f9;
+  --surface-muted: #f7f8fc;
+  --surface-hover: #f8faff;
+  --line: #e3e7f1;
+  --line-soft: #edf1f8;
+  --line-muted: #e4e9f5;
   --shadow:    none;
   --shadow-md: none;
+  --shadow-soft: rgba(16, 24, 40, 0.05);
+  --shadow-floating: rgba(16, 24, 40, 0.16);
+  --shadow-black-soft: rgba(0, 0, 0, 0.08);
+  --overlay-bg: rgba(0, 0, 0, 0.35);
+  --overlay-bg-strong: rgba(0, 0, 0, 0.45);
+  --sidebar-group-bg: rgba(255, 255, 255, 0.02);
 
   /* ── Text ── */
-  --text-main: #1a2e1c;
-  --text-sub: #5a6b5c;
-  --text-muted: #8fa490;
+  --text-main: #202c45;
+  --text-heading: #2d3b5f;
+  --text-sub: #6a7693;
+  --text-muted: #7684a8;
+  --text-soft: #4e5c7d;
 
-  /* ── Brand accent (green) ── */
+  /* ── Brand accent (sidebar blue) ── */
   --accent: var(--main-color);
-  --accent-hover: var(--main-color);
-  --accent-light: #ffffff;
+  --accent-hover: #1b5fcc;
+  --accent-light: var(--accent-soft);
+  --accent-soft: #e9eefc;
+  --accent-soft-hover: #dce6ff;
+  --accent-border: #c8d3ea;
+  --accent-selected-border: #9fb6ee;
+  --accent-field-bg: var(--surface-hover);
+  --accent-field-border: #d7def0;
+  --accent-secondary: #2f5bd2;
+  --accent-secondary-bg: #e8efff;
+  --accent-ring: rgba(24, 73, 184, 0.15);
+  --accent-ring-medium: rgba(24, 73, 184, 0.25);
+  --accent-ring-strong: rgba(24, 73, 184, 0.35);
+  --accent-shadow: rgba(24, 73, 184, 0.18);
+  --accent-tint: rgba(24, 73, 184, 0.12);
 
   /* ── Sidebar ── */
   --sidebar-bg: #ffffff;
-  --sidebar-hover: #ffffff;
+  --sidebar-hover: var(--accent-soft);
   --sidebar-active-bg: var(--accent-hover);
   --sidebar-active-text: #ffffff;
-  --sidebar-text: #000000;
-  --sidebar-text-bright: #1f1f1f;
-  --sidebar-border: #383b39;
-  --sidebar-logo-bg: #162419;
+  --sidebar-text: var(--text-sub);
+  --sidebar-text-bright: var(--text-main);
+  --sidebar-border: var(--line);
+  --sidebar-logo-bg: var(--accent);
 
   /* ── Status colors ── */
   --red: #f87171;
+  --red-tint: rgba(239, 68, 68, 0.08);
+  --red-bg: #fbe9e9;
+  --red-soft: #fee2e2;
+  --red-alert-bg: #fff1f2;
+  --red-alert-border: #fecdd3;
+  --red-alert-text: #be123c;
+  --red-text: #9a3d3d;
+  --red-border: #f0c2c2;
   --orange: #fb923c;
+  --orange-bg: #fff7ed;
+  --orange-text: #c2410c;
+  --orange-border: #fed7aa;
   --blue: #60a5fa;
 }
 
@@ -83,7 +162,7 @@ body {
 /* ── Thin scrollbar ── */
 .thin-scroll {
   scrollbar-width: thin;
-  scrollbar-color: #c7d2c7 transparent;
+  scrollbar-color: var(--accent-border) transparent;
 }
 
 .thin-scroll::-webkit-scrollbar {
@@ -95,12 +174,12 @@ body {
 }
 
 .thin-scroll::-webkit-scrollbar-thumb {
-  background: #c7d2c7;
+  background: var(--accent-border);
   border-radius: 999px;
 }
 
 .thin-scroll::-webkit-scrollbar-thumb:hover {
-  background: #a8b8a8;
+  background: var(--accent-selected-border);
 }
 
 /* ── Form page section panel ── */
@@ -116,6 +195,55 @@ body {
   background: var(--surface-bg);
   border: 1px solid var(--line);
   border-radius: 10px;
+}
+
+.themed-panel {
+  background: var(--app-bg);
+  border-color: var(--line);
+}
+
+.themed-section {
+  background: var(--app-bg);
+  border-color: var(--line);
+}
+
+.themed-kicker {
+  color: var(--text-sub);
+}
+
+.themed-heading {
+  color: var(--text-main);
+}
+
+.themed-subheading {
+  color: var(--text-heading);
+}
+
+.themed-copy {
+  color: var(--text-soft);
+}
+
+.themed-accent {
+  color: var(--accent);
+}
+
+.themed-accent-bg {
+  background: var(--accent);
+}
+
+.themed-accent-chip {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.themed-accent-action {
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.themed-accent-action:hover {
+  background: var(--accent-soft-hover);
 }
 
 /* ── Form elements ── */
@@ -134,7 +262,7 @@ body {
 
 .form-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(58, 155, 90, 0.15);
+  box-shadow: 0 0 0 3px var(--accent-ring);
 }
 
 /* ── Button variants ── */
@@ -239,11 +367,6 @@ body {
   font-weight: 600;
 }
 
-.badge-green {
-  background: var(--accent-light);
-  color: var(--accent-hover);
-}
-
 .badge-red {
   background: #fee2e2;
   color: #b91c1c;
@@ -303,11 +426,11 @@ body {
   }
 
   .focus\:ring-blue-500:focus {
-    --tw-ring-color: rgba(58, 155, 90, 0.35) !important;
+    --tw-ring-color: var(--accent-ring-strong) !important;
   }
 
   .focus\:ring-blue-400:focus {
-    --tw-ring-color: rgba(58, 155, 90, 0.25) !important;
+    --tw-ring-color: var(--accent-ring-medium) !important;
   }
 
   .focus\:border-blue-500:focus {

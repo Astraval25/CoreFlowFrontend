@@ -24,7 +24,7 @@ const ViewVendor = () => {
       {paramVendorId && companyId ? (
         <ViewVendorDetails companyId={companyId} vendorId={Number(paramVendorId)} />
       ) : (
-        <p className="p-6" style={{ color: "var(--text-sub)" }}>Loading vendor details...</p>
+        <p className="p-6 text-app-sub">Loading vendor details...</p>
       )}
     </div>
   );

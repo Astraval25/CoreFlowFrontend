@@ -178,15 +178,13 @@ const Toolbar = () => {
   return (
     <>
       <header
-        className="h-full flex items-center gap-3 px-4"
-        style={{ background: "var(--surface-bg)" }}
+        className="h-full flex items-center gap-3 px-4 bg-surface"
       >
         {/* Search */}
         <div className="flex-1 max-w-xs relative">
           <FiSearch
             size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-            style={{ color: "var(--text-muted)" }}
+            className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted"
           />
           <input
             type="text"
@@ -200,7 +198,7 @@ const Toolbar = () => {
             }}
             onFocus={(e) => {
               e.target.style.borderColor = "var(--accent)";
-              e.target.style.boxShadow = "0 0 0 3px rgba(58,155,90,0.12)";
+              e.target.style.boxShadow = "0 0 0 3px var(--accent-tint)";
             }}
             onBlur={(e) => {
               e.target.style.borderColor = "var(--line)";
@@ -213,19 +211,17 @@ const Toolbar = () => {
 
         {/* Upgrade pill */}
         <div
-          className="hidden md:flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full"
-          style={{ background: "#fff7ed", color: "#c2410c", border: "1px solid #fed7aa" }}
+          className="hidden md:flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border border-warning-border bg-warning-bg text-warning-text"
         >
           <span>You are on Free Plan</span>
           <button
-            className="font-bold text-xs px-2 py-0.5 rounded-full"
-            style={{ background: "#fb923c", color: "#fff" }}
+            className="font-bold text-xs px-2 py-0.5 rounded-full bg-warning text-surface"
           >
             Upgrade
           </button>
         </div>
 
-        <div className="w-px h-5 shrink-0" style={{ background: "var(--line)" }} />
+        <div className="w-px h-5 shrink-0 bg-line" />
 
         {/* Company selector */}
         <button
@@ -234,14 +230,13 @@ const Toolbar = () => {
             setOpenNotificationsPanel(false);
             setOpenCompanyPanel(true);
           }}
-          className="hidden sm:flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
-          style={{ color: "var(--text-main)", background: "var(--surface-soft)", border: "1px solid var(--line)" }}
+          className="hidden sm:flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors border border-line bg-surface-soft text-app-text"
         >
           <span className="max-w-[120px] truncate">{companyName || "Select Company"}</span>
-          <MdKeyboardArrowDown size={16} style={{ color: "var(--text-sub)" }} />
+          <MdKeyboardArrowDown size={16} className="text-app-sub" />
         </button>
 
-        <div className="w-px h-5 shrink-0" style={{ background: "var(--line)" }} />
+        <div className="w-px h-5 shrink-0 bg-line" />
 
         {/* Add button */}
         <div className="relative" ref={createMenuRef}>
@@ -249,8 +244,8 @@ const Toolbar = () => {
             className="w-8 h-8 rounded-lg flex items-center justify-center transition-all"
             style={{
               background: "var(--accent)",
-              color: "#fff",
-              boxShadow: "0 6px 14px rgba(58, 155, 90, 0.18)",
+              color: "var(--surface-bg)",
+              boxShadow: "0 6px 14px var(--accent-shadow)",
             }}
             title="Create shortcut"
             onClick={() => {
@@ -264,11 +259,11 @@ const Toolbar = () => {
 
           {openCreateShortcutMenu && (
             <div
-              className="absolute right-0 mt-2 w-72 rounded-xl border z-30 overflow-hidden"
+              className="absolute right-0 mt-2 w-72 rounded-xl border z-[60] overflow-hidden"
               style={{
                 borderColor: "var(--line)",
                 background: "var(--surface-bg)",
-                boxShadow: "0 18px 36px rgba(16, 24, 40, 0.16)",
+                boxShadow: "0 18px 36px var(--shadow-floating)",
               }}
             >
               
@@ -279,14 +274,13 @@ const Toolbar = () => {
                     <button
                       key={item.path}
                       type="button"
-                      className="w-full text-left px-2 py-2 rounded-lg flex items-center gap-2.5 transition-colors hover:bg-[var(--surface-soft)]"
-                      style={{ color: "var(--text-main)" }}
+                      className="w-full text-left px-2 py-2 rounded-lg flex items-center gap-2.5 transition-colors hover:bg-surface-soft text-app-text"
                       onClick={() => handleCreateShortcutClick(item.path)}
                     >
                       <span
                         className="w-7 h-7 rounded-md shrink-0 flex items-center justify-center"
                         style={{
-                          background: "rgba(58, 155, 90, 0.12)",
+                          background: "var(--accent-tint)",
                           color: "var(--accent)",
                         }}
                       >
@@ -294,9 +288,9 @@ const Toolbar = () => {
                       </span>
                       <span className="flex-1 min-w-0">
                         <span className="block text-xs font-semibold">{item.label}</span>
-                        <span className="block text-[10px] text-[var(--text-muted)]">{item.hint}</span>
+                        <span className="block text-[10px] text-app-muted">{item.hint}</span>
                       </span>
-                      <MdChevronRight size={15} style={{ color: "var(--text-muted)" }} />
+                      <MdChevronRight size={15} className="text-app-muted" />
                     </button>
                   );
                 })}
@@ -307,8 +301,7 @@ const Toolbar = () => {
 
         {/* Bell */}
         <button
-          className="relative w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-          style={{ color: "var(--text-sub)" }}
+          className="relative w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-app-sub"
           title="Notifications"
           onClick={() => {
             setOpenCreateShortcutMenu(false);
@@ -321,8 +314,7 @@ const Toolbar = () => {
           <FiBell size={17} />
           {unreadCount > 0 && (
             <span
-              className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full text-[10px] font-bold flex items-center justify-center"
-              style={{ background: "var(--red)", color: "#fff" }}
+              className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full text-[10px] font-bold flex items-center justify-center bg-danger text-surface"
             >
               {unreadCount > 99 ? "99+" : unreadCount}
             </span>
@@ -331,8 +323,7 @@ const Toolbar = () => {
 
         {/* Settings */}
         <button
-          className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-          style={{ color: "var(--text-sub)" }}
+          className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-app-sub"
           title="Settings"
           onClick={handleSettings}
           onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
@@ -346,10 +337,9 @@ const Toolbar = () => {
           
           <button
             onClick={handleLogout}
-            className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
-            style={{ color: "var(--text-sub)" }}
+            className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors text-app-sub"
             title="Logout"
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#fee2e2")}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "var(--red-soft)")}
             onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
           >
             <FiLogOut size={16} />

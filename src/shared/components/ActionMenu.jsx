@@ -115,7 +115,7 @@ const ActionMenu = ({ row, onEdit, onDelete, onActivate }) => {
               onClick={handleActivate}
               className="flex items-center gap-2 w-full px-4 py-2 text-sm hover:bg-gray-100"
             >
-              <MdCheckCircle className="text-green-600" />
+              <MdCheckCircle className="text-blue-600" />
               Activate
             </button>
           )}

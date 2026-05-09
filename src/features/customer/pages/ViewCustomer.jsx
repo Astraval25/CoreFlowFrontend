@@ -27,7 +27,7 @@ const ViewCustomer = () => {
           customerId={Number(paramCustomerId)}
         />
       ) : (
-        <p className="p-6" style={{ color: "var(--text-sub)" }}>Loading customer details...</p>
+        <p className="p-6 text-app-sub">Loading customer details...</p>
       )}
     </div>
   );

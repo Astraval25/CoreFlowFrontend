@@ -33,22 +33,20 @@ const StatusDropdown = ({ onSelect }) => {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-3 py-1.5 text-xs font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+        className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border bg-brand-soft px-3 py-1.5 text-xs font-semibold text-brand transition hover:bg-brand-soft-hover cursor-pointer"
       >
         Update Status <MdKeyboardArrowDown size={16} />
       </button>
       {open && (
         <div
-          className="absolute right-0 mt-1 w-44 rounded-lg border bg-white shadow-lg z-50"
-          style={{ borderColor: "var(--line)" }}
+          className="absolute right-0 mt-1 w-44 rounded-lg border bg-white shadow-lg z-50 border-line"
         >
           {statusOptions.map((s) => (
             <button
               key={s.key}
               type="button"
               onClick={() => { onSelect(s.key); setOpen(false); }}
-              className="w-full text-left px-3 py-2 text-xs transition-colors hover:bg-[var(--surface-soft)]"
-              style={{ color: "var(--text-main)" }}
+              className="w-full text-left px-3 py-2 text-xs transition-colors hover:bg-surface-soft text-app-text"
             >
               {s.label}
             </button>
@@ -91,23 +89,23 @@ const ViewPaymentReceivedPage = () => {
   }
 
   return (
-    <div className="w-full rounded-2xl border border-[#d9e1d9] bg-white shadow-sm p-5 space-y-6">
+    <div className="w-full rounded-2xl border border-line bg-white shadow-sm p-5 space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#7b887b]">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-app-sub">
             Payment Received
           </p>
-          <h2 className="text-2xl font-bold text-[#1f2b1f]">{payment.paymentNumber || "-"}</h2>
+          <h2 className="text-2xl font-bold text-app-text">{payment.paymentNumber || "-"}</h2>
           <div className="flex flex-wrap gap-2 pt-1">
-            <span className="inline-flex rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+            <span className="inline-flex rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
               Date: {payment.paymentDate ? new Date(payment.paymentDate).toLocaleString() : "-"}
             </span>
-            <span className="inline-flex rounded-full bg-[#edf4ee] px-3 py-1 text-xs font-semibold text-[#2f7a47]">
+            <span className="inline-flex rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
               Status: {payment.paymentStatus || "-"}
             </span>
             <span
               className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                payment.isActive ? "bg-[#e8f3ea] text-[#2f7a47]" : "bg-[#fbe9e9] text-[#9a3d3d]"
+                payment.isActive ? "bg-brand-soft text-brand" : "bg-danger-bg text-danger-text"
               }`}
             >
               {payment.isActive ? "Active" : "Inactive"}
@@ -118,7 +116,7 @@ const ViewPaymentReceivedPage = () => {
         <div className="flex items-center gap-2">
           <StatusDropdown onSelect={updateStatus} />
           <button
-            className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-[#edf4ee] px-4 py-2 text-sm font-semibold text-[#2f7a47] transition hover:bg-[#e3eee4] cursor-pointer"
+            className="inline-flex items-center gap-2 rounded-lg border border-brand-border bg-brand-soft px-4 py-2 text-sm font-semibold text-brand transition hover:bg-brand-soft-hover cursor-pointer"
             onClick={() => navigate(`/cf/company/${companyId}/payment-received/${payment.paymentId}/update`)}
           >
             <MdEdit size={17} />
@@ -128,47 +126,47 @@ const ViewPaymentReceivedPage = () => {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="rounded-lg bg-[#f8faf8] p-4">
-          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+        <div className="rounded-lg bg-app p-4">
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-app-heading">
             <MdPayments size={18} />
             Payment Info
           </h3>
           <dl className="space-y-2 text-sm">
             <div className="flex items-center justify-between">
-              <dt className="text-[#748274]">Customer</dt>
-              <dd className="font-semibold text-[#1f2b1f]">
+              <dt className="text-app-sub">Customer</dt>
+              <dd className="font-semibold text-app-text">
                 {payment.buyerCompanyName || payment.customerDisplayName || payment.customerName || "-"}
               </dd>
             </div>
             <div className="flex items-center justify-between">
-              <dt className="text-[#748274]">Mode</dt>
-              <dd className="font-semibold text-[#1f2b1f]">{payment.modeOfPayment || "-"}</dd>
+              <dt className="text-app-sub">Mode</dt>
+              <dd className="font-semibold text-app-text">{payment.modeOfPayment || "-"}</dd>
             </div>
             <div className="flex items-center justify-between">
-              <dt className="text-[#748274]">Reference</dt>
-              <dd className="font-semibold text-[#1f2b1f]">{payment.referenceNumber || "-"}</dd>
+              <dt className="text-app-sub">Reference</dt>
+              <dd className="font-semibold text-app-text">{payment.referenceNumber || "-"}</dd>
             </div>
             <div className="flex items-center justify-between">
-              <dt className="text-[#748274]">Platform Ref</dt>
-              <dd className="font-semibold text-[#1f2b1f]">{payment.platformRef || "-"}</dd>
+              <dt className="text-app-sub">Platform Ref</dt>
+              <dd className="font-semibold text-app-text">{payment.platformRef || "-"}</dd>
             </div>
-            <div className="mt-1 border-t border-[#d8e0d8] pt-2 flex items-center justify-between">
-              <dt className="font-semibold text-[#2d3b2d]">Amount</dt>
-              <dd className="text-base font-bold text-[#2f7a47]">{money(payment.amount)}</dd>
+            <div className="mt-1 border-t border-line pt-2 flex items-center justify-between">
+              <dt className="font-semibold text-app-heading">Amount</dt>
+              <dd className="text-base font-bold text-brand">{money(payment.amount)}</dd>
             </div>
           </dl>
         </div>
 
-        <div className="rounded-lg bg-[#f8faf8] p-4">
-          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-[#2d3b2d]">
+        <div className="rounded-lg bg-app p-4">
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-app-heading">
             <MdUploadFile size={18} />
             Payment Proof
           </h3>
-          <p className="text-xs mb-3" style={{ color: "var(--text-muted)" }}>
+          <p className="text-xs mb-3 text-app-muted">
             Upload a receipt, screenshot, or document as proof of payment.
           </p>
           <label
-            className="inline-flex items-center gap-2 rounded-lg border border-[#cfe0cf] bg-white px-3 py-2 text-xs font-semibold text-[#2f7a47] cursor-pointer transition hover:bg-[#edf4ee]"
+            className="inline-flex items-center gap-2 rounded-lg border border-brand-border bg-white px-3 py-2 text-xs font-semibold text-brand cursor-pointer transition hover:bg-brand-soft"
           >
             <MdUploadFile size={15} />
             {uploading ? "Uploading..." : "Upload Proof"}
@@ -177,14 +175,14 @@ const ViewPaymentReceivedPage = () => {
         </div>
       </div>
 
-      <div className="border-t border-[#e3e9e3] pt-4">
-        <h3 className="mb-4 text-sm font-semibold text-[#2d3b2d]">Order Allocations</h3>
+      <div className="border-t border-line pt-4">
+        <h3 className="mb-4 text-sm font-semibold text-app-heading">Order Allocations</h3>
         {(payment.orderAllocations || []).length === 0 ? (
           <p className="text-sm text-gray-600">No order allocations found.</p>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-[#e2e8e2]">
+          <div className="overflow-x-auto rounded-lg border border-line">
             <table className="min-w-full text-sm">
-              <thead className="bg-[#f2f6f2] text-[#617061]">
+              <thead className="bg-surface-muted text-app-sub">
                 <tr>
                   <th className="px-4 py-3 text-left font-semibold">Order</th>
                   <th className="px-4 py-3 text-left font-semibold">Amount Applied</th>
@@ -194,13 +192,13 @@ const ViewPaymentReceivedPage = () => {
               </thead>
               <tbody>
                 {payment.orderAllocations.map((a) => (
-                  <tr key={a.paymentOrderAllocationId} className="border-t border-[#e4ebe4]">
-                    <td className="px-4 py-3 font-medium text-[#1f2b1f]">{a.orderNumber || a.orderId}</td>
-                    <td className="px-4 py-3 text-[#4f5d4f]">{money(a.amountApplied)}</td>
-                    <td className="px-4 py-3 text-[#4f5d4f]">
+                  <tr key={a.paymentOrderAllocationId} className="border-t border-line-muted">
+                    <td className="px-4 py-3 font-medium text-app-text">{a.orderNumber || a.orderId}</td>
+                    <td className="px-4 py-3 text-app-soft">{money(a.amountApplied)}</td>
+                    <td className="px-4 py-3 text-app-soft">
                       {a.allocationDate ? new Date(a.allocationDate).toLocaleString() : "-"}
                     </td>
-                    <td className="px-4 py-3 text-[#4f5d4f]">{a.allocationRemarks || "-"}</td>
+                    <td className="px-4 py-3 text-app-soft">{a.allocationRemarks || "-"}</td>
                   </tr>
                 ))}
               </tbody>

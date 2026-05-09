@@ -22,11 +22,11 @@ const fmt = (n) =>
 
 const Field = ({ label, required, error, children }) => (
   <div className="flex flex-col gap-1">
-    <label className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
-      {label}{required && <span style={{ color: "var(--red)" }}> *</span>}
+    <label className="text-[11px] font-semibold uppercase tracking-wide text-app-muted">
+      {label}{required && <span className="text-danger"> *</span>}
     </label>
     {children}
-    {error && <span className="text-[11px]" style={{ color: "var(--red)" }}>{error}</span>}
+    {error && <span className="text-[11px] text-danger">{error}</span>}
   </div>
 );
 
@@ -60,21 +60,18 @@ const CreateSalesPage = () => {
 
   return (
     <div
-      className="flex flex-col min-h-screen"
-      style={{ background: "var(--surface-bg)" }}
+      className="flex flex-col min-h-screen bg-surface"
     >
       {/* ── Header ── */}
       <div
-        className="flex items-center justify-between px-8 py-4 shrink-0"
-        style={{ borderBottom: "1px solid var(--line)" }}
+        className="flex items-center justify-between px-8 py-4 shrink-0 border-b border-line"
       >
-        <h1 className="text-sm font-bold tracking-tight" style={{ color: "var(--text-main)" }}>
+        <h1 className="text-sm font-bold tracking-tight text-app-text">
           New {ORDER_TYPE_LABEL[orderType]}
         </h1>
         <button
           onClick={() => navigate(salesBase)}
-          className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
-          style={{ color: "var(--text-muted)" }}
+          className="w-7 h-7 rounded-md flex items-center justify-center transition-colors text-app-muted"
           onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
         >
@@ -87,8 +84,7 @@ const CreateSalesPage = () => {
 
         {submitError && (
           <div
-            className="px-3 py-2 rounded text-xs"
-            style={{ background: "rgba(239,68,68,0.08)", color: "var(--red)", border: "1px solid var(--red)" }}
+            className="px-3 py-2 rounded text-xs border border-danger bg-danger-tint text-danger"
           >
             {submitError}
           </div>
@@ -101,8 +97,7 @@ const CreateSalesPage = () => {
               name="customerId"
               value={formData.customerId}
               onChange={handleInputChange}
-              className="form-input"
-              style={{ borderColor: errors.customerId ? "var(--red)" : undefined }}
+              className={`form-input ${errors.customerId ? "border-danger" : ""}`}
             >
               <option value="">Select or add a customer</option>
               {allCustomers.map((c) => (
@@ -122,7 +117,7 @@ const CreateSalesPage = () => {
           </Field>
 
           <div className="flex flex-col gap-1 justify-end pb-0.5">
-            <span className="text-[11px] font-semibold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-app-muted">
               Has Bill
             </span>
             <button
@@ -132,8 +127,7 @@ const CreateSalesPage = () => {
                   target: { name: "hasBill", type: "checkbox", checked: !formData.hasBill },
                 })
               }
-              className="relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-150 self-start"
-              style={{ background: formData.hasBill ? "var(--accent)" : "var(--line)" }}
+              className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors duration-150 self-start ${formData.hasBill ? "bg-brand" : "bg-line"}`}
             >
               <span
                 className="inline-block w-3.5 h-3.5 rounded-full bg-white shadow-sm transition-transform duration-150"
@@ -144,28 +138,27 @@ const CreateSalesPage = () => {
         </div>
 
         {/* ── Item Table ── */}
-        <div style={{ borderTop: "1px solid var(--line)" }}>
+        <div className="border-t border-line">
           <div className="flex items-center justify-between py-3">
-            <span className="text-[11px] font-bold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
+            <span className="text-[11px] font-bold uppercase tracking-wide text-app-muted">
               Item Table
             </span>
             <button
               type="button"
-              className="text-[11px] font-semibold px-2.5 py-1 rounded-md transition-colors"
-              style={{ color: "var(--text-sub)", border: "1px solid var(--line)" }}
+              className="text-[11px] font-semibold px-2.5 py-1 rounded-md transition-colors border border-line text-app-sub"
             >
               Bulk Actions
             </button>
           </div>
 
           {errors.orderItems && (
-            <p className="text-[11px] mb-2" style={{ color: "var(--red)" }}>{errors.orderItems}</p>
+            <p className="text-[11px] mb-2 text-danger">{errors.orderItems}</p>
           )}
 
           <div className="overflow-x-auto -mx-8 px-8">
-            <table className="w-full" style={{ borderCollapse: "collapse" }}>
+            <table className="w-full" >
               <thead>
-                <tr style={{ borderBottom: "2px solid var(--line)" }}>
+                <tr className="border-b-2 border-line">
                   {["#", "ITEM", "DESCRIPTION", "QUANTITY", "RATE", "AMOUNT", ""].map((h, i) => (
                     <th
                       key={i}
@@ -189,8 +182,7 @@ const CreateSalesPage = () => {
                   <tr>
                     <td
                       colSpan={7}
-                      className="py-10 text-center text-xs"
-                      style={{ color: "var(--text-muted)", borderBottom: "1px solid var(--line)" }}
+                      className="py-10 text-center text-xs border-b border-line text-app-muted"
                     >
                       No items yet — click "+ Add New Row" to start.
                     </td>
@@ -201,11 +193,10 @@ const CreateSalesPage = () => {
                     return (
                       <tr
                         key={idx}
-                        className="group"
-                        style={{ borderBottom: "1px solid var(--line)" }}
+                        className="group border-b border-line"
                       >
                         {/* # */}
-                        <td className="py-2.5 text-xs" style={{ color: "var(--text-muted)", width: 32, paddingRight: 12 }}>
+                        <td className="py-2.5 text-xs text-app-muted" style={{ width: 32, paddingRight: 12 }}>
                           {idx + 1}
                         </td>
 
@@ -214,8 +205,7 @@ const CreateSalesPage = () => {
                           <select
                             value={item.itemName}
                             onChange={(e) => updateOrderItem(idx, "itemName", e.target.value)}
-                            className="form-input text-xs py-1.5"
-                            style={{ borderColor: errors[`item_${idx}_itemId`] ? "var(--red)" : undefined }}
+                            className={`form-input text-xs py-1.5 ${errors[`item_${idx}_itemId`] ? "border-danger" : ""}`}
                           >
                             <option value="">Select item</option>
                             {items.filter((i) => i.source !== "ITEM_BASE").map((i) => (
@@ -230,7 +220,7 @@ const CreateSalesPage = () => {
                             )}
                           </select>
                           {errors[`item_${idx}_itemId`] && (
-                            <p className="mt-0.5 text-[10px]" style={{ color: "var(--red)" }}>
+                            <p className="mt-0.5 text-[10px] text-danger">
                               {errors[`item_${idx}_itemId`]}
                             </p>
                           )}
@@ -254,8 +244,7 @@ const CreateSalesPage = () => {
                             min="1"
                             value={item.quantity}
                             onChange={(e) => updateOrderItem(idx, "quantity", e.target.value)}
-                            className="form-input text-xs py-1.5 text-right"
-                            style={{ borderColor: errors[`item_${idx}_quantity`] ? "var(--red)" : undefined }}
+                            className={`form-input text-xs py-1.5 text-right ${errors[`item_${idx}_quantity`] ? "border-danger" : ""}`}
                           />
                         </td>
 
@@ -266,13 +255,12 @@ const CreateSalesPage = () => {
                             min="0"
                             value={item.updatedPrice}
                             onChange={(e) => updateOrderItem(idx, "updatedPrice", e.target.value)}
-                            className="form-input text-xs py-1.5 text-right"
-                            style={{ borderColor: errors[`item_${idx}_price`] ? "var(--red)" : undefined }}
+                            className={`form-input text-xs py-1.5 text-right ${errors[`item_${idx}_price`] ? "border-danger" : ""}`}
                           />
                         </td>
 
                         {/* Amount */}
-                        <td className="py-2.5 px-3 text-right text-xs font-semibold tabular-nums" style={{ color: "var(--text-main)", width: 110 }}>
+                        <td className="py-2.5 px-3 text-right text-xs font-semibold tabular-nums text-app-text" style={{ width: 110 }}>
                           {fmt(amount)}
                         </td>
 
@@ -281,8 +269,7 @@ const CreateSalesPage = () => {
                           <button
                             type="button"
                             onClick={() => removeOrderItem(idx)}
-                            className="w-6 h-6 rounded flex items-center justify-center ml-auto opacity-0 group-hover:opacity-100 transition-opacity"
-                            style={{ color: "var(--red)" }}
+                            className="w-6 h-6 rounded flex items-center justify-center ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-danger"
                           >
                             <MdDeleteOutline size={14} />
                           </button>
@@ -296,20 +283,18 @@ const CreateSalesPage = () => {
           </div>
 
           {/* Add row buttons */}
-          <div className="flex items-center gap-4 py-3" style={{ borderBottom: "1px solid var(--line)" }}>
+          <div className="flex items-center gap-4 py-3 border-b border-line">
             <button
               type="button"
               onClick={addOrderItem}
-              className="flex items-center gap-1 text-xs font-semibold transition-colors"
-              style={{ color: "var(--accent)" }}
+              className="flex items-center gap-1 text-xs font-semibold transition-colors text-brand"
             >
               <MdAdd size={14} /> Add New Row
             </button>
-            <span style={{ color: "var(--line)", fontSize: 12 }}>|</span>
+            <span className="text-line text-xs">|</span>
             <button
               type="button"
-              className="flex items-center gap-1 text-xs font-semibold"
-              style={{ color: "var(--text-muted)" }}
+              className="flex items-center gap-1 text-xs font-semibold text-app-muted"
             >
               <MdAdd size={14} /> Add Items in Bulk
             </button>
@@ -321,7 +306,7 @@ const CreateSalesPage = () => {
 
           {/* Customer Notes */}
           <div className="flex flex-col gap-1.5">
-            <span className="text-[11px] font-bold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
+            <span className="text-[11px] font-bold uppercase tracking-wide text-app-muted">
               Customer Notes
             </span>
             <textarea
@@ -334,21 +319,20 @@ const CreateSalesPage = () => {
           {/* Summary */}
           <div className="flex flex-col">
             {/* Sub Total */}
-            <div className="flex justify-between items-center py-3" style={{ borderBottom: "1px solid var(--line)" }}>
-              <span className="text-xs" style={{ color: "var(--text-sub)" }}>Sub Total</span>
-              <span className="text-xs font-semibold tabular-nums" style={{ color: "var(--text-main)" }}>{fmt(subTotal)}</span>
+            <div className="flex justify-between items-center py-3 border-b border-line">
+              <span className="text-xs text-app-sub">Sub Total</span>
+              <span className="text-xs font-semibold tabular-nums text-app-text">{fmt(subTotal)}</span>
             </div>
 
             {/* Discount */}
-            <div className="flex justify-between items-center gap-4 py-3" style={{ borderBottom: "1px solid var(--line)" }}>
-              <span className="text-xs shrink-0" style={{ color: "var(--text-sub)" }}>Discount</span>
+            <div className="flex justify-between items-center gap-4 py-3 border-b border-line">
+              <span className="text-xs shrink-0 text-app-sub">Discount</span>
               <div className="flex items-center gap-2 ml-auto">
                 <select
                   name="discountType"
                   value={formData.discountType}
                   onChange={handleInputChange}
-                  className="text-xs py-1 px-1.5 rounded"
-                  style={{ border: "1px solid var(--line)", background: "var(--surface-soft)", color: "var(--text-sub)" }}
+                  className="text-xs py-1 px-1.5 rounded border border-line bg-surface-soft text-app-sub"
                 >
                   <option value="percent">%</option>
                   <option value="flat">₹</option>
@@ -363,18 +347,18 @@ const CreateSalesPage = () => {
                   className="form-input text-xs py-1 text-right"
                   style={{ width: 72 }}
                 />
-                <span className="text-xs font-semibold tabular-nums text-right" style={{ color: "var(--text-main)", minWidth: 64 }}>
+                <span className="text-xs font-semibold tabular-nums text-right text-app-text" style={{ minWidth: 64 }}>
                   {fmt(discountVal)}
                 </span>
               </div>
             </div>
 
             {/* Tax */}
-            <div className="flex justify-between items-center py-3" style={{ borderBottom: "1px solid var(--line)" }}>
-              <span className="text-xs" style={{ color: "var(--text-sub)" }}>Tax</span>
+            <div className="flex justify-between items-center py-3 border-b border-line">
+              <span className="text-xs text-app-sub">Tax</span>
               <div className="flex items-center gap-3">
                 {["No Tax", "Select a Tax"].map((opt) => (
-                  <label key={opt} className="flex items-center gap-1 text-xs cursor-pointer" style={{ color: "var(--text-sub)" }}>
+                  <label key={opt} className="flex items-center gap-1 text-xs cursor-pointer text-app-sub">
                     <input type="radio" name="taxMode" value={opt} defaultChecked={opt === "No Tax"} />
                     {opt}
                   </label>
@@ -383,8 +367,8 @@ const CreateSalesPage = () => {
             </div>
 
             {/* Adjustment */}
-            <div className="flex justify-between items-center py-3" style={{ borderBottom: "1px solid var(--line)" }}>
-              <span className="text-xs" style={{ color: "var(--text-sub)" }}>Adjustment</span>
+            <div className="flex justify-between items-center py-3 border-b border-line">
+              <span className="text-xs text-app-sub">Adjustment</span>
               <input
                 type="number"
                 name="deliveryCharge"
@@ -398,8 +382,8 @@ const CreateSalesPage = () => {
 
             {/* Total */}
             <div className="flex justify-between items-baseline pt-4">
-              <span className="text-sm font-bold" style={{ color: "var(--text-main)" }}>Total (₹)</span>
-              <span className="text-xl font-extrabold tabular-nums" style={{ color: "var(--accent)" }}>
+              <span className="text-sm font-bold text-app-text">Total (₹)</span>
+              <span className="text-xl font-extrabold tabular-nums text-brand">
                 {fmt(grandTotal)}
               </span>
             </div>
@@ -413,7 +397,7 @@ const CreateSalesPage = () => {
         style={{
           background: "var(--surface-bg)",
           borderTop: "1px solid var(--line)",
-          boxShadow: "0 -2px 10px 0 rgba(30,50,30,0.05)",
+          boxShadow: "0 -2px 10px 0 var(--shadow-soft)",
         }}
       >
         <div className="flex items-center gap-3">
@@ -436,15 +420,14 @@ const CreateSalesPage = () => {
           <button
             type="button"
             onClick={() => navigate(salesBase)}
-            className="text-xs"
-            style={{ color: "var(--text-muted)" }}
+            className="text-xs text-app-muted"
           >
             Cancel
           </button>
         </div>
-        <span className="text-xs" style={{ color: "var(--text-sub)" }}>
+        <span className="text-xs text-app-sub">
           Total Amount:{" "}
-          <span className="font-bold" style={{ color: "var(--text-main)" }}>₹{fmt(grandTotal)}</span>
+          <span className="font-bold text-app-text">₹{fmt(grandTotal)}</span>
         </span>
       </div>
     </div>

@@ -32,7 +32,7 @@ const ViewSalesPage = () => {
   };
 
   return (
-    <div className="rounded-2xl border border-[#d9e1d9] bg-white shadow-sm">
+    <div className="rounded-2xl border border-line bg-white shadow-sm">
       <div className="flex">
         <div className="w-[22%]">
         <ListAllSales

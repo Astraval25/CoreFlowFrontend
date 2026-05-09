@@ -46,8 +46,7 @@ const StyledDropdown = ({
         {selectedLabel}
       </button>
       <span
-        className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px]"
-        style={{ color: "var(--text-sub)" }}
+        className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-app-sub"
       >
         {open ? "▴" : "▾"}
       </span>

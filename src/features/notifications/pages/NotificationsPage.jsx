@@ -2,12 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { MdCheckCircle, MdCircle, MdDoneAll, MdInbox, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import useNotifications from "../hooks/useNotifications";
 
-const typeColors = {
-  LEAVE_LOG_CREATED: "var(--orange)",
-  WORK_LOG_CREATED: "var(--blue)",
-  ORDER_CREATED: "var(--accent)",
-  PAYMENT_RECEIVED: "var(--accent)",
-  PAYMENT_SENT: "var(--red)",
+const typeClasses = {
+  LEAVE_LOG_CREATED: "text-warning",
+  WORK_LOG_CREATED: "text-info",
+  ORDER_CREATED: "text-brand",
+  PAYMENT_RECEIVED: "text-brand",
+  PAYMENT_SENT: "text-danger",
 };
 
 const formatDate = (dt) => {
@@ -51,11 +51,11 @@ const NotificationsPage = () => {
     <div>
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <h1 className="text-sm font-bold" style={{ color: "var(--text-main)" }}>
+          <h1 className="text-sm font-bold text-app-text">
             Notifications
           </h1>
           {unreadCount > 0 && (
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#fef2f2] text-[#b91c1c]">
+            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-danger-soft text-danger-text">
               {unreadCount} unread
             </span>
           )}
@@ -70,13 +70,13 @@ const NotificationsPage = () => {
       <div className="card overflow-hidden">
         {loading && notifications.length === 0 ? (
           <div className="py-16 text-center">
-            <p className="text-xs" style={{ color: "var(--text-muted)" }}>Loading notifications...</p>
+            <p className="text-xs text-app-muted">Loading notifications...</p>
           </div>
         ) : notifications.length === 0 ? (
           <div className="py-16 text-center">
             <div className="flex flex-col items-center gap-2">
-              <MdInbox size={28} style={{ color: "var(--text-muted)" }} />
-              <p className="text-xs" style={{ color: "var(--text-muted)" }}>No notifications</p>
+              <MdInbox size={28} className="text-app-muted" />
+              <p className="text-xs text-app-muted">No notifications</p>
             </div>
           </div>
         ) : (
@@ -96,37 +96,33 @@ const NotificationsPage = () => {
                 {/* Unread indicator */}
                 <div className="pt-1 shrink-0">
                   {n.isRead ? (
-                    <MdCheckCircle size={10} style={{ color: "var(--text-muted)" }} />
+                    <MdCheckCircle size={10} className="text-app-muted" />
                   ) : (
-                    <MdCircle size={10} style={{ color: typeColors[n.type] || "var(--accent)" }} />
+                    <MdCircle size={10} className={typeClasses[n.type] || "text-brand"} />
                   )}
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-xs font-semibold" style={{ color: "var(--text-main)" }}>
+                    <span className="text-xs font-semibold text-app-text">
                       {n.title}
                     </span>
                     <span
-                      className="text-[10px] font-medium px-1.5 py-0.5 rounded"
-                      style={{
-                        background: "var(--surface-soft)",
-                        color: typeColors[n.type] || "var(--text-sub)",
-                      }}
+                      className={`text-[10px] font-medium px-1.5 py-0.5 rounded bg-surface-soft ${typeClasses[n.type] || "text-app-sub"}`}
                     >
                       {(n.type || "").replace(/_/g, " ")}
                     </span>
                   </div>
-                  <p className="text-xs mb-1" style={{ color: "var(--text-sub)" }}>
+                  <p className="text-xs mb-1 text-app-sub">
                     {n.message}
                   </p>
                   <div className="flex items-center gap-3">
-                    <span className="text-[10px]" style={{ color: "var(--text-muted)" }}>
+                    <span className="text-[10px] text-app-muted">
                       {formatDate(n.createdDt)}
                     </span>
                     {n.actionLabel && (
-                      <span className="text-[10px] font-semibold" style={{ color: "var(--accent)" }}>
+                      <span className="text-[10px] font-semibold text-brand">
                         {n.actionLabel}
                       </span>
                     )}
@@ -140,8 +136,7 @@ const NotificationsPage = () => {
                       e.stopPropagation();
                       markRead(n.notificationId);
                     }}
-                    className="shrink-0 text-[10px] font-medium px-2 py-1 rounded transition-colors"
-                    style={{ color: "var(--accent)" }}
+                    className="shrink-0 text-[10px] font-medium px-2 py-1 rounded transition-colors text-brand"
                     onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-bg)")}
                     onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
@@ -155,26 +150,21 @@ const NotificationsPage = () => {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div
-            className="flex items-center justify-between px-5 py-3"
-            style={{ borderTop: "1px solid var(--line)", background: "var(--surface-soft)" }}
-          >
+          <div className="flex items-center justify-between px-5 py-3 border-t border-line bg-surface-soft">
             <button
               onClick={goPrev}
               disabled={!hasPrevious}
-              className="flex items-center gap-1 text-xs font-medium transition-colors disabled:opacity-40"
-              style={{ color: "var(--text-sub)" }}
+              className="flex items-center gap-1 text-xs font-medium transition-colors disabled:opacity-40 text-app-sub"
             >
               <MdChevronLeft size={16} /> Previous
             </button>
-            <span className="text-[11px] font-medium" style={{ color: "var(--text-muted)" }}>
+            <span className="text-[11px] font-medium text-app-muted">
               Page {page + 1} of {totalPages}
             </span>
             <button
               onClick={goNext}
               disabled={!hasNext}
-              className="flex items-center gap-1 text-xs font-medium transition-colors disabled:opacity-40"
-              style={{ color: "var(--text-sub)" }}
+              className="flex items-center gap-1 text-xs font-medium transition-colors disabled:opacity-40 text-app-sub"
             >
               Next <MdChevronRight size={16} />
             </button>

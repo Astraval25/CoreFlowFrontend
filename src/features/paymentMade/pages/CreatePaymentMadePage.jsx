@@ -11,12 +11,12 @@ const fmtMoney = (value) =>
 
 const Field = ({ label, required, error, children }) => (
   <div className="flex flex-col gap-1">
-    <label className="text-[11px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">
+    <label className="text-[11px] font-semibold uppercase tracking-wide text-app-muted">
       {label}
-      {required && <span style={{ color: "var(--red)" }}> *</span>}
+      {required && <span className="text-danger"> *</span>}
     </label>
     {children}
-    {error && <span className="text-[11px] text-[var(--red)]">{error}</span>}
+    {error && <span className="text-[11px] text-danger">{error}</span>}
   </div>
 );
 
@@ -58,18 +58,16 @@ const CreatePaymentMadePage = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen" style={{ background: "var(--surface-bg)" }}>
+    <div className="flex flex-col min-h-screen bg-surface">
       <div
-        className="flex items-center justify-between px-8 py-4 shrink-0"
-        style={{ borderBottom: "1px solid var(--line)" }}
+        className="flex items-center justify-between px-8 py-4 shrink-0 border-b border-line"
       >
-        <h1 className="text-sm font-bold tracking-tight" style={{ color: "var(--text-main)" }}>
+        <h1 className="text-sm font-bold tracking-tight text-app-text">
           {isEditMode ? "Edit Payment Made" : "New Payment Made"}
         </h1>
         <button
           onClick={() => navigate(paymentBase)}
-          className="w-7 h-7 rounded-md flex items-center justify-center transition-colors"
-          style={{ color: "var(--text-muted)" }}
+          className="w-7 h-7 rounded-md flex items-center justify-center transition-colors text-app-muted"
         >
           <MdClose size={16} />
         </button>
@@ -83,8 +81,7 @@ const CreatePaymentMadePage = () => {
               value={formData.vendorId}
               onChange={handleInputChange}
               disabled={isEditMode}
-              className="form-input"
-              style={{ borderColor: errors.vendorId ? "var(--red)" : undefined }}
+              className={`form-input ${errors.vendorId ? "border-danger" : ""}`}
             >
               <option value="">Select vendor</option>
               {allVendors.map((v) => (
@@ -102,9 +99,8 @@ const CreatePaymentMadePage = () => {
               min="0"
               value={formData.amount}
               onChange={handleInputChange}
-              className="form-input"
+              className={`form-input ${errors.amount ? "border-danger" : ""}`}
               placeholder="0.00"
-              style={{ borderColor: errors.amount ? "var(--red)" : undefined }}
             />
           </Field>
 
@@ -114,8 +110,7 @@ const CreatePaymentMadePage = () => {
               name="paymentDate"
               value={formData.paymentDate}
               onChange={handleInputChange}
-              className="form-input"
-              style={{ borderColor: errors.paymentDate ? "var(--red)" : undefined }}
+              className={`form-input ${errors.paymentDate ? "border-danger" : ""}`}
             />
           </Field>
 
@@ -157,40 +152,40 @@ const CreatePaymentMadePage = () => {
           </Field>
         </div>
 
-        <div style={{ borderTop: "1px solid var(--line)" }}>
+        <div className="border-t border-line">
           <div className="flex items-center justify-between py-3">
-            <span className="text-[11px] font-bold uppercase tracking-wide text-[var(--text-muted)]">
+            <span className="text-[11px] font-bold uppercase tracking-wide text-app-muted">
               Order Allocations
             </span>
             <button
               type="button"
               onClick={addAllocation}
-              className="flex items-center gap-1 text-xs font-semibold text-[var(--accent)]"
+              className="flex items-center gap-1 text-xs font-semibold text-brand"
             >
               <MdAdd size={14} /> Add Allocation
             </button>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full" style={{ borderCollapse: "collapse" }}>
+            <table className="w-full" >
               <thead>
-                <tr style={{ borderBottom: "2px solid var(--line)" }}>
-                  <th className="py-2.5 text-left text-[10px] font-bold uppercase tracking-wide text-[var(--text-muted)]">
+                <tr className="border-b-2 border-line">
+                  <th className="py-2.5 text-left text-[10px] font-bold uppercase tracking-wide text-app-muted">
                     #
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wide text-[var(--text-muted)]">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wide text-app-muted">
                     Order
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wide text-[var(--text-muted)]">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wide text-app-muted">
                     Amount Applied
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wide text-[var(--text-muted)]">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wide text-app-muted">
                     Allocation Date
                   </th>
-                  <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wide text-[var(--text-muted)]">
+                  <th className="px-3 py-2.5 text-left text-[10px] font-bold uppercase tracking-wide text-app-muted">
                     Remarks
                   </th>
-                  <th className="py-2.5 text-right text-[10px] font-bold uppercase tracking-wide text-[var(--text-muted)]">
+                  <th className="py-2.5 text-right text-[10px] font-bold uppercase tracking-wide text-app-muted">
                     Action
                   </th>
                 </tr>
@@ -200,22 +195,20 @@ const CreatePaymentMadePage = () => {
                   <tr>
                     <td
                       colSpan={6}
-                      className="py-10 text-center text-xs text-[var(--text-muted)]"
-                      style={{ borderBottom: "1px solid var(--line)" }}
+                      className="py-10 text-center text-xs text-app-muted border-b border-line"
                     >
                       No allocations added. You can save payment without allocation.
                     </td>
                   </tr>
                 ) : (
                   formData.orderAllocations.map((a, idx) => (
-                    <tr key={`${a.paymentOrderAllocationId || "new"}-${idx}`} style={{ borderBottom: "1px solid var(--line)" }}>
-                      <td className="py-2.5 text-xs text-[var(--text-muted)]">{idx + 1}</td>
+                    <tr key={`${a.paymentOrderAllocationId || "new"}-${idx}`} className="border-b border-line">
+                      <td className="py-2.5 text-xs text-app-muted">{idx + 1}</td>
                       <td className="px-3 py-2">
                         <select
                           value={a.orderId}
                           onChange={(e) => updateAllocation(idx, "orderId", e.target.value)}
-                          className="form-input text-xs py-1.5"
-                          style={{ borderColor: errors[`orderId_${idx}`] ? "var(--red)" : undefined }}
+                          className={`form-input text-xs py-1.5 ${errors[`orderId_${idx}`] ? "border-danger" : ""}`}
                         >
                           <option value="">Select order</option>
                           {orderOptions.map((order) => (
@@ -225,7 +218,7 @@ const CreatePaymentMadePage = () => {
                           ))}
                         </select>
                         {errors[`orderId_${idx}`] && (
-                          <p className="mt-0.5 text-[10px] text-[var(--red)]">{errors[`orderId_${idx}`]}</p>
+                          <p className="mt-0.5 text-[10px] text-danger">{errors[`orderId_${idx}`]}</p>
                         )}
                       </td>
                       <td className="px-3 py-2">
@@ -240,7 +233,7 @@ const CreatePaymentMadePage = () => {
                           }}
                         />
                         {errors[`amountApplied_${idx}`] && (
-                          <p className="mt-0.5 text-[10px] text-[var(--red)]">
+                          <p className="mt-0.5 text-[10px] text-danger">
                             {errors[`amountApplied_${idx}`]}
                           </p>
                         )}
@@ -256,7 +249,7 @@ const CreatePaymentMadePage = () => {
                           }}
                         />
                         {errors[`allocationDate_${idx}`] && (
-                          <p className="mt-0.5 text-[10px] text-[var(--red)]">
+                          <p className="mt-0.5 text-[10px] text-danger">
                             {errors[`allocationDate_${idx}`]}
                           </p>
                         )}
@@ -274,7 +267,7 @@ const CreatePaymentMadePage = () => {
                         <button
                           type="button"
                           onClick={() => removeAllocation(idx)}
-                          className="w-6 h-6 rounded flex items-center justify-center ml-auto text-[var(--red)]"
+                          className="w-6 h-6 rounded flex items-center justify-center ml-auto text-danger"
                         >
                           <MdDeleteOutline size={14} />
                         </button>
@@ -293,7 +286,7 @@ const CreatePaymentMadePage = () => {
         style={{
           background: "var(--surface-bg)",
           borderTop: "1px solid var(--line)",
-          boxShadow: "0 -2px 10px 0 rgba(30,50,30,0.05)",
+          boxShadow: "0 -2px 10px 0 var(--shadow-soft)",
         }}
       >
         <div className="flex items-center gap-3">
@@ -306,13 +299,13 @@ const CreatePaymentMadePage = () => {
           <button
             type="button"
             onClick={() => navigate(paymentBase)}
-            className="text-xs text-[var(--text-muted)]"
+            className="text-xs text-app-muted"
           >
             Cancel
           </button>
         </div>
-        <span className="text-xs text-[var(--text-sub)]">
-          Allocated: <span className="font-bold text-[var(--text-main)]">{fmtMoney(totalAllocated)}</span>
+        <span className="text-xs text-app-sub">
+          Allocated: <span className="font-bold text-app-text">{fmtMoney(totalAllocated)}</span>
         </span>
       </div>
     </div>

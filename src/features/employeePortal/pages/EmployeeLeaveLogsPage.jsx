@@ -14,19 +14,19 @@ const EmployeeLeaveLogsPage = () => {
   } = useEmployeeLeaveLogs();
 
   const statusBadge = (s) => {
-    const map = { PENDING: "orange", APPROVED: "green", REJECTED: "red" };
+    const map = { PENDING: "orange", APPROVED: "blue", REJECTED: "red" };
     return <span className={`badge badge-${map[s] || "gray"}`}>{s}</span>;
   };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-5">
-        <h1 className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>My Leave Logs</h1>
+        <h1 className="text-sm font-semibold text-app-text">My Leave Logs</h1>
         <div className="flex items-center gap-3">
           <input type="date" value={dateRange.from} onChange={(e) => setDateRange((p) => ({ ...p, from: e.target.value }))} className="form-input text-xs py-1" />
           <input type="date" value={dateRange.to} onChange={(e) => setDateRange((p) => ({ ...p, to: e.target.value }))} className="form-input text-xs py-1" />
           <div className="relative">
-            <MdSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "var(--text-muted)" }} />
+            <MdSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted" />
             <input value={globalFilter ?? ""} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search…" className="form-input pl-8 text-xs py-1.5" style={{ width: 160 }} />
           </div>
           <button onClick={openCreate} className="btn-primary text-xs"><MdAdd size={15} /> New</button>
@@ -35,14 +35,14 @@ const EmployeeLeaveLogsPage = () => {
 
       <div className="card overflow-hidden">
         {loading ? (
-          <p className="text-xs p-8 text-center" style={{ color: "var(--text-muted)" }}>Loading…</p>
+          <p className="text-xs p-8 text-center text-app-muted">Loading…</p>
         ) : (
-          <table className="w-full" style={{ borderCollapse: "collapse" }}>
+          <table className="w-full" >
             <thead>
-              <tr style={{ background: "var(--surface-soft)", borderBottom: "1px solid var(--line)" }}>
+              <tr className="border-b border-line bg-surface-soft">
                 {table.getHeaderGroups().map((hg) =>
                   hg.headers.map((header) => (
-                    <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="px-4 py-3 text-left cursor-pointer select-none" style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)" }}>
+                    <th key={header.id} onClick={header.column.getToggleSortingHandler()} className="px-4 py-3 text-left cursor-pointer select-none text-[10px] font-bold uppercase tracking-[0.05em] text-app-muted">
                       <div className="flex gap-1">{flexRender(header.column.columnDef.header, header.getContext())}</div>
                     </th>
                   ))
@@ -51,22 +51,22 @@ const EmployeeLeaveLogsPage = () => {
             </thead>
             <tbody>
               {table.getRowModel().rows.length === 0 ? (
-                <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-xs" style={{ color: "var(--text-muted)" }}>No leave logs found</p></td></tr>
+                <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-xs text-app-muted">No leave logs found</p></td></tr>
               ) : (
                 table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} style={{ borderBottom: "1px solid var(--line)" }} onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")} onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
-                    <td className="px-4 py-3 text-xs" style={{ color: "var(--text-sub)" }}>{row.original.leaveDate}</td>
-                    <td className="px-4 py-3 text-xs" style={{ color: "var(--text-sub)" }}>{row.original.leaveType?.replace("_", " ")}</td>
+                  <tr key={row.id} className="border-b border-line" onMouseEnter={(e) => (e.currentTarget.style.background = "var(--surface-soft)")} onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}>
+                    <td className="px-4 py-3 text-xs text-app-sub">{row.original.leaveDate}</td>
+                    <td className="px-4 py-3 text-xs text-app-sub">{row.original.leaveType?.replace("_", " ")}</td>
                     <td className="px-4 py-3 text-xs">
                       <span className={`badge badge-${row.original.leaveCategory === "SICK" ? "red" : row.original.leaveCategory === "CASUAL" ? "blue" : "orange"}`}>
                         {row.original.leaveCategory}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-xs" style={{ color: "var(--text-sub)" }}>{row.original.reason || "—"}</td>
+                    <td className="px-4 py-3 text-xs text-app-sub">{row.original.reason || "—"}</td>
                     <td className="px-4 py-3">{statusBadge(row.original.status)}</td>
                     <td className="px-4 py-3">
                       {row.original.status === "PENDING" && (
-                        <button onClick={() => openEdit(row.original)} className="p-1 rounded hover:bg-gray-100" title="Edit"><MdEdit size={16} style={{ color: "var(--text-sub)" }} /></button>
+                        <button onClick={() => openEdit(row.original)} className="p-1 rounded hover:bg-gray-100" title="Edit"><MdEdit size={16} className="text-app-sub" /></button>
                       )}
                     </td>
                   </tr>
@@ -79,34 +79,34 @@ const EmployeeLeaveLogsPage = () => {
 
       {/* Create/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.35)" }} onClick={() => setShowModal(false)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay" onClick={() => setShowModal(false)}>
           <div className="card w-full max-w-md mx-4 p-5" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>{editingLog ? "Edit Leave" : "Apply Leave"}</p>
+              <p className="text-sm font-semibold text-app-text">{editingLog ? "Edit Leave" : "Apply Leave"}</p>
               <button onClick={() => setShowModal(false)} className="p-1 rounded hover:bg-gray-100"><MdClose size={18} /></button>
             </div>
-            {error && <p className="text-xs mb-3 p-2 rounded" style={{ color: "var(--red)", background: "rgba(239,68,68,0.08)" }}>{error}</p>}
+            {error && <p className="text-xs mb-3 p-2 rounded text-danger bg-danger-tint">{error}</p>}
             <div className="space-y-3">
               <div>
-                <label className="text-xs font-medium mb-1 block" style={{ color: "var(--text-sub)" }}>Leave Date</label>
+                <label className="text-xs font-medium mb-1 block text-app-sub">Leave Date</label>
                 <input type="date" value={form.leaveDate} onChange={(e) => setForm((p) => ({ ...p, leaveDate: e.target.value }))} className="form-input text-xs w-full" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-xs font-medium mb-1 block" style={{ color: "var(--text-sub)" }}>Type</label>
+                  <label className="text-xs font-medium mb-1 block text-app-sub">Type</label>
                   <select value={form.leaveType} onChange={(e) => setForm((p) => ({ ...p, leaveType: e.target.value }))} className="form-input text-xs w-full">
                     {LEAVE_TYPES.map((t) => <option key={t} value={t}>{t.replace("_", " ")}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-medium mb-1 block" style={{ color: "var(--text-sub)" }}>Category</label>
+                  <label className="text-xs font-medium mb-1 block text-app-sub">Category</label>
                   <select value={form.leaveCategory} onChange={(e) => setForm((p) => ({ ...p, leaveCategory: e.target.value }))} className="form-input text-xs w-full">
                     {LEAVE_CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
               </div>
               <div>
-                <label className="text-xs font-medium mb-1 block" style={{ color: "var(--text-sub)" }}>Reason</label>
+                <label className="text-xs font-medium mb-1 block text-app-sub">Reason</label>
                 <input value={form.reason} onChange={(e) => setForm((p) => ({ ...p, reason: e.target.value }))} className="form-input text-xs w-full" />
               </div>
             </div>
