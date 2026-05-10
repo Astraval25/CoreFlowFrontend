@@ -4,6 +4,19 @@ import { ENDPOINTS } from "../../config/apiEndpoints";
 const withDateRange = (path, startDate, endDate) =>
   `${path}?startDate=${startDate}&endDate=${endDate}`;
 
+const withDateRangeAndFilters = (path, startDate, endDate, filters = {}) => {
+  const params = new URLSearchParams({ startDate, endDate });
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
+    if (Array.isArray(value)) {
+      if (value.length) params.set(key, value.join(","));
+      return;
+    }
+    params.set(key, value);
+  });
+  return `${path}?${params.toString()}`;
+};
+
 export const coreApi = {
   login: (data) => api.post(ENDPOINTS.LOGIN, data),
   register: (data) => api.post(ENDPOINTS.REGISTER, data),
@@ -374,6 +387,26 @@ export const coreApi = {
 
   getMonthlyTrend: (companyId, startDate, endDate) =>
     api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/dashboard/monthly-trend`, startDate, endDate)),
+
+  getOrderHistory: (companyId, startDate, endDate, filters = {}) =>
+    api.get(
+      withDateRangeAndFilters(
+        `${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/history/orders`,
+        startDate,
+        endDate,
+        filters
+      )
+    ),
+
+  getPaymentHistory: (companyId, startDate, endDate, filters = {}) =>
+    api.get(
+      withDateRangeAndFilters(
+        `${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/history/payments`,
+        startDate,
+        endDate,
+        filters
+      )
+    ),
 
   // ── Employee Module (Admin) ──
   // Employees
