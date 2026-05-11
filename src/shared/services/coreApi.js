@@ -378,6 +378,13 @@ export const coreApi = {
   markAllNotificationsRead: (companyId) =>
     api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/notifications/read-all`),
 
+  // Announcements
+  getCurrentAnnouncement: () =>
+    api.get("/announcements/current"),
+
+  dismissAnnouncement: (announcementId) =>
+    api.post(`/announcements/${announcementId}/dismiss`),
+
   // Report Analytics
   getSalesSummary: (companyId, startDate, endDate) =>
     api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/summary`, startDate, endDate)),

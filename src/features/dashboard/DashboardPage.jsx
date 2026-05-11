@@ -20,6 +20,7 @@ import { MdClose, MdTrendingUp, MdTrendingDown } from "react-icons/md";
 import { FiArrowUpRight } from "react-icons/fi";
 import StyledDropdown from "../../shared/components/StyledDropdown";
 import { coreApi } from "../../shared/services/coreApi";
+import AdminAnnouncementModal from "../announcements/components/AdminAnnouncementModal";
 
 /* ─── helpers ─── */
 const fmt = (val) =>
@@ -585,6 +586,8 @@ export const DashboardPage = () => {
 
   return (
     <div className="flex flex-col gap-5">
+      <AdminAnnouncementModal />
+
       {/* Header */}
       <div className="pt-1 flex items-start justify-between gap-3">
         <div>
@@ -815,7 +818,6 @@ export const DashboardPage = () => {
     </div>
   );
 };
-
 
 
 
