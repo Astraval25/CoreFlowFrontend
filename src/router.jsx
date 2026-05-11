@@ -57,6 +57,7 @@ import UserSettingsPage from "./features/settings/pages/UserSettingsPage";
 import OrganizationProfilePage from "./features/settings/pages/OrganizationProfilePage";
 import MarketplaceCompaniesPage from "./features/marketplace/pages/MarketplaceCompaniesPage";
 import MarketplaceCompanyItemsPage from "./features/marketplace/pages/MarketplaceCompanyItemsPage";
+import ViewWorkDefPage from "./features/workDefinitions/pages/ViewWorkDefPage";
 
 export const router = createBrowserRouter([
   // ── Public pages ──
@@ -179,6 +180,7 @@ export const router = createBrowserRouter([
       { path: "cf/company/:companyId/work-definitions", element: <WorkDefinitionsPage /> },
       { path: "cf/company/:companyId/work-definitions/create", element: <CreateWorkDefPage /> },
       { path: "cf/company/:companyId/work-definitions/:workDefId/update", element: <CreateWorkDefPage /> },
+      { path: "cf/company/:companyId/work-definitions/:workDefId", element: <ViewWorkDefPage /> },
 
       // Work Logs
       { path: "cf/company/:companyId/work-logs", element: <WorkLogsPage /> },
