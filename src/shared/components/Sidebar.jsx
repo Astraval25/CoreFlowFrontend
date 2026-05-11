@@ -18,18 +18,22 @@ import {
   MdAccountBalance,
   MdBuild,
   MdEventAvailable,
+  MdReceiptLong,
+  MdSettings,
+  MdAccountBalanceWallet,
 } from "react-icons/md";
 import { FaShoppingCart } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 
-const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
+const Sidebar = ({ minimized = false, onToggleMinimize = () => { } }) => {
   const [openGroups, setOpenGroups] = useState({
     manage: false,
     sales: false,
     purchase: false,
     payments: false,
     employees: false,
+    setup: false,
   });
   const [companyId, setCompanyId] = useState("");
   const location = useLocation();
@@ -52,6 +56,7 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
 
   const homePath = withCompany("dashboard");
   const reportPath = withCompany("report");
+  const marketplacePath = "/cf/marketplace/companies";
 
   const manageChildren = [
     { label: "Customers", to: withCompany("customers"), icon: <MdManageAccounts size={16} />, match: "/customers" },
@@ -60,20 +65,22 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
   ];
 
   const salesChildren = [
-    { label: "Quotes",      to: `${withCompany("sales")}?tab=quotes`,      icon: <MdPointOfSale size={16} />, match: "sales-tab=quotes" },
-    { label: "Sales Order", to: `${withCompany("sales")}?tab=salesOrder`,  icon: <MdPointOfSale size={16} />, match: "sales-tab=salesOrder" },
-    { label: "Invoice",     to: `${withCompany("sales")}?tab=invoice`,     icon: <MdPointOfSale size={16} />, match: "sales-tab=invoice" },
+    { label: "Quotes", to: `${withCompany("sales")}?tab=quotes`, icon: <MdPointOfSale size={16} />, match: "sales-tab=quotes" },
+    { label: "Sales Order", to: `${withCompany("sales")}?tab=salesOrder`, icon: <MdPointOfSale size={16} />, match: "sales-tab=salesOrder" },
+    { label: "Invoice", to: `${withCompany("sales")}?tab=invoice`, icon: <MdPointOfSale size={16} />, match: "sales-tab=invoice" },
   ];
 
   const purchaseChildren = [
-    { label: "Quotes",         to: `${withCompany("purchase/list")}?tab=quotes`,        icon: <FaShoppingCart size={14} />, match: "purchase-tab=quotes" },
+    { label: "Quotes", to: `${withCompany("purchase/list")}?tab=quotes`, icon: <FaShoppingCart size={14} />, match: "purchase-tab=quotes" },
     { label: "Purchase Order", to: `${withCompany("purchase/list")}?tab=purchaseOrder`, icon: <FaShoppingCart size={14} />, match: "purchase-tab=purchaseOrder" },
-    { label: "Bill",           to: `${withCompany("purchase/list")}?tab=bill`,          icon: <FaShoppingCart size={14} />, match: "purchase-tab=bill" },
+    { label: "Bill", to: `${withCompany("purchase/list")}?tab=bill`, icon: <FaShoppingCart size={14} />, match: "purchase-tab=bill" },
   ];
 
   const paymentsChildren = [
-    { label: "Payment Received", to: withCompany("payment-received/list"), icon: <MdPayments size={16} />,          match: "/payment-received" },
-    { label: "Payment Made",     to: withCompany("payment-made/list"),     icon: <MdOutlinePayments size={16} />,   match: "/payment-made" },
+    { label: "Expenses", to: withCompany("expenses/list"), icon: <MdReceiptLong size={16} />, match: "/expenses" },
+    { label: "Payment Made", to: withCompany("payment-made/list"), icon: <MdOutlinePayments size={16} />, match: "/payment-made" },
+    { label: "Payment Received", to: withCompany("payment-received/list"), icon: <MdPayments size={16} />, match: "/payment-received" },
+
   ];
 
   const employeeChildren = [
@@ -82,6 +89,10 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
     { label: "Work Logs", to: withCompany("work-logs"), icon: <MdWork size={16} />, match: "/work-logs" },
     { label: "Leave Logs", to: withCompany("leave-logs"), icon: <MdEventAvailable size={16} />, match: "/leave-logs" },
     { label: "Salary", to: withCompany("salary"), icon: <MdAccountBalance size={16} />, match: "/salary" },
+  ];
+
+  const setupChildren = [
+    { label: "Expense Account", to: withCompany("setup/expense-accounts"), icon: <MdAccountBalanceWallet size={16} />, match: "/setup/expense-accounts" },
   ];
 
   const currentLocation = `${location.pathname}${location.search}`;
@@ -99,16 +110,17 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
   const isPurchaseActive = purchaseChildren.some((item) => matchesItem(item.match)) || (location.pathname.includes("/purchase") && !location.search.includes("tab="));
   const isPaymentsActive = paymentsChildren.some((item) => matchesItem(item.match));
   const isEmployeesActive = employeeChildren.some((item) => matchesItem(item.match));
+  const isSetupActive = setupChildren.some((item) => matchesItem(item.match));
 
   useEffect(() => {
     if (minimized) return;
-    const active = isManageActive ? "manage" : isSalesActive ? "sales" : isPurchaseActive ? "purchase" : isPaymentsActive ? "payments" : isEmployeesActive ? "employees" : null;
+    const active = isManageActive ? "manage" : isSalesActive ? "sales" : isPurchaseActive ? "purchase" : isPaymentsActive ? "payments" : isEmployeesActive ? "employees" : isSetupActive ? "setup" : null;
     if (active) setOpenGroups((prev) => {
       const next = {};
       for (const k in prev) next[k] = k === active;
       return next;
     });
-  }, [minimized, isManageActive, isSalesActive, isPurchaseActive, isPaymentsActive, isEmployeesActive]);
+  }, [minimized, isManageActive, isSalesActive, isPurchaseActive, isPaymentsActive, isEmployeesActive, isSetupActive]);
 
   const toggleGroup = (key) => {
     setOpenGroups((prev) => {
@@ -121,40 +133,38 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
 
   const compactItems = [
     { label: "Home", to: homePath, icon: <MdDashboard size={19} /> },
+    { label: "Marketplace", to: marketplacePath, icon: <MdStorefront size={17} /> },
     ...manageChildren,
     ...salesChildren,
     ...purchaseChildren,
     ...paymentsChildren,
     ...employeeChildren,
+    ...setupChildren,
     { label: "Report", to: reportPath, icon: <MdAssessment size={18} /> },
   ];
 
   const expandedItemClass = ({ isActive }) =>
-    `group flex items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
-      isActive
-        ? "font-semibold shadow-sm rounded-md"
-        : "font-medium hover:bg-brand-soft rounded-xl"
+    `group flex items-center gap-2.5 px-3 py-2 text-sm transition-colors ${isActive
+      ? "font-semibold shadow-sm rounded-md"
+      : "font-medium hover:bg-brand-soft rounded-xl"
     }`;
 
   const compactItemClass = ({ isActive }) =>
-    `group relative flex items-center justify-center w-11 h-11 mx-auto transition-colors ${
-      isActive
-        ? "shadow-sm rounded-md"
-        : "hover:bg-brand-soft rounded-xl"
+    `group relative flex items-center justify-center w-11 h-11 mx-auto transition-colors ${isActive
+      ? "shadow-sm rounded-md"
+      : "hover:bg-brand-soft rounded-xl"
     }`;
 
   const groupButtonClass = (active) =>
-    `w-full flex items-center justify-between px-3 py-2 rounded-sm text-sm font-medium transition-colors ${
-      active
-        ? "hover:bg-brand-soft"
-        : "hover:bg-brand-soft"
+    `w-full flex items-center justify-between px-3 py-2 rounded-sm text-sm font-medium transition-colors ${active
+      ? "hover:bg-brand-soft"
+      : "hover:bg-brand-soft"
     }`;
 
   const nestedItemClass = ({ isActive }) =>
-    `flex items-center gap-2 px-2.5 py-2 text-[13px] transition-colors ${
-      isActive
-        ? "font-semibold rounded-sm"
-        : "font-medium hover:bg-brand-soft rounded-lg"
+    `flex items-center gap-2 px-2.5 py-2 text-[13px] transition-colors ${isActive
+      ? "font-semibold rounded-sm"
+      : "font-medium hover:bg-brand-soft rounded-lg"
     }`;
 
   const renderNestedLinks = (items) => (
@@ -254,9 +264,8 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
                 />
               </button>
               <div
-                className={`overflow-hidden transition-all duration-200 ${
-                  openGroups.manage ? "max-h-64 mt-1" : "max-h-0"
-                }`}
+                className={`overflow-hidden transition-all duration-200 ${openGroups.manage ? "max-h-64 mt-1" : "max-h-0"
+                  }`}
               >
                 {renderNestedLinks(manageChildren)}
               </div>
@@ -281,9 +290,8 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
                 />
               </button>
               <div
-                className={`overflow-hidden transition-all duration-200 ${
-                  openGroups.sales ? "max-h-72 mt-1" : "max-h-0"
-                }`}
+                className={`overflow-hidden transition-all duration-200 ${openGroups.sales ? "max-h-72 mt-1" : "max-h-0"
+                  }`}
               >
                 {renderNestedLinks(salesChildren)}
               </div>
@@ -308,9 +316,8 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
                 />
               </button>
               <div
-                className={`overflow-hidden transition-all duration-200 ${
-                  openGroups.purchase ? "max-h-72 mt-1" : "max-h-0"
-                }`}
+                className={`overflow-hidden transition-all duration-200 ${openGroups.purchase ? "max-h-72 mt-1" : "max-h-0"
+                  }`}
               >
                 {renderNestedLinks(purchaseChildren)}
               </div>
@@ -335,9 +342,8 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
                 />
               </button>
               <div
-                className={`overflow-hidden transition-all duration-200 ${
-                  openGroups.payments ? "max-h-40 mt-1" : "max-h-0"
-                }`}
+                className={`overflow-hidden transition-all duration-200 ${openGroups.payments ? "max-h-40 mt-1" : "max-h-0"
+                  }`}
               >
                 {renderNestedLinks(paymentsChildren)}
               </div>
@@ -362,9 +368,8 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
                 />
               </button>
               <div
-                className={`overflow-hidden transition-all duration-200 ${
-                  openGroups.employees ? "max-h-80 mt-1" : "max-h-0"
-                }`}
+                className={`overflow-hidden transition-all duration-200 ${openGroups.employees ? "max-h-80 mt-1" : "max-h-0"
+                  }`}
               >
                 {renderNestedLinks(employeeChildren)}
               </div>
@@ -381,6 +386,48 @@ const Sidebar = ({ minimized = false, onToggleMinimize = () => {} }) => {
               <MdAssessment size={17} />
               <span>Report</span>
             </NavLink>
+
+
+            <NavLink
+              to={marketplacePath}
+              className={expandedItemClass}
+              style={({ isActive }) => ({
+                background: isActive ? "var(--accent-soft)" : "transparent",
+                color: isActive ? "var(--accent)" : "var(--text-heading)",
+              })}
+            >
+              <MdStorefront size={17} />
+              <span>Marketplace</span>
+            </NavLink>
+
+
+            {/*Setup */}
+            {/* <div className="rounded-xl p-1 bg-sidebar-group">
+              <button
+                onClick={() => toggleGroup("setup")}
+                className={groupButtonClass(isSetupActive)}
+                style={{
+                  background: "transparent",
+                  color: "var(--text-heading)",
+                }}
+              >
+                <span className="flex items-center gap-2.5">
+                  <MdSettings size={17} />
+                  Setup
+                </span>
+                <MdKeyboardArrowDown
+                  size={18}
+                  className={`transition-transform ${openGroups.setup ? "rotate-180" : ""}`}
+                />
+              </button>
+              <div
+                className={`overflow-hidden transition-all duration-200 ${
+                  openGroups.setup ? "max-h-32 mt-1" : "max-h-0"
+                }`}
+              >
+                {renderNestedLinks(setupChildren)}
+              </div>
+            </div> */}
           </>
         )}
       </nav>

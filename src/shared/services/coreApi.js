@@ -28,6 +28,9 @@ export const coreApi = {
   getCompanyById: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}`),
 
+  updateCompany: (companyId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}`, data),
+
   uploadCompanyLogo: (companyId, file) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -35,6 +38,16 @@ export const coreApi = {
       headers: { "Content-Type": "multipart/form-data" },
     });
   },
+
+  // Marketplace
+  getMarketplaceCompanies: () =>
+    api.get("/marketplace/companies"),
+
+  getMarketplaceCompanyDetail: (companyId) =>
+    api.get(`/marketplace/companies/${companyId}`),
+
+  getMarketplaceCompanyItems: (companyId) =>
+    api.get(`/marketplace/companies/${companyId}/items`),
 
   // Customer
   getCustomers: (companyId) =>
@@ -90,6 +103,47 @@ export const coreApi = {
 
   getAllVendorByCompanyId: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors`),
+
+  // Expense Accounts
+  getExpenseAccounts: (companyId, activeOnly = false) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts?activeOnly=${activeOnly}`),
+
+  getExpenseAccountTypes: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts/account-types`),
+
+  getExpenseAccountDetail: (companyId, expenseAccountId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts/${expenseAccountId}`),
+
+  createExpenseAccount: (companyId, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts`, data),
+
+  updateExpenseAccount: (companyId, expenseAccountId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts/${expenseAccountId}`, data),
+
+  deactivateExpenseAccount: (companyId, expenseAccountId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts/${expenseAccountId}/deactivate`),
+
+  activateExpenseAccount: (companyId, expenseAccountId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts/${expenseAccountId}/activate`),
+
+  // Expenses
+  getExpenses: (companyId, activeOnly = true) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses?activeOnly=${activeOnly}`),
+
+  getExpenseDetail: (companyId, expenseId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses/${expenseId}`),
+
+  createExpense: (companyId, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses`, data),
+
+  updateExpense: (companyId, expenseId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses/${expenseId}`, data),
+
+  deactivateExpense: (companyId, expenseId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses/${expenseId}/deactivate`),
+
+  activateExpense: (companyId, expenseId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses/${expenseId}/activate`),
 
   // items
   getItems: (companyId) =>

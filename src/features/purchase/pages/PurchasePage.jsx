@@ -75,6 +75,10 @@ const PurchasePage = () => {
                     navigate(`/cf/company/${companyId}/payment-made/list`);
                     return;
                   }
+                  if (tab.id === "expenses") {
+                    navigate(`/cf/company/${companyId}/expenses/list`);
+                    return;
+                  }
                   handleTabChange(tab.id);
                 }}
                 className="text-xs pb-1 border-b-2 transition-colors"
