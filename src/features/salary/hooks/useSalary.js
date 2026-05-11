@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { coreApi } from "../../../shared/services/coreApi";
 import { jwtDecode } from "jwt-decode";
 import {
@@ -16,6 +17,7 @@ const getCurrentPeriod = () => {
 };
 
 export const useSalary = () => {
+  const navigate = useNavigate();
   const [periods, setPeriods] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [companyId, setCompanyId] = useState("");
@@ -32,10 +34,6 @@ export const useSalary = () => {
   });
   const [calcLoading, setCalcLoading] = useState(false);
   const [calcError, setCalcError] = useState("");
-
-  // Detail
-  const [selectedDetail, setSelectedDetail] = useState(null);
-  const [detailLoading, setDetailLoading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -93,25 +91,8 @@ export const useSalary = () => {
     }
   };
 
-  const markPaid = async (salaryPeriodId, paymentRef = "") => {
-    try {
-      await coreApi.markSalaryPaid(companyId, salaryPeriodId, paymentRef ? { paymentRef } : {});
-      fetchPeriods();
-    } catch (err) {
-      console.error("Mark paid error:", err);
-    }
-  };
-
-  const viewDetail = async (salaryPeriodId) => {
-    setDetailLoading(true);
-    try {
-      const res = await coreApi.getSalaryPeriodDetail(companyId, salaryPeriodId);
-      setSelectedDetail(res.data.responseData || null);
-    } catch (err) {
-      console.error("Salary detail error:", err);
-    } finally {
-      setDetailLoading(false);
-    }
+  const viewDetail = (salaryPeriodId) => {
+    navigate(`/cf/company/${companyId}/salary/${salaryPeriodId}`);
   };
 
   const downloadSlip = async (salaryPeriodId) => {
@@ -140,6 +121,8 @@ export const useSalary = () => {
     columnHelper.accessor("salaryType", { header: "Type" }),
     columnHelper.accessor("grossAmount", { header: "Gross" }),
     columnHelper.accessor("netAmount", { header: "Net" }),
+    columnHelper.accessor("paidAmount", { header: "Paid" }),
+    columnHelper.accessor("balanceAmount", { header: "Balance" }),
     columnHelper.accessor("status", { header: "Status" }),
     columnHelper.accessor("_actions", { header: "Actions" }),
   ];
@@ -171,12 +154,8 @@ export const useSalary = () => {
     calcError,
     calculateSalary,
     approvePeriod,
-    markPaid,
     viewDetail,
     downloadSlip,
-    selectedDetail,
-    setSelectedDetail,
-    detailLoading,
     companyId,
   };
 };

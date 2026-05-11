@@ -589,7 +589,7 @@ export const DashboardPage = () => {
       <div className="pt-1 flex items-start justify-between gap-3">
         <div>
           <h1 className="text-xl font-extrabold text-app-text">
-            Hello, {userName}
+             Hello, {companyName} {/* {userName} */}
           </h1>
           <p className="text-xs mt-0.5 text-app-sub">{companyName}</p>
         </div>

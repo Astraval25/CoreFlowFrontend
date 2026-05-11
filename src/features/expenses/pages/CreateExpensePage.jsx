@@ -1,5 +1,5 @@
 import { MdArrowBack, MdSettings } from "react-icons/md";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import useCreateExpense from "../hooks/useCreateExpense";
 
 const Field = ({ label, required, error, children }) => (
@@ -16,25 +16,29 @@ const Field = ({ label, required, error, children }) => (
 const CreateExpensePage = () => {
   const navigate = useNavigate();
   const { companyId, expenseId } = useParams();
+  const [searchParams] = useSearchParams();
+  const salaryPeriodId = searchParams.get("salaryPeriodId");
   const isEdit = Boolean(expenseId);
   const {
     expenseAccounts,
     vendors,
     customers,
+    salaryContext,
     paymentModes,
     formData,
     errors,
     loading,
     handleChange,
     submitExpense,
-  } = useCreateExpense(expenseId);
+  } = useCreateExpense(expenseId, salaryPeriodId);
 
   const listPath = `/cf/company/${companyId}/expenses/list`;
+  const salaryPath = `/cf/company/${companyId}/salary`;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const ok = await submitExpense();
-    if (ok) navigate(listPath);
+    if (ok) navigate(salaryContext && !isEdit ? salaryPath : listPath);
   };
 
   return (
@@ -59,6 +63,33 @@ const CreateExpensePage = () => {
 
       <form onSubmit={handleSubmit} className="card p-6 space-y-6">
         {errors.submit && <p className="text-xs p-3 rounded text-danger bg-danger-tint">{errors.submit}</p>}
+
+        {salaryContext && !isEdit && (
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+            <p className="text-sm font-semibold text-emerald-900">Confirm salary payment</p>
+            <div className="mt-2 grid grid-cols-1 gap-2 text-xs text-emerald-900 md:grid-cols-4">
+              <div>
+                <p className="font-semibold uppercase tracking-wide text-emerald-700">Employee</p>
+                <p>{salaryContext.employeeName}</p>
+              </div>
+              <div>
+                <p className="font-semibold uppercase tracking-wide text-emerald-700">Period</p>
+                <p>{salaryContext.fromDate} to {salaryContext.toDate}</p>
+              </div>
+              <div>
+                <p className="font-semibold uppercase tracking-wide text-emerald-700">Paid</p>
+                <p>Rs {salaryContext.paidAmount?.toLocaleString?.() ?? salaryContext.paidAmount}</p>
+              </div>
+              <div>
+                <p className="font-semibold uppercase tracking-wide text-emerald-700">Balance</p>
+                <p>Rs {salaryContext.balanceAmount?.toLocaleString?.() ?? salaryContext.balanceAmount}</p>
+              </div>
+            </div>
+            <p className="mt-3 text-xs text-emerald-800">
+              Review the payment details below, adjust the amount if needed, then confirm to record this salary payment as an expense.
+            </p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <Field label="Date" required error={errors.expenseDate}>
@@ -175,7 +206,7 @@ const CreateExpensePage = () => {
             Cancel
           </button>
           <button type="submit" disabled={loading} className="btn-primary text-xs">
-            {loading ? "Saving..." : isEdit ? "Update Expense" : "Save Expense"}
+            {loading ? "Saving..." : isEdit ? "Update Expense" : salaryContext ? "Confirm & Save Payment" : "Save Expense"}
           </button>
         </div>
       </form>

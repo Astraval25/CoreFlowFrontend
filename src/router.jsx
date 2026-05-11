@@ -44,6 +44,7 @@ import CreateWorkDefPage from "./features/workDefinitions/pages/CreateWorkDefPag
 import WorkLogsPage from "./features/workLogs/pages/WorkLogsPage";
 import LeaveLogsPage from "./features/leaveLogs/pages/LeaveLogsPage";
 import SalaryPage from "./features/salary/pages/SalaryPage";
+import SalaryDetailPage from "./features/salary/pages/SalaryDetailPage";
 import EmployeeProfilePage from "./features/employeePortal/pages/EmployeeProfilePage";
 import EmployeeWorkLogsPage from "./features/employeePortal/pages/EmployeeWorkLogsPage";
 import EmployeeLeaveLogsPage from "./features/employeePortal/pages/EmployeeLeaveLogsPage";
@@ -187,6 +188,7 @@ export const router = createBrowserRouter([
 
       // Salary
       { path: "cf/company/:companyId/salary", element: <SalaryPage /> },
+      { path: "cf/company/:companyId/salary/:salaryPeriodId", element: <SalaryDetailPage /> },
 
       // Employee Portal (self-service)
       { path: "cf/emp/profile", element: <EmployeeProfilePage /> },

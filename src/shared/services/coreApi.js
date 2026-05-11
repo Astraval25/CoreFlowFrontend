@@ -534,6 +534,12 @@ export const coreApi = {
   reviewWorkLog: (companyId, logId, data) =>
     api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-logs/${logId}/review`, data),
 
+  updateWorkLogByAdmin: (companyId, logId, data) =>
+    api.put(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-logs/${logId}`, data),
+
+  deleteWorkLog: (companyId, logId) =>
+    api.delete(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-logs/${logId}`),
+
   // Leave Logs (Admin)
   createLeaveLog: (companyId, data) =>
     api.post(`${ENDPOINTS.MODEMP}/${companyId}/modemp/leave-logs`, data),

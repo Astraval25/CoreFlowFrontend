@@ -17,12 +17,13 @@ const normalizeDate = (value) => {
   return String(value).slice(0, 10);
 };
 
-const useCreateExpense = (expenseId = null) => {
+const useCreateExpense = (expenseId = null, salaryPeriodId = null) => {
   const [companyId, setCompanyId] = useState("");
   const [expenseAccounts, setExpenseAccounts] = useState([]);
   const [vendors, setVendors] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [salaryContext, setSalaryContext] = useState(null);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     expenseDate: today(),
@@ -34,21 +35,6 @@ const useCreateExpense = (expenseId = null) => {
     customerId: "",
     remark: "",
   });
-
-  const fetchLookups = async (compId) => {
-    try {
-      const [accountsRes, vendorsRes, customersRes] = await Promise.all([
-        coreApi.getExpenseAccounts(compId, true),
-        coreApi.getAllVendorByCompanyId(compId),
-        coreApi.getAllCustomerByCompanyId(compId),
-      ]);
-      setExpenseAccounts(accountsRes?.data?.responseData || []);
-      setVendors(vendorsRes?.data?.responseData || []);
-      setCustomers(customersRes?.data?.responseData || []);
-    } catch (error) {
-      console.error("Failed to fetch expense lookups:", error);
-    }
-  };
 
   const fetchExpense = async (compId, id) => {
     try {
@@ -65,9 +51,42 @@ const useCreateExpense = (expenseId = null) => {
         customerId: data.customerId ? String(data.customerId) : "",
         remark: data.remark || "",
       });
+      setSalaryContext(null);
     } catch (error) {
       console.error("Failed to fetch expense:", error);
       setErrors({ submit: "Failed to load expense" });
+    }
+  };
+
+  const applySalaryPrefill = async (compId, currentExpenseAccounts) => {
+    if (!salaryPeriodId || expenseId) return;
+
+    try {
+      const res = await coreApi.getSalaryPeriodDetail(compId, salaryPeriodId);
+      const detail = res?.data?.responseData;
+      if (!detail) return;
+
+      const salaryAccount = currentExpenseAccounts.find(
+        (account) => String(account.accountName || "").trim().toLowerCase() === "salary"
+      );
+
+      const balanceAmount = Number(detail.balanceAmount ?? detail.netAmount ?? 0);
+      setSalaryContext(detail);
+      setFormData((prev) => ({
+        ...prev,
+        expenseDate: normalizeDate(detail.toDate),
+        paymentMode: prev.paymentMode || "BANK_TRANSFER",
+        amount: balanceAmount > 0 ? balanceAmount : prev.amount,
+        expenseAccountId: salaryAccount ? String(salaryAccount.expenseAccountId) : prev.expenseAccountId,
+        invoiceNo: `SALARY-${detail.salaryPeriodId}-${detail.paymentCount + 1}`,
+        remark: `Salary payment for ${detail.employeeName} (${detail.fromDate} to ${detail.toDate})`,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch salary detail:", error);
+      setErrors((prev) => ({
+        ...prev,
+        submit: error?.response?.data?.responseMessage || "Failed to load salary payment details",
+      }));
     }
   };
 
@@ -75,9 +94,28 @@ const useCreateExpense = (expenseId = null) => {
     const compId = decodeCompanyId();
     setCompanyId(compId);
     if (!compId) return;
-    fetchLookups(compId);
-    if (expenseId) fetchExpense(compId, expenseId);
-  }, [expenseId]);
+    (async () => {
+      try {
+        const [accountsRes, vendorsRes, customersRes] = await Promise.all([
+          coreApi.getExpenseAccounts(compId, true),
+          coreApi.getAllVendorByCompanyId(compId),
+          coreApi.getAllCustomerByCompanyId(compId),
+        ]);
+        const accounts = accountsRes?.data?.responseData || [];
+        setExpenseAccounts(accounts);
+        setVendors(vendorsRes?.data?.responseData || []);
+        setCustomers(customersRes?.data?.responseData || []);
+
+        if (expenseId) {
+          await fetchExpense(compId, expenseId);
+        } else {
+          await applySalaryPrefill(compId, accounts);
+        }
+      } catch (error) {
+        console.error("Failed to fetch expense lookups:", error);
+      }
+    })();
+  }, [expenseId, salaryPeriodId]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -110,6 +148,7 @@ const useCreateExpense = (expenseId = null) => {
         vendorId: formData.vendorId ? Number(formData.vendorId) : null,
         customerId: formData.customerId ? Number(formData.customerId) : null,
         remark: formData.remark || null,
+        salaryPeriodId: salaryPeriodId ? Number(salaryPeriodId) : null,
       };
       if (expenseId) {
         await coreApi.updateExpense(companyId, expenseId, payload);
@@ -134,6 +173,7 @@ const useCreateExpense = (expenseId = null) => {
     expenseAccounts,
     vendors,
     customers,
+    salaryContext,
     paymentModes: PAYMENT_MODES,
     formData,
     errors,
