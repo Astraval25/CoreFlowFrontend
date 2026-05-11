@@ -1,16 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
-import { MdArrowBack, MdInbox, MdSearch, MdStorefront } from "react-icons/md";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  MdCall,
+  MdEmail,
+  MdFacebook,
+  MdKeyboardArrowDown,
+  MdLocationOn,
+  MdOutlineSearch,
+} from "react-icons/md";
+import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
+import { useParams } from "react-router-dom";
 import { coreApi } from "../../../shared/services/coreApi";
 
-const fmtMoney = (value) =>
+const fileUrl = (fsId) =>
+  fsId ? `${import.meta.env.VITE_BASE_URL}/file?fsId=${encodeURIComponent(fsId)}` : "";
+
+const formatMoney = (value) =>
   Number(value || 0).toLocaleString("en-IN", {
-    minimumFractionDigits: 2,
+    minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   });
 
 const MarketplaceCompanyItemsPage = () => {
-  const navigate = useNavigate();
   const { companyId } = useParams();
   const [company, setCompany] = useState(null);
   const [items, setItems] = useState([]);
@@ -50,114 +60,204 @@ const MarketplaceCompanyItemsPage = () => {
   const filteredItems = useMemo(() => {
     const q = globalFilter.trim().toLowerCase();
     if (!q) return items;
-    return items.filter((item) =>
-      String(item.itemName || "").toLowerCase().includes(q) ||
-      String(item.itemType || "").toLowerCase().includes(q) ||
-      String(item.unit || "").toLowerCase().includes(q) ||
-      String(item.salesDescription || "").toLowerCase().includes(q)
+    return items.filter(
+      (item) =>
+        String(item.itemName || "").toLowerCase().includes(q) ||
+        String(item.itemType || "").toLowerCase().includes(q) ||
+        String(item.salesDescription || "").toLowerCase().includes(q)
     );
   }, [items, globalFilter]);
 
+  const brandName = company?.companyName || "Company Portfolio";
+  const collectionTitle = company?.industry || "Products";
+  const logoUrl = fileUrl(company?.fsId);
+  const websiteUrl = company?.website
+    ? /^https?:\/\//i.test(company.website)
+      ? company.website
+      : `https://${company.website}`
+    : "";
+
+  const scrollToSection = (sectionId) => {
+    document.getElementById(sectionId)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-app">
-      <div className="flex items-center justify-between mb-5 gap-3">
-        <div className="flex items-center gap-2">
-          <button type="button" className="btn-ghost p-1.5" onClick={() => navigate("/cf/marketplace/companies")}>
-            <MdArrowBack size={17} />
-          </button>
-          <MdStorefront size={18} className="text-brand" />
-          <h1 className="text-sm font-bold text-app-text">
-            {company?.companyName || "Marketplace Company"}
-          </h1>
-        </div>
-        <div className="relative">
-          <MdSearch
-            size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-app-muted"
-          />
-          <input
-            value={globalFilter}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            placeholder="Search products..."
-            className="form-input pl-8 text-xs py-1.5"
-            style={{ width: 260 }}
-          />
-        </div>
+    <div className="min-h-screen bg-white text-[#111719]">
+      <div className="h-9 bg-[#285a22] text-white/90 text-[11px] md:text-xs font-semibold flex items-center justify-center px-4">
+        Welcome to {brandName}. Explore products and connect for business.
       </div>
 
-      <div className="page-section mb-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wide text-app-muted">Contact</p>
-            <p className="text-sm text-app-text">{company?.contactPerson || "-"}</p>
-            <p className="text-xs text-app-sub">{company?.contactEmail || "-"}</p>
-            <p className="text-xs text-app-sub">{company?.contactPhone || "-"}</p>
+      <header className="h-[78px] bg-white flex items-center border-b border-[#f0f0f0]">
+        <div className="w-full px-5 md:px-7 grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+          <div className="flex items-center min-w-0">
+            {logoUrl ? (
+              <img
+                src={logoUrl}
+                alt={`${brandName} logo`}
+                className="h-12 max-w-[190px] object-contain"
+              />
+            ) : (
+              <div className="h-12 max-w-[190px] flex items-center">
+                <span className="text-2xl font-bold text-[#285a22] truncate">{brandName}</span>
+              </div>
+            )}
           </div>
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wide text-app-muted">Location</p>
-            <p className="text-sm text-app-text">
-              {[company?.addressLine1, company?.addressLine2].filter(Boolean).join(", ") || "-"}
-            </p>
-            <p className="text-xs text-app-sub">
-              {[company?.city, company?.state, company?.postalCode].filter(Boolean).join(", ") || "-"}
-            </p>
-            <p className="text-xs text-app-sub">{company?.country || "-"}</p>
-          </div>
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wide text-app-muted">Business</p>
-            <p className="text-sm text-app-text">{company?.industry || "-"}</p>
-            <p className="text-xs text-app-sub">{company?.website || "-"}</p>
+
+          <nav className="hidden md:flex items-center gap-8 text-[15px] font-medium text-[#1f282b]">
+            <button
+              type="button"
+              onClick={() => scrollToSection("products")}
+              className="inline-flex items-center gap-1 hover:text-[#285a22] transition-colors"
+            >
+              Products <MdKeyboardArrowDown size={18} />
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("about")}
+              className="hover:text-[#285a22] transition-colors"
+            >
+              About Us
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("contact")}
+              className="hover:text-[#285a22] transition-colors"
+            >
+              Contact
+            </button>
+            {websiteUrl && (
+              <a
+                href={websiteUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#285a22] transition-colors"
+              >
+                Website
+              </a>
+            )}
+          </nav>
+
+          <div className="justify-self-end flex items-center gap-2">
+            <div className="relative hidden sm:block">
+              <MdOutlineSearch
+                size={18}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-[#333]"
+              />
+              <input
+                value={globalFilter}
+                onChange={(e) => setGlobalFilter(e.target.value)}
+                placeholder="Search"
+                className="w-36 lg:w-52 border border-transparent focus:border-[#d9dfd8] rounded-sm py-2 pl-9 pr-3 text-sm outline-none"
+              />
+            </div>
+            <MdOutlineSearch size={24} className="sm:hidden text-[#333]" />
           </div>
         </div>
-        {company?.publicDescription && (
-          <p className="mt-3 text-sm text-app-soft">{company.publicDescription}</p>
+      </header>
+
+      <main id="products" className="px-5 md:px-7 pt-14 scroll-mt-6">
+        <h1 className="text-center text-[30px] md:text-[38px] font-semibold mb-[92px]">
+          {collectionTitle}
+        </h1>
+
+        {loading ? (
+          <div className="text-center py-16 text-[#5d665f]">Loading products...</div>
+        ) : filteredItems.length === 0 ? (
+          <div className="text-center py-16 text-[#5d665f]">No products found</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-5 gap-y-10">
+            {filteredItems.map((item) => {
+              const imageUrl = fileUrl(item.fsId);
+              return (
+                <article key={item.itemId} className="bg-white overflow-hidden">
+                  <div className="relative h-[300px] bg-[#fafafa] overflow-hidden">
+                    <span className="absolute top-2 left-1 z-10 rounded-full bg-[#d5f2d1] text-[#4d894d] text-xs font-semibold px-2 py-1">
+                      Save
+                    </span>
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={item.itemName}
+                        className="w-full h-full object-contain"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-[#f8f8f8]">
+                        <span className="w-20 h-20 rounded-full bg-[#e6eee5] text-[#285a22] text-2xl font-bold flex items-center justify-center">
+                          {(item.itemName || "P").slice(0, 1).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-[#f5f5f5] text-center px-4 py-5 min-h-[112px]">
+                    <h2 className="text-[17px] font-bold leading-snug line-clamp-2">
+                      {item.itemName}
+                    </h2>
+                    <p className="text-[22px] font-bold mt-2">
+                      From Rs {formatMoney(item.salesPrice)}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
         )}
-      </div>
+      </main>
 
-      <div className="p-4 bg-surface">
-        <div className="rounded-xl overflow-hidden border border-line">
-          <table className="w-full min-w-[980px]">
-            <thead>
-              <tr className="border-b border-line bg-surface-muted">
-                {["S.No", "Product", "Type", "Unit", "Sales Price", "Tax", "Description"].map((header, index) => (
-                  <th
-                    key={header}
-                    className={`px-5 py-3 text-[11px] font-bold uppercase tracking-wide ${index === 4 ? "text-right" : "text-left"} text-app-sub`}
-                  >
-                    {header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {!loading && filteredItems.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="py-16 text-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <MdInbox size={28} className="text-app-sub" />
-                      <p className="text-sm text-app-sub">No sellable products found</p>
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                filteredItems.map((item, index) => (
-                  <tr key={item.itemId} className="border-b border-line-soft hover:bg-surface-hover">
-                    <td className="px-5 py-3 text-sm text-app-sub">{index + 1}</td>
-                    <td className="px-5 py-3 text-sm font-medium text-brand-hover">{item.itemName}</td>
-                    <td className="px-5 py-3 text-sm text-app-text">{item.itemType || "-"}</td>
-                    <td className="px-5 py-3 text-sm text-app-text">{item.unit || "-"}</td>
-                    <td className="px-5 py-3 text-sm font-semibold tabular-nums text-right text-app-text">
-                      {fmtMoney(item.salesPrice)}
-                    </td>
-                    <td className="px-5 py-3 text-sm text-app-text">{item.taxRate ?? "-"}</td>
-                    <td className="px-5 py-3 text-sm text-app-text">{item.salesDescription || "-"}</td>
-                  </tr>
-                ))
+      <section className="mt-8 border-t-2 border-[#ee4c3a] bg-[#edf5ed]">
+        <div className="px-5 md:px-7 py-12 min-h-[380px] grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div id="about" className="scroll-mt-6">
+            <h3 className="text-[18px] font-bold mb-6">About Us</h3>
+            <div className="space-y-3 text-[15px] text-[#1f282b] max-w-2xl">
+              <p>{company?.publicDescription || "About Us"}</p>
+              {company?.contactEmail && (
+                <a className="flex items-center gap-2 hover:underline" href={`mailto:${company.contactEmail}`}>
+                  <MdEmail size={18} />
+                  {company.contactEmail}
+                </a>
               )}
-            </tbody>
-          </table>
+              {company?.contactPhone && (
+                <a className="flex items-center gap-2 hover:underline" href={`tel:${company.contactPhone}`}>
+                  <MdCall size={18} />
+                  {company.contactPhone}
+                </a>
+              )}
+              {[company?.addressLine1, company?.addressLine2, company?.city, company?.state, company?.country, company?.postalCode].some(Boolean) && (
+                <p className="flex items-start gap-2">
+                  <MdLocationOn size={18} className="mt-0.5 shrink-0" />
+                  <span>
+                    {[company?.addressLine1, company?.addressLine2, company?.city, company?.state, company?.country, company?.postalCode]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </span>
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div id="contact" className="md:justify-self-end md:min-w-[240px] scroll-mt-6">
+            <h3 className="text-[18px] font-bold mb-8">Let's Connect</h3>
+            <div className="space-y-6 text-[15px] text-[#1f282b]">
+              {websiteUrl && (
+                <a href={websiteUrl} target="_blank" rel="noreferrer" className="block hover:underline">
+                  Website
+                </a>
+              )}
+              <p className="flex items-center gap-6"><FaTwitter size={18} /> Twitter</p>
+              <p className="flex items-center gap-6"><MdFacebook size={21} /> Facebook</p>
+              <p className="flex items-center gap-6"><FaInstagram size={18} /> Instagram</p>
+              <p className="flex items-center gap-6"><FaYoutube size={20} /> Youtube</p>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <footer className="bg-[#edf5ed] border-t border-[#d8e5d8] text-center py-8 text-sm font-semibold text-[#3a443d]">
+        (c) 2026, {brandName}
+      </footer>
     </div>
   );
 };

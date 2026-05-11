@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { MdBusiness, MdInbox, MdSearch, MdStorefront } from "react-icons/md";
+import {
+  MdArrowForward,
+  MdBusiness,
+  MdInbox,
+  MdSearch,
+  MdStorefront,
+} from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { coreApi } from "../../../shared/services/coreApi";
 
@@ -35,18 +41,19 @@ const MarketplaceCompaniesPage = () => {
   const filteredCompanies = useMemo(() => {
     const q = globalFilter.trim().toLowerCase();
     if (!q) return companies;
-    return companies.filter((company) =>
-      String(company.companyName || "").toLowerCase().includes(q) ||
-      String(company.industry || "").toLowerCase().includes(q) ||
-      String(company.city || "").toLowerCase().includes(q) ||
-      String(company.state || "").toLowerCase().includes(q) ||
-      String(company.country || "").toLowerCase().includes(q)
+    return companies.filter(
+      (company) =>
+        String(company.companyName || "").toLowerCase().includes(q) ||
+        String(company.industry || "").toLowerCase().includes(q) ||
+        String(company.city || "").toLowerCase().includes(q) ||
+        String(company.state || "").toLowerCase().includes(q) ||
+        String(company.country || "").toLowerCase().includes(q)
     );
   }, [companies, globalFilter]);
 
   return (
     <div className="min-h-screen bg-app">
-      <div className="flex items-center justify-between mb-5 gap-3">
+      <div className="flex items-center justify-between gap-4 mb-5 flex-wrap">
         <div className="flex items-center gap-2">
           <MdStorefront size={18} className="text-brand" />
           <h1 className="text-sm font-bold text-app-text">Marketplace</h1>
@@ -59,75 +66,67 @@ const MarketplaceCompaniesPage = () => {
           <input
             value={globalFilter}
             onChange={(e) => setGlobalFilter(e.target.value)}
-            placeholder="Search companies..."
-            className="form-input pl-8 text-xs py-1.5"
-            style={{ width: 260 }}
+            placeholder="Search companies"
+            className="form-input pl-8 text-xs py-1.5 w-64"
           />
         </div>
       </div>
 
-      <div className="p-4 bg-surface">
-        <div className="rounded-xl overflow-hidden border border-line">
-          <table className="w-full min-w-[980px]">
-            <thead>
-              <tr className="border-b border-line bg-surface-muted">
-                {["S.No", "Company", "Industry", "Location", "Contact", "Website"].map((header) => (
-                  <th
-                    key={header}
-                    className="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wide text-app-sub"
-                  >
-                    {header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {!loading && filteredCompanies.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="py-16 text-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <MdInbox size={28} className="text-app-sub" />
-                      <p className="text-sm text-app-sub">No companies available in marketplace</p>
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                filteredCompanies.map((company, index) => (
-                  <tr
-                    key={company.companyId}
-                    className="cursor-pointer border-b border-line-soft hover:bg-surface-hover"
-                    onClick={() => navigate(`/cf/marketplace/companies/${company.companyId}`)}
-                  >
-                    <td className="px-5 py-3 text-sm text-app-sub">{index + 1}</td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-start gap-2">
-                        <span className="w-6 h-6 rounded bg-brand-soft text-brand flex items-center justify-center mt-0.5">
-                          <MdBusiness size={14} />
-                        </span>
-                        <div>
-                          <div className="text-sm font-medium text-brand-hover">{company.companyName}</div>
-                          <div className="text-[11px] text-app-muted">{company.shortName || "-"}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-5 py-3 text-sm text-app-text">{company.industry || "-"}</td>
-                    <td className="px-5 py-3 text-sm text-app-text">
-                      {[company.city, company.state, company.country].filter(Boolean).join(", ") || "-"}
-                    </td>
-                    <td className="px-5 py-3 text-sm text-app-text">
-                      <div>{company.contactPerson || "-"}</div>
-                      <div className="text-[11px] text-app-muted">
-                        {company.contactEmail || company.contactPhone || "-"}
-                      </div>
-                    </td>
-                    <td className="px-5 py-3 text-sm text-app-text">{company.website || "-"}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      {!loading && filteredCompanies.length === 0 ? (
+        <div className="page-section py-16">
+          <div className="flex flex-col items-center gap-2">
+            <MdInbox size={28} className="text-app-sub" />
+            <p className="text-sm text-app-sub">No companies found</p>
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {filteredCompanies.map((company) => {
+            const location =
+              [company.city, company.state, company.country]
+                .filter(Boolean)
+                .join(", ") || "Location not specified";
+            return (
+              <article
+                key={company.companyId}
+                className="card p-4 border border-line hover:shadow-sm transition-shadow cursor-pointer"
+                onClick={() =>
+                  navigate(`/cf/marketplace/companies/${company.companyId}`)
+                }
+              >
+                <div className="flex items-start gap-3">
+                  <span className="w-10 h-10 rounded-md bg-brand-soft text-brand flex items-center justify-center shrink-0">
+                    <MdBusiness size={20} />
+                  </span>
+                  <div className="min-w-0">
+                    <h2 className="text-sm font-semibold truncate text-app-text">
+                      {company.companyName}
+                    </h2>
+                    <p className="text-xs text-app-sub mt-0.5">
+                      {company.industry || "Industry not specified"}
+                    </p>
+                  </div>
+                </div>
+
+                <p className="text-xs text-app-soft mt-3 line-clamp-2 min-h-[34px]">
+                  {company.publicDescription ||
+                    "Open portfolio to view products and business details."}
+                </p>
+
+                <p className="text-[11px] text-app-muted mt-3">{location}</p>
+
+                <button
+                  type="button"
+                  className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-brand"
+                >
+                  View Portfolio
+                  <MdArrowForward size={14} />
+                </button>
+              </article>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

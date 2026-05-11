@@ -64,6 +64,7 @@ export const router = createBrowserRouter([
   { path: "/pricing", element: <PricingPage /> },
   { path: "/about", element: <AboutPage /> },
   { path: "/contact", element: <ContactPage /> },
+  { path: "cf/marketplace/companies/:companyId", element: <MarketplaceCompanyItemsPage /> },
 
   // ── Legal ──
   { path: "cf/legal/privacy-policy", element: <PlaceholderPage title="Privacy Policy" /> },
@@ -112,9 +113,8 @@ export const router = createBrowserRouter([
       { path: "cf/user/:userId/settings", element: <UserSettingsPage /> },
       { path: "cf/company/:companyId/settings/organization-profile", element: <OrganizationProfilePage /> },
 
-      // Marketplace
+      // Marketplace Listing (inside CoreFlow shell)
       { path: "cf/marketplace/companies", element: <MarketplaceCompaniesPage /> },
-      { path: "cf/marketplace/companies/:companyId", element: <MarketplaceCompanyItemsPage /> },
 
       // Customers
       { path: "cf/company/:companyId/customers", element: <CustomerPage /> },
