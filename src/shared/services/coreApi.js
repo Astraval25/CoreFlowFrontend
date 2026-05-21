@@ -4,6 +4,19 @@ import { ENDPOINTS } from "../../config/apiEndpoints";
 const withDateRange = (path, startDate, endDate) =>
   `${path}?startDate=${startDate}&endDate=${endDate}`;
 
+const withDateRangeAndFilters = (path, startDate, endDate, filters = {}) => {
+  const params = new URLSearchParams({ startDate, endDate });
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
+    if (Array.isArray(value)) {
+      if (value.length) params.set(key, value.join(","));
+      return;
+    }
+    params.set(key, value);
+  });
+  return `${path}?${params.toString()}`;
+};
+
 export const coreApi = {
   login: (data) => api.post(ENDPOINTS.LOGIN, data),
   register: (data) => api.post(ENDPOINTS.REGISTER, data),
@@ -15,6 +28,9 @@ export const coreApi = {
   getCompanyById: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}`),
 
+  updateCompany: (companyId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}`, data),
+
   uploadCompanyLogo: (companyId, file) => {
     const formData = new FormData();
     formData.append("file", file);
@@ -22,6 +38,16 @@ export const coreApi = {
       headers: { "Content-Type": "multipart/form-data" },
     });
   },
+
+  // Marketplace
+  getMarketplaceCompanies: () =>
+    api.get("/marketplace/companies"),
+
+  getMarketplaceCompanyDetail: (companyId) =>
+    api.get(`/marketplace/companies/${companyId}`),
+
+  getMarketplaceCompanyItems: (companyId) =>
+    api.get(`/marketplace/companies/${companyId}/items`),
 
   // Customer
   getCustomers: (companyId) =>
@@ -77,6 +103,47 @@ export const coreApi = {
 
   getAllVendorByCompanyId: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors`),
+
+  // Expense Accounts
+  getExpenseAccounts: (companyId, activeOnly = false) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts?activeOnly=${activeOnly}`),
+
+  getExpenseAccountTypes: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts/account-types`),
+
+  getExpenseAccountDetail: (companyId, expenseAccountId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts/${expenseAccountId}`),
+
+  createExpenseAccount: (companyId, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts`, data),
+
+  updateExpenseAccount: (companyId, expenseAccountId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts/${expenseAccountId}`, data),
+
+  deactivateExpenseAccount: (companyId, expenseAccountId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts/${expenseAccountId}/deactivate`),
+
+  activateExpenseAccount: (companyId, expenseAccountId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/expense-accounts/${expenseAccountId}/activate`),
+
+  // Expenses
+  getExpenses: (companyId, activeOnly = true) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses?activeOnly=${activeOnly}`),
+
+  getExpenseDetail: (companyId, expenseId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses/${expenseId}`),
+
+  createExpense: (companyId, data) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses`, data),
+
+  updateExpense: (companyId, expenseId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses/${expenseId}`, data),
+
+  deactivateExpense: (companyId, expenseId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses/${expenseId}/deactivate`),
+
+  activateExpense: (companyId, expenseId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses/${expenseId}/activate`),
 
   // items
   getItems: (companyId) =>
@@ -311,6 +378,13 @@ export const coreApi = {
   markAllNotificationsRead: (companyId) =>
     api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/notifications/read-all`),
 
+  // Announcements
+  getCurrentAnnouncement: () =>
+    api.get("/announcements/current"),
+
+  dismissAnnouncement: (announcementId) =>
+    api.post(`/announcements/${announcementId}/dismiss`),
+
   // Report Analytics
   getSalesSummary: (companyId, startDate, endDate) =>
     api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/sales/summary`, startDate, endDate)),
@@ -374,6 +448,26 @@ export const coreApi = {
 
   getMonthlyTrend: (companyId, startDate, endDate) =>
     api.get(withDateRange(`${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/dashboard/monthly-trend`, startDate, endDate)),
+
+  getOrderHistory: (companyId, startDate, endDate, filters = {}) =>
+    api.get(
+      withDateRangeAndFilters(
+        `${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/history/orders`,
+        startDate,
+        endDate,
+        filters
+      )
+    ),
+
+  getPaymentHistory: (companyId, startDate, endDate, filters = {}) =>
+    api.get(
+      withDateRangeAndFilters(
+        `${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/history/payments`,
+        startDate,
+        endDate,
+        filters
+      )
+    ),
 
   // ── Employee Module (Admin) ──
   // Employees
@@ -446,6 +540,12 @@ export const coreApi = {
 
   reviewWorkLog: (companyId, logId, data) =>
     api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-logs/${logId}/review`, data),
+
+  updateWorkLogByAdmin: (companyId, logId, data) =>
+    api.put(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-logs/${logId}`, data),
+
+  deleteWorkLog: (companyId, logId) =>
+    api.delete(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-logs/${logId}`),
 
   // Leave Logs (Admin)
   createLeaveLog: (companyId, data) =>

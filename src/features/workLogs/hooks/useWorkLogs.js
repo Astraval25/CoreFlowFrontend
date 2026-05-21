@@ -39,6 +39,7 @@ export const useWorkLogs = () => {
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [editingLogId, setEditingLogId] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -80,12 +81,26 @@ export const useWorkLogs = () => {
   };
 
   const openCreate = () => {
+    setEditingLogId(null);
     setForm({
       employeeId: "",
       workDefId: "",
       logDate: new Date().toISOString().split("T")[0],
       quantity: "",
       employeeRemarks: "",
+    });
+    setError("");
+    setShowModal(true);
+  };
+
+  const openEdit = (log) => {
+    setEditingLogId(log.logId);
+    setForm({
+      employeeId: String(log.employeeId),
+      workDefId: String(log.workDefId),
+      logDate: log.logDate,
+      quantity: log.quantity,
+      employeeRemarks: log.employeeRemarks || "",
     });
     setError("");
     setShowModal(true);
@@ -99,19 +114,36 @@ export const useWorkLogs = () => {
     setSubmitting(true);
     setError("");
     try {
-      await coreApi.createWorkLog(companyId, {
+      const payload = {
         employeeId: Number(form.employeeId),
         workDefId: Number(form.workDefId),
         logDate: form.logDate,
         quantity: Number(form.quantity),
         employeeRemarks: form.employeeRemarks,
-      });
+      };
+      if (editingLogId) {
+        await coreApi.updateWorkLogByAdmin(companyId, editingLogId, payload);
+      } else {
+        await coreApi.createWorkLog(companyId, payload);
+      }
       setShowModal(false);
       fetchWorkLogs();
     } catch (err) {
-      setError(err.response?.data?.responseMessage || "Failed to create work log.");
+      setError(
+        err.response?.data?.responseMessage ||
+        `Failed to ${editingLogId ? "update" : "create"} work log.`
+      );
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const deleteLog = async (logId) => {
+    try {
+      await coreApi.deleteWorkLog(companyId, logId);
+      fetchWorkLogs();
+    } catch (err) {
+      window.alert(err.response?.data?.responseMessage || "Failed to delete work log.");
     }
   };
 
@@ -154,11 +186,14 @@ export const useWorkLogs = () => {
     showModal,
     setShowModal,
     openCreate,
+    openEdit,
     form,
     setForm,
     submitting,
     submitForm,
     error,
+    editingLogId,
+    deleteLog,
     companyId,
   };
 };

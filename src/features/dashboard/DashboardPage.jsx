@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
     LineChart,
     AreaChart,
@@ -19,6 +20,7 @@ import { MdClose, MdTrendingUp, MdTrendingDown } from "react-icons/md";
 import { FiArrowUpRight } from "react-icons/fi";
 import StyledDropdown from "../../shared/components/StyledDropdown";
 import { coreApi } from "../../shared/services/coreApi";
+import AdminAnnouncementModal from "../announcements/components/AdminAnnouncementModal";
 
 /* ─── helpers ─── */
 const fmt = (val) =>
@@ -521,11 +523,19 @@ const Skeleton = ({ h = "h-40" }) => (
 
 /* ─── Dashboard Page ─── */
 export const DashboardPage = () => {
+  const { companyId } = useParams();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [cashFlowRange, setCashFlowRange] = useState("current_fy_year");
   const [revenueExpenseRange, setRevenueExpenseRange] = useState("current_fy_year");
   const [topExpensesRange, setTopExpensesRange] = useState("current_fy_year");
   const [overallRange, setOverallRange] = useState("current_fy_year");
+  const [orderHistory, setOrderHistory] = useState([]);
+  const [paymentHistory, setPaymentHistory] = useState([]);
+  const [historyFilter, setHistoryFilter] = useState({
+    orderType: "ALL",
+    paymentType: "ALL",
+  });
 
   const {
     kpi,
@@ -557,13 +567,32 @@ export const DashboardPage = () => {
 
   const cashFlowDateRange = getDateRangeByPreset(cashFlowRange);
 
+  useEffect(() => {
+    if (!companyId) return;
+    const { startDate, endDate } = getDateRangeByPreset(overallRange);
+    coreApi
+      .getOrderHistory(companyId, startDate, endDate, {
+        orderType: historyFilter.orderType,
+      })
+      .then((res) => setOrderHistory(res?.data?.responseData || []))
+      .catch(() => setOrderHistory([]));
+    coreApi
+      .getPaymentHistory(companyId, startDate, endDate, {
+        paymentType: historyFilter.paymentType,
+      })
+      .then((res) => setPaymentHistory(res?.data?.responseData || []))
+      .catch(() => setPaymentHistory([]));
+  }, [companyId, overallRange, historyFilter, getDateRangeByPreset]);
+
   return (
     <div className="flex flex-col gap-5">
+      <AdminAnnouncementModal />
+
       {/* Header */}
       <div className="pt-1 flex items-start justify-between gap-3">
         <div>
           <h1 className="text-xl font-extrabold text-app-text">
-            Hello, {userName}
+             Hello, {companyName} {/* {userName} */}
           </h1>
           <p className="text-xs mt-0.5 text-app-sub">{companyName}</p>
         </div>
@@ -658,6 +687,72 @@ export const DashboardPage = () => {
               )}
           </div>
 
+          <div className="card p-5">
+            <div className="flex flex-wrap items-center gap-2 justify-between mb-3">
+              <span className="text-sm font-semibold text-app-text">History</span>
+              <div className="flex items-center gap-2">
+                <select
+                  className="px-2 py-1 text-xs border rounded"
+                  value={historyFilter.orderType}
+                  onChange={(e) =>
+                    setHistoryFilter((prev) => ({ ...prev, orderType: e.target.value }))
+                  }
+                >
+                  <option value="ALL">All Orders</option>
+                  <option value="SALES">Sales</option>
+                  <option value="PURCHASE">Purchase</option>
+                </select>
+                <select
+                  className="px-2 py-1 text-xs border rounded"
+                  value={historyFilter.paymentType}
+                  onChange={(e) =>
+                    setHistoryFilter((prev) => ({ ...prev, paymentType: e.target.value }))
+                  }
+                >
+                  <option value="ALL">All Payments</option>
+                  <option value="RECEIVED">Received</option>
+                  <option value="MADE">Made</option>
+                </select>
+                <button
+                  className="btn-outline text-xs py-1 px-2.5"
+                  onClick={() => navigate(`/cf/company/${companyId}/report`)}
+                >
+                  Open Report
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs font-semibold mb-2 text-app-sub">Order History</p>
+                <div className="space-y-2">
+                  {orderHistory.slice(0, 5).map((o) => (
+                    <div key={o.orderId} className="border rounded p-2 text-xs">
+                      <div className="flex justify-between">
+                        <span className="font-semibold">{o.localOrderNumber || `#${o.orderId}`}</span>
+                        <span>{o.paidPercentage}%</span>
+                      </div>
+                      <div className="text-app-sub">{o.orderStatus}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-xs font-semibold mb-2 text-app-sub">Payment History</p>
+                <div className="space-y-2">
+                  {paymentHistory.slice(0, 5).map((p) => (
+                    <div key={p.paymentId} className="border rounded p-2 text-xs">
+                      <div className="flex justify-between">
+                        <span className="font-semibold">{p.localPaymentNumber || `#${p.paymentId}`}</span>
+                        <span>{fmt(p.amount)}</span>
+                      </div>
+                      <div className="text-app-sub">{p.paymentStatus}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Footer */}
           <div className="card p-6">
             <div className="flex flex-col md:flex-row items-start gap-6">
@@ -723,7 +818,6 @@ export const DashboardPage = () => {
     </div>
   );
 };
-
 
 
 

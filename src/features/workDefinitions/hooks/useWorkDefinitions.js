@@ -18,7 +18,9 @@ export const useWorkDefinitions = () => {
   const fetchWorkDefs = (compId) => {
     coreApi
       .getWorkDefinitions(compId, true)
-      .then((res) => setWorkDefs(res.data.responseData || []))
+      .then((res) => {
+        setWorkDefs(res.data.responseData || []);
+      })
       .catch((err) => console.error("Work defs fetch error:", err));
   };
 
@@ -33,10 +35,14 @@ export const useWorkDefinitions = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const decode = jwtDecode(token);
-    const compId = decode.defaultComp[0];
-    setCompanyId(compId);
-    fetchWorkDefs(compId);
+
+    if (token) {
+      const decode = jwtDecode(token);
+      const compId = decode.defaultComp[0];
+
+      setCompanyId(compId);
+      fetchWorkDefs(compId);
+    }
   }, []);
 
   const columnHelper = createColumnHelper();
@@ -61,5 +67,11 @@ export const useWorkDefinitions = () => {
     getSortedRowModel: getSortedRowModel(),
   });
 
-  return { table, globalFilter, setGlobalFilter, deactivateWorkDef, companyId };
+  return {
+    table,
+    globalFilter,
+    setGlobalFilter,
+    deactivateWorkDef,
+    companyId,
+  };
 };

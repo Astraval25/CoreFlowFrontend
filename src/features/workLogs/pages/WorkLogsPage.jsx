@@ -1,4 +1,4 @@
-import { MdAdd, MdSearch, MdCheck, MdClose } from "react-icons/md";
+import { MdAdd, MdSearch, MdCheck, MdClose, MdEdit, MdDelete } from "react-icons/md";
 import { flexRender } from "@tanstack/react-table";
 import { useWorkLogs } from "../hooks/useWorkLogs";
 
@@ -7,7 +7,7 @@ const WorkLogsPage = () => {
     table, globalFilter, setGlobalFilter, loading,
     dateRange, setDateRange, viewMode, setViewMode,
     reviewLog, employees, workDefs,
-    showModal, setShowModal, openCreate, form, setForm, submitting, submitForm, error,
+    showModal, setShowModal, openCreate, openEdit, form, setForm, submitting, submitForm, error, editingLogId, deleteLog,
   } = useWorkLogs();
 
   const statusBadge = (s) => {
@@ -71,12 +71,24 @@ const WorkLogsPage = () => {
                     <td className="px-4 py-3 text-sm tabular-nums font-medium text-brand-hover">Rs {row.original.amountEarned?.toLocaleString()}</td>
                     <td className="px-4 py-3">{statusBadge(row.original.status)}</td>
                     <td className="px-4 py-3">
-                      {row.original.status === "PENDING" && (
-                        <div className="flex gap-1">
+                      <div className="flex gap-1">
+                        {row.original.status === "PENDING" && (
+                          <>
                           <button onClick={() => reviewLog(row.original.logId, "APPROVED")} className="p-1 rounded hover:bg-blue-50" title="Approve"><MdCheck size={16} className="text-brand" /></button>
                           <button onClick={() => reviewLog(row.original.logId, "REJECTED")} className="p-1 rounded hover:bg-red-50" title="Reject"><MdClose size={16} className="text-danger" /></button>
-                        </div>
-                      )}
+                          </>
+                        )}
+                        <button onClick={() => openEdit(row.original)} className="p-1 rounded hover:bg-slate-100" title="Edit"><MdEdit size={16} className="text-app-sub" /></button>
+                        <button
+                          onClick={() => {
+                            if (window.confirm("Delete this work log?")) deleteLog(row.original.logId);
+                          }}
+                          className="p-1 rounded hover:bg-red-50"
+                          title="Delete"
+                        >
+                          <MdDelete size={16} className="text-danger" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -91,7 +103,7 @@ const WorkLogsPage = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay" onClick={() => setShowModal(false)}>
           <div className="card w-full max-w-md mx-4 p-5" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-semibold text-app-text">New Work Log</p>
+              <p className="text-sm font-semibold text-app-text">{editingLogId ? "Update Work Log" : "New Work Log"}</p>
               <button onClick={() => setShowModal(false)} className="p-1 rounded hover:bg-gray-100"><MdClose size={18} /></button>
             </div>
             {error && <p className="text-xs mb-3 p-2 rounded text-danger bg-danger-tint">{error}</p>}
@@ -125,7 +137,7 @@ const WorkLogsPage = () => {
             </div>
             <div className="flex justify-end gap-3 mt-4">
               <button onClick={() => setShowModal(false)} className="btn-outline text-xs">Cancel</button>
-              <button onClick={submitForm} disabled={submitting} className="btn-primary text-xs">{submitting ? "Saving..." : "Create"}</button>
+              <button onClick={submitForm} disabled={submitting} className="btn-primary text-xs">{submitting ? "Saving..." : editingLogId ? "Update" : "Create"}</button>
             </div>
           </div>
         </div>

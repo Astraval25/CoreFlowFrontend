@@ -140,6 +140,8 @@ const ReportDetailView = ({
   companyName,
   formatDatePretty,
   onBack,
+  historyFilters,
+  setHistoryFilters,
 }) => {
   const [exportOpen, setExportOpen] = useState(false);
   const [viewMode, setViewMode] = useState("table");
@@ -220,6 +222,8 @@ const ReportDetailView = ({
     () => buildGraphPayload(exportRows, exportColumns),
     [exportRows, exportColumns]
   );
+  const isOrderHistory = selectedReport?.id === "orderHistory";
+  const isPaymentHistory = selectedReport?.id === "paymentHistory";
 
   return (
     <>
@@ -313,6 +317,66 @@ const ReportDetailView = ({
           <span>-</span>
           <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="text-xs outline-none" />
         </div>
+
+        {isOrderHistory && (
+          <>
+            <select
+              className="px-3 py-1.5 rounded-lg text-sm border border-brand-field-border bg-surface text-app-heading"
+              value={historyFilters.orderType}
+              onChange={(e) =>
+                setHistoryFilters((prev) => ({ ...prev, orderType: e.target.value }))
+              }
+            >
+              <option value="ALL">All Orders</option>
+              <option value="SALES">Sales Only</option>
+              <option value="PURCHASE">Purchase Only</option>
+            </select>
+            <select
+              className="px-3 py-1.5 rounded-lg text-sm border border-brand-field-border bg-surface text-app-heading"
+              value={historyFilters.paidState}
+              onChange={(e) =>
+                setHistoryFilters((prev) => ({ ...prev, paidState: e.target.value }))
+              }
+            >
+              <option value="ALL">All Paid States</option>
+              <option value="PAID">Paid</option>
+              <option value="PARTIAL">Partial</option>
+              <option value="UNPAID">Unpaid</option>
+            </select>
+            <input
+              className="px-3 py-1.5 rounded-lg text-sm border border-brand-field-border bg-surface text-app-heading"
+              placeholder="Statuses comma separated"
+              value={historyFilters.orderStatuses}
+              onChange={(e) =>
+                setHistoryFilters((prev) => ({ ...prev, orderStatuses: e.target.value }))
+              }
+            />
+          </>
+        )}
+
+        {isPaymentHistory && (
+          <>
+            <select
+              className="px-3 py-1.5 rounded-lg text-sm border border-brand-field-border bg-surface text-app-heading"
+              value={historyFilters.paymentType}
+              onChange={(e) =>
+                setHistoryFilters((prev) => ({ ...prev, paymentType: e.target.value }))
+              }
+            >
+              <option value="ALL">All Payments</option>
+              <option value="RECEIVED">Received</option>
+              <option value="MADE">Made</option>
+            </select>
+            <input
+              className="px-3 py-1.5 rounded-lg text-sm border border-brand-field-border bg-surface text-app-heading"
+              placeholder="Statuses comma separated"
+              value={historyFilters.paymentStatuses}
+              onChange={(e) =>
+                setHistoryFilters((prev) => ({ ...prev, paymentStatuses: e.target.value }))
+              }
+            />
+          </>
+        )}
 
         <button
           className="px-4 py-2 rounded-lg text-sm font-semibold bg-brand text-surface"

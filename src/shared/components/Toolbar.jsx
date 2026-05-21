@@ -213,11 +213,11 @@ const Toolbar = () => {
         <div
           className="hidden md:flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border border-warning-border bg-warning-bg text-warning-text"
         >
-          <span>You are on Free Plan</span>
+          <span>You are on Gold Paid Plan</span>
           <button
             className="font-bold text-xs px-2 py-0.5 rounded-full bg-warning text-surface"
           >
-            Upgrade
+            Upgrade to Diamond
           </button>
         </div>
 

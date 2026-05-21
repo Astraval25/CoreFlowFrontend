@@ -42,6 +42,8 @@ const REPORT_CATALOG = [
   { id: "purchaseRunningOrderAmount", name: "Purchase Running Order Amount", category: "Purchases and Expenses", createdBy: "System Generated" },
   { id: "salesRunningPaymentAmount", name: "Sales Running Payment Amount", category: "Payments Received", createdBy: "System Generated" },
   { id: "purchaseRunningPaymentAmount", name: "Purchase Running Payment Amount", category: "Payables", createdBy: "System Generated" },
+  { id: "orderHistory", name: "Order History", category: "Business Overview", createdBy: "System Generated" },
+  { id: "paymentHistory", name: "Payment History", category: "Business Overview", createdBy: "System Generated" },
 ];
 
 const CATEGORY_LIST = [
@@ -99,6 +101,13 @@ const ReportPage = ({ reportType = "" }) => {
   const [selectedReportId, setSelectedReportId] = useState("");
   const [detailOpen, setDetailOpen] = useState(false);
   const [companyName, setCompanyName] = useState("Company");
+  const [historyFilters, setHistoryFilters] = useState({
+    orderType: "ALL",
+    paidState: "ALL",
+    orderStatuses: "",
+    paymentType: "ALL",
+    paymentStatuses: "",
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -142,8 +151,25 @@ const ReportPage = ({ reportType = "" }) => {
       topProfitableItems: () => coreApi.getTopProfitableItems(companyId, startDate, endDate),
       paymentModeDistribution: () => coreApi.getPaymentModeDistribution(companyId, startDate, endDate),
       monthlyTrend: () => coreApi.getMonthlyTrend(companyId, startDate, endDate),
+      orderHistory: () =>
+        coreApi.getOrderHistory(companyId, startDate, endDate, {
+          orderType: historyFilters.orderType,
+          paidState: historyFilters.paidState,
+          statuses: historyFilters.orderStatuses
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+        }),
+      paymentHistory: () =>
+        coreApi.getPaymentHistory(companyId, startDate, endDate, {
+          paymentType: historyFilters.paymentType,
+          statuses: historyFilters.paymentStatuses
+            .split(",")
+            .map((s) => s.trim())
+            .filter(Boolean),
+        }),
     }),
-    [companyId, startDate, endDate]
+    [companyId, startDate, endDate, historyFilters]
   );
 
   const loadReports = async () => {
@@ -253,6 +279,8 @@ const ReportPage = ({ reportType = "" }) => {
           companyName={companyName}
           formatDatePretty={formatDatePretty}
           onBack={() => setDetailOpen(false)}
+          historyFilters={historyFilters}
+          setHistoryFilters={setHistoryFilters}
         />
       )}
     </div>

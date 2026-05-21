@@ -1,14 +1,16 @@
 import { MdAdd, MdSearch, MdCheck, MdPayment, MdVisibility, MdDownload, MdClose } from "react-icons/md";
 import { flexRender } from "@tanstack/react-table";
+import { useNavigate } from "react-router-dom";
 import { useSalary } from "../hooks/useSalary";
 
 const SalaryPage = () => {
+  const navigate = useNavigate();
   const {
     table, globalFilter, setGlobalFilter, loading,
     period, setPeriod, employees,
     showCalcModal, setShowCalcModal, calcForm, setCalcForm, calcLoading, calcError, calculateSalary,
-    approvePeriod, markPaid, viewDetail, downloadSlip,
-    selectedDetail, setSelectedDetail, detailLoading,
+    approvePeriod, viewDetail, downloadSlip,
+    companyId,
   } = useSalary();
 
   const statusBadge = (s) => {
@@ -61,7 +63,7 @@ const SalaryPage = () => {
                 <tr><td colSpan={table.getAllColumns().length} className="py-16 text-center"><p className="text-sm text-app-sub">No salary periods found</p></td></tr>
               ) : (
                 table.getRowModel().rows.map((row) => (
-                  <tr key={row.id} className="border-b border-line-soft hover:bg-surface-hover">
+                  <tr key={row.id} className="border-b border-line-soft hover:bg-surface-hover cursor-pointer" onClick={() => viewDetail(row.original.salaryPeriodId)}>
                     <td className="px-4 py-3 text-sm font-medium text-app-text">{row.original.employeeName}</td>
                     <td className="px-4 py-3 text-sm text-brand-hover">{row.original.employeeCode}</td>
                     <td className="px-4 py-3 text-sm text-app-text">{row.original.fromDate}</td>
@@ -69,16 +71,27 @@ const SalaryPage = () => {
                     <td className="px-4 py-3 text-sm text-app-text">{row.original.salaryType}</td>
                     <td className="px-4 py-3 text-sm tabular-nums font-medium text-app-text">Rs {row.original.grossAmount?.toLocaleString()}</td>
                     <td className="px-4 py-3 text-sm tabular-nums font-medium text-brand-hover">Rs {row.original.netAmount?.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-sm tabular-nums font-medium text-emerald-700">Rs {row.original.paidAmount?.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-sm tabular-nums font-medium text-amber-700">Rs {row.original.balanceAmount?.toLocaleString()}</td>
                     <td className="px-4 py-3">{statusBadge(row.original.status)}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-1">
-                        <button onClick={() => viewDetail(row.original.salaryPeriodId)} className="p-1 rounded hover:bg-gray-100" title="View Detail"><MdVisibility size={16} className="text-app-sub" /></button>
-                        <button onClick={() => downloadSlip(row.original.salaryPeriodId)} className="p-1 rounded hover:bg-gray-100" title="Download Slip"><MdDownload size={16} className="text-app-sub" /></button>
+                        <button onClick={(e) => { e.stopPropagation(); viewDetail(row.original.salaryPeriodId); }} className="p-1 rounded hover:bg-gray-100" title="View Detail"><MdVisibility size={16} className="text-app-sub" /></button>
+                        <button onClick={(e) => { e.stopPropagation(); downloadSlip(row.original.salaryPeriodId); }} className="p-1 rounded hover:bg-gray-100" title="Download Slip"><MdDownload size={16} className="text-app-sub" /></button>
                         {row.original.status === "DRAFT" && (
-                          <button onClick={() => { if (window.confirm("Approve this salary period?")) approvePeriod(row.original.salaryPeriodId); }} className="p-1 rounded hover:bg-blue-50" title="Approve"><MdCheck size={16} className="text-brand" /></button>
+                          <button onClick={(e) => { e.stopPropagation(); if (window.confirm("Approve this salary period?")) approvePeriod(row.original.salaryPeriodId); }} className="p-1 rounded hover:bg-blue-50" title="Approve"><MdCheck size={16} className="text-brand" /></button>
                         )}
-                        {row.original.status === "APPROVED" && (
-                          <button onClick={() => { if (window.confirm("Mark as paid?")) markPaid(row.original.salaryPeriodId); }} className="p-1 rounded hover:bg-blue-50" title="Mark Paid"><MdPayment size={16} className="text-info" /></button>
+                        {row.original.status === "APPROVED" && row.original.balanceAmount > 0 && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/cf/company/${companyId}/expenses/create?salaryPeriodId=${row.original.salaryPeriodId}`);
+                            }}
+                            className="p-1 rounded hover:bg-blue-50"
+                            title="Record Salary Payment"
+                          >
+                            <MdPayment size={16} className="text-info" />
+                          </button>
                         )}
                       </div>
                     </td>
@@ -126,65 +139,6 @@ const SalaryPage = () => {
         </div>
       )}
 
-      {selectedDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay" onClick={() => setSelectedDetail(null)}>
-          <div className="card w-full max-w-lg mx-4 p-5 max-h-[80vh] overflow-y-auto thin-scroll" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-semibold text-app-text">Salary Detail - {selectedDetail.employeeName}</p>
-              <button onClick={() => setSelectedDetail(null)} className="p-1 rounded hover:bg-gray-100"><MdClose size={18} /></button>
-            </div>
-            {detailLoading ? (
-              <p className="text-xs text-app-muted">Loading...</p>
-            ) : (
-              <>
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  {[
-                    ["Period", `${selectedDetail.fromDate} to ${selectedDetail.toDate}`],
-                    ["Type", selectedDetail.salaryType],
-                    ["Working Days", selectedDetail.workingDaysInMonth],
-                    ["Days Present", selectedDetail.daysPresent],
-                    ["Days Absent", selectedDetail.daysAbsent],
-                    ["LOP Days", selectedDetail.lopDays],
-                    ["Gross", `Rs ${selectedDetail.grossAmount?.toLocaleString()}`],
-                    ["LOP Deduction", `Rs ${selectedDetail.lopDeduction?.toLocaleString()}`],
-                    ["Net Amount", `Rs ${selectedDetail.netAmount?.toLocaleString()}`],
-                    ["Status", selectedDetail.status],
-                  ].map(([label, val]) => (
-                    <div key={label}>
-                      <p className="text-[10px] uppercase font-semibold text-app-muted">{label}</p>
-                      <p className="text-xs font-medium text-app-text">{val}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {selectedDetail.lines?.length > 0 && (
-                  <>
-                    <p className="text-xs font-semibold mb-2 text-app-text">Breakdown</p>
-                    <table className="w-full" >
-                      <thead>
-                        <tr className="border-b border-line">
-                          {["Type", "Description", "Amount"].map((h) => (
-                            <th key={h} className="px-3 py-2 text-left text-[10px] font-bold uppercase text-app-muted">{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {selectedDetail.lines.map((line) => (
-                          <tr key={line.lineId} className="border-b border-line">
-                            <td className="px-3 py-2 text-xs"><span className={`badge badge-${line.lineType === "DEDUCTION" ? "red" : line.lineType === "FIXED" ? "blue" : "blue"}`}>{line.lineType}</span></td>
-                            <td className="px-3 py-2 text-xs text-app-sub">{line.description}</td>
-                            <td className={`px-3 py-2 text-xs tabular-nums font-semibold ${line.amount < 0 ? "text-danger" : "text-app-text"}`}>Rs {line.amount?.toLocaleString()}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

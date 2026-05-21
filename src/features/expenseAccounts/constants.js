@@ -1,0 +1,15 @@
+export const ACCOUNT_TYPES = [
+  "Asset",
+  "Other Asset",
+  "Other Current Asset",
+  "Fixed Asset",
+  "Intangible Asset",
+  "Non Current Asset",
+  "Liability",
+  "Other Current Liability",
+  "Non Current Liability",
+  "Other Liability",
+  "Expense",
+  "Cost Of Goods Sold",
+  "Other Expense",
+];

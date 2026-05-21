@@ -44,10 +44,20 @@ import CreateWorkDefPage from "./features/workDefinitions/pages/CreateWorkDefPag
 import WorkLogsPage from "./features/workLogs/pages/WorkLogsPage";
 import LeaveLogsPage from "./features/leaveLogs/pages/LeaveLogsPage";
 import SalaryPage from "./features/salary/pages/SalaryPage";
+import SalaryDetailPage from "./features/salary/pages/SalaryDetailPage";
 import EmployeeProfilePage from "./features/employeePortal/pages/EmployeeProfilePage";
 import EmployeeWorkLogsPage from "./features/employeePortal/pages/EmployeeWorkLogsPage";
 import EmployeeLeaveLogsPage from "./features/employeePortal/pages/EmployeeLeaveLogsPage";
 import EmployeeSalaryPage from "./features/employeePortal/pages/EmployeeSalaryPage";
+import ExpensesPage from "./features/expenses/pages/ExpensesPage";
+import CreateExpensePage from "./features/expenses/pages/CreateExpensePage";
+import ExpenseAccountsPage from "./features/expenseAccounts/pages/ExpenseAccountsPage";
+import CreateExpenseAccountPage from "./features/expenseAccounts/pages/CreateExpenseAccountPage";
+import UserSettingsPage from "./features/settings/pages/UserSettingsPage";
+import OrganizationProfilePage from "./features/settings/pages/OrganizationProfilePage";
+import MarketplaceCompaniesPage from "./features/marketplace/pages/MarketplaceCompaniesPage";
+import MarketplaceCompanyItemsPage from "./features/marketplace/pages/MarketplaceCompanyItemsPage";
+import ViewWorkDefPage from "./features/workDefinitions/pages/ViewWorkDefPage";
 
 export const router = createBrowserRouter([
   // ── Public pages ──
@@ -56,6 +66,7 @@ export const router = createBrowserRouter([
   { path: "/pricing", element: <PricingPage /> },
   { path: "/about", element: <AboutPage /> },
   { path: "/contact", element: <ContactPage /> },
+  { path: "cf/marketplace/companies/:companyId", element: <MarketplaceCompanyItemsPage /> },
 
   // ── Legal ──
   { path: "cf/legal/privacy-policy", element: <PlaceholderPage title="Privacy Policy" /> },
@@ -101,7 +112,11 @@ export const router = createBrowserRouter([
 
       // User
       { path: "cf/user/:userId/profile", element: <PlaceholderPage title="User Profile" /> },
-      { path: "cf/user/:userId/settings", element: <PlaceholderPage title="User Settings" /> },
+      { path: "cf/user/:userId/settings", element: <UserSettingsPage /> },
+      { path: "cf/company/:companyId/settings/organization-profile", element: <OrganizationProfilePage /> },
+
+      // Marketplace Listing (inside CoreFlow shell)
+      { path: "cf/marketplace/companies", element: <MarketplaceCompaniesPage /> },
 
       // Customers
       { path: "cf/company/:companyId/customers", element: <CustomerPage /> },
@@ -133,6 +148,16 @@ export const router = createBrowserRouter([
       { path: "cf/company/:companyId/purchase/:purchaseId/detail", element: <ViewPurchasePage /> },
       { path: "cf/company/:companyId/purchase/:purchaseId/update", element: <CreatePurchasePage /> },
 
+      // Expenses
+      { path: "cf/company/:companyId/expenses/list", element: <ExpensesPage /> },
+      { path: "cf/company/:companyId/expenses/create", element: <CreateExpensePage /> },
+      { path: "cf/company/:companyId/expenses/:expenseId/update", element: <CreateExpensePage /> },
+
+      // Setup
+      { path: "cf/company/:companyId/setup/expense-accounts", element: <ExpenseAccountsPage /> },
+      { path: "cf/company/:companyId/setup/expense-accounts/create", element: <CreateExpenseAccountPage /> },
+      { path: "cf/company/:companyId/setup/expense-accounts/:expenseAccountId/update", element: <CreateExpenseAccountPage /> },
+
       // Payment Received
       { path: "cf/company/:companyId/payment-received/list", element: <PaymentReceivedPage /> },
       { path: "cf/company/:companyId/payment-received/create", element: <CreatePaymentReceivedPage /> },
@@ -155,6 +180,7 @@ export const router = createBrowserRouter([
       { path: "cf/company/:companyId/work-definitions", element: <WorkDefinitionsPage /> },
       { path: "cf/company/:companyId/work-definitions/create", element: <CreateWorkDefPage /> },
       { path: "cf/company/:companyId/work-definitions/:workDefId/update", element: <CreateWorkDefPage /> },
+      { path: "cf/company/:companyId/work-definitions/:workDefId", element: <ViewWorkDefPage /> },
 
       // Work Logs
       { path: "cf/company/:companyId/work-logs", element: <WorkLogsPage /> },
@@ -164,6 +190,7 @@ export const router = createBrowserRouter([
 
       // Salary
       { path: "cf/company/:companyId/salary", element: <SalaryPage /> },
+      { path: "cf/company/:companyId/salary/:salaryPeriodId", element: <SalaryDetailPage /> },
 
       // Employee Portal (self-service)
       { path: "cf/emp/profile", element: <EmployeeProfilePage /> },
