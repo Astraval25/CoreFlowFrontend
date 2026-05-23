@@ -125,6 +125,7 @@ const ProductLandingPage = () => {
                   </div>
 
                   <button
+                      id="login-btn"
                       onClick={() => navigate("/cf/auth/login")}
                       className="text-sm font-semibold px-5 py-2 rounded-lg transition"
                       style={{
