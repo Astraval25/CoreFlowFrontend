@@ -3,6 +3,7 @@ import { MdClose, MdErrorOutline } from "react-icons/md";
 import { onAppError } from "../utils/appError";
 
 const AUTO_DISMISS_MS = 4200;
+const MAX_VISIBLE_ERRORS = 3;
 
 const AppErrorCenter = () => {
   const [errors, setErrors] = useState([]);
@@ -12,7 +13,21 @@ const AppErrorCenter = () => {
     const unsubscribe = onAppError((payload) => {
       if (!payload?.message) return;
 
-      setErrors((prev) => [...prev, payload]);
+      setErrors((prev) => {
+        const withoutSameMessage = prev.filter((err) => err.message !== payload.message);
+        const next = [payload, ...withoutSameMessage].slice(0, MAX_VISIBLE_ERRORS);
+        const nextIds = new Set(next.map((err) => err.id));
+
+        prev.forEach((err) => {
+          if (nextIds.has(err.id)) return;
+          const timeoutId = timersRef.current.get(err.id);
+          if (!timeoutId) return;
+          window.clearTimeout(timeoutId);
+          timersRef.current.delete(err.id);
+        });
+
+        return next;
+      });
       const timeoutId = window.setTimeout(() => {
         setErrors((prev) => prev.filter((err) => err.id !== payload.id));
         timersRef.current.delete(payload.id);
@@ -45,7 +60,7 @@ const AppErrorCenter = () => {
       {errors.map((error) => (
         <div
           key={error.id}
-          className="pointer-events-auto rounded-xl border border-danger-alert-border bg-danger-alert-bg px-4 py-3 text-danger-alert-text shadow-sm"
+          className="pointer-events-auto rounded-xl border border-danger-alert-border bg-danger-alert-bg px-4 py-3 text-danger-alert-text shadow-sm backdrop-blur-sm"
           role="alert"
           aria-live="assertive"
         >

@@ -536,10 +536,12 @@ export const coreApi = {
 
   // Announcements
   getCurrentAnnouncement: () =>
-    api.get("/announcements/current"),
+    api.get("/announcements/current", { suppressGlobalError: true }),
 
   dismissAnnouncement: (announcementId) =>
-    api.post(`/announcements/${announcementId}/dismiss`),
+    api.post(`/announcements/${announcementId}/dismiss`, null, {
+      suppressGlobalError: true,
+    }),
 
   // Report Analytics
   getSalesSummary: (companyId, startDate, endDate) =>

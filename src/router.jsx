@@ -14,6 +14,7 @@ import FeaturesPage from "./pages/FeaturesPage";
 import PricingPage from "./pages/PricingPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
+import NotFoundPage from "./pages/NotFoundPage";
 import VendorPage from "./features/vendors/pages/VendorPage";
 import CreateVendorPage from "./features/vendors/pages/CreateVendorPage";
 import ViewVendor from "./features/vendors/pages/ViewVendor";
@@ -209,4 +210,5 @@ export const router = createBrowserRouter([
       { path: "cf/company/:companyId/report/payment-made", element: <ReportPage reportType="payment-made" /> },
     ],
   },
+  { path: "*", element: <NotFoundPage /> },
 ]);
