@@ -17,19 +17,40 @@ const withDateRangeAndFilters = (path, startDate, endDate, filters = {}) => {
   return `${path}?${params.toString()}`;
 };
 
+const normalizeAdPlacement = (placement) => {
+  if (!placement) return null;
+  const value = String(placement).trim().toUpperCase();
+  if (value === "DASHBOARD" || value === "DASHBOARD_ADS") return "DASHBOARD_ADS";
+  if (value === "ORDER_PAGE" || value === "ORDER_PAGE_ADS" || value === "ORDER") return "ORDER_PAGE_ADS";
+  return null;
+};
+
 export const coreApi = {
   login: (data) => api.post(ENDPOINTS.LOGIN, data),
+  employeeLogin: (data) => api.post("/auth/employee/login", data),
   register: (data) => api.post(ENDPOINTS.REGISTER, data),
   refresh: (data) => api.post(ENDPOINTS.REFRESH, data),
   verify_otp: (data) => api.post(ENDPOINTS.VERIFY_OTP, data),
   resend_otp: (data) => api.post(ENDPOINTS.RESEND_OTP, data),
+  getAllCompanies: () => api.get("/companies"),
+  getMyCompaniesAll: () => api.get("/companies/my-companies"),
   getMyCompanies: () => api.get(ENDPOINTS.GET_COMPANY),
+  createCompany: (data) => api.post("/companies", data),
 
   getCompanyById: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}`),
 
   updateCompany: (companyId, data) =>
     api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}`, data),
+
+  deactivateCompany: (companyId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/deactivate`),
+
+  activateCompany: (companyId) =>
+    api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/activate`),
+
+  deleteCompany: (companyId) =>
+    api.delete(`${ENDPOINTS.CUSTOMERS}/${companyId}`),
 
   uploadCompanyLogo: (companyId, file) => {
     const formData = new FormData();
@@ -78,6 +99,21 @@ export const coreApi = {
   getAllCustomerByCompanyId: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers`),
 
+  getAllCustomersGlobal: () =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/customers`),
+
+  getUnlinkedCustomers: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/unlinked`),
+
+  getCustomerOrdersPayments: (companyId, customerId, params = {}) =>
+    api.get(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/orders-payments`,
+      { params }
+    ),
+
+  deleteCustomer: (companyId, customerId) =>
+    api.delete(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}`),
+
   // Vendor
   getVendors: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/active`),
@@ -103,6 +139,21 @@ export const coreApi = {
 
   getAllVendorByCompanyId: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors`),
+
+  getAllVendorsGlobal: () =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/vendors`),
+
+  getUnlinkedVendors: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/unlinked`),
+
+  getVendorOrdersPayments: (companyId, vendorId, params = {}) =>
+    api.get(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/orders-payments`,
+      { params }
+    ),
+
+  deleteVendor: (companyId, vendorId) =>
+    api.delete(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}`),
 
   // Expense Accounts
   getExpenseAccounts: (companyId, activeOnly = false) =>
@@ -146,6 +197,9 @@ export const coreApi = {
     api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses/${expenseId}/activate`),
 
   // Items (matches backend ItemController under /api/companies)
+  getAllItemsGlobal: () =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/items`),
+
   getItems: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/items`),
 
@@ -186,6 +240,9 @@ export const coreApi = {
   getAllPurchase: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/purchase/orders`),
 
+  getPurchaseOrderSnapshots: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/purchase/orders/snapshot`),
+
   getPurchaseDetail: (companyId, orderId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}`),
 
@@ -204,6 +261,9 @@ export const coreApi = {
   // sales
   getAllSales: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/sales/orders`),
+
+  getSalesOrderSnapshots: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/sales/orders/snapshot`),
 
   deactivateSales: (companyId, orderId) => api.put(
     `${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/deactivate`),
@@ -248,6 +308,33 @@ export const coreApi = {
   cancelOrder: (companyId, orderId) =>
     api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/cancel-order`),
 
+  getOrderSnapshotById: (companyId, orderId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/snapshot/${orderId}`),
+
+  getOrderSnapshot: (companyId, orderReference, status) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/snapshot`, {
+      params: { orderReference, status },
+    }),
+
+  deleteOrder: (companyId, orderId) =>
+    api.delete(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}`),
+
+  getOrderPaymentDetails: (companyId, orderId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/payment-details`),
+
+  // Company refs for internal tracking
+  getOrderRef: (companyId, orderId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/ref`),
+
+  updateOrderRef: (companyId, orderId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/orders/${orderId}/ref`, data),
+
+  getPaymentRef: (companyId, paymentId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}/ref`),
+
+  updatePaymentRef: (companyId, paymentId, data) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/${paymentId}/ref`, data),
+
   // Sellable / Purchasable items (used for order creation)
   getSellableItems: (companyId, customerId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/sellable`),
@@ -256,9 +343,15 @@ export const coreApi = {
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/purchasable`),
 
   // Customer Items
+  getAllCustomerItems: (companyId, customerId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items`),
+
   getCustomerItems: (companyId, customerId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/active`),
 
   getCustomerMappedItems: (companyId, customerId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/mapped`),
+
+  getCustomerItemDetail: (companyId, customerId, itemId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items/${itemId}`),
 
   createcustomerItem: (companyId, customerId, data) => api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/items`, data),
 
@@ -271,7 +364,16 @@ export const coreApi = {
 
   // Vendor Items
 
+  getAllVendorItems: (companyId, vendorId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items`),
+
+  getVendorItems: (companyId, vendorId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/active`),
+
   getVendorMappedItems: (companyId, vendorId) => api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/mapped`),
+
+  getVendorItemDetail: (companyId, vendorId, itemId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items/${itemId}`),
 
   createVendorItem: (companyId, vendorId, data) => api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/items`, data),
 
@@ -331,20 +433,55 @@ export const coreApi = {
   getCustomerUnpaidOrders: (companyId, customerId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customer/${customerId}/unpaid-orders`),
 
-  deletePaymentReceivedAllocation: (companyId, paymentId, allocationId) =>
-    api.delete(
-      `${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received/${paymentId}/allocations/${allocationId}`
-    ),
-
   // Advertisements
   getActiveAds: (placement) =>
-    api.get(`/ads${placement ? `?placement=${placement}` : ""}`),
+    api.get(
+      (() => {
+        const normalizedPlacement = normalizeAdPlacement(placement);
+        return `/ads${normalizedPlacement ? `?placement=${normalizedPlacement}` : ""}`;
+      })()
+    ),
+
+  getAllAdsAdmin: (page = 0) =>
+    api.get(`/admin/ads?page=${page}`),
+
+  createAd: (ad, file) => {
+    const formData = new FormData();
+    formData.append("ad", typeof ad === "string" ? ad : JSON.stringify(ad));
+    formData.append("file", file);
+    return api.post("/admin/ads", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  },
+
+  activateAd: (adId) =>
+    api.patch(`/admin/ads/${adId}/activate`),
+
+  deactivateAd: (adId) =>
+    api.patch(`/admin/ads/${adId}/deactivate`),
+
+  deleteAd: (adId) =>
+    api.delete(`/admin/ads/${adId}`),
 
   // Payment Proof
   uploadPaymentProof: (companyId, formData) =>
     api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/payments/payment-proof`, formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+
+  uploadPaymentSentProof: (companyId, paymentId, formData) =>
+    api.post(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/payments-sent/${paymentId}/payment-proof`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    ),
+
+  uploadPaymentReceivedProof: (companyId, paymentId, formData) =>
+    api.post(
+      `${ENDPOINTS.CUSTOMERS}/${companyId}/payments-received/${paymentId}/payment-proof`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    ),
 
   // Invitations (company linking)
   getCustomerInvitationCode: (companyId, customerId) =>
@@ -361,6 +498,12 @@ export const coreApi = {
 
   acceptInvitation: (companyId, invitationCode, data) =>
     api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/${invitationCode}/accept`, data),
+
+  rejectInvitation: (companyId, invitationCode) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/${invitationCode}/reject`),
+
+  getInvitationByCode: (companyId, invitationCode) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/${invitationCode}`),
 
   // Dashboard Analytics
   getDashboardKpi: (companyId, startDate, endDate) =>
@@ -384,6 +527,12 @@ export const coreApi = {
 
   markAllNotificationsRead: (companyId) =>
     api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/notifications/read-all`),
+
+  openNotification: (companyId, notificationId) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/notifications/${notificationId}/open`),
+
+  createNotification: (data) =>
+    api.post("/notifications", data),
 
   // Announcements
   getCurrentAnnouncement: () =>
@@ -484,6 +633,11 @@ export const coreApi = {
   getEmployeeDetail: (companyId, employeeId) =>
     api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}`),
 
+  getEmployeeActivityLogs: (companyId, employeeId, from, to) =>
+    api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/activity-logs`, {
+      params: { from, to },
+    }),
+
   createEmployee: (companyId, data) =>
     api.post(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees`, data),
 
@@ -492,6 +646,9 @@ export const coreApi = {
 
   deactivateEmployee: (companyId, employeeId) =>
     api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/deactivate`),
+
+  activateEmployee: (companyId, employeeId) =>
+    api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/activate`),
 
   // Salary Config
   createSalaryConfig: (companyId, employeeId, data) =>
@@ -513,6 +670,12 @@ export const coreApi = {
   resetPortalUserPassword: (companyId, employeeId, data) =>
     api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/portal-user/reset-password`, data),
 
+  deactivatePortalUser: (companyId, employeeId) =>
+    api.post(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/portal-user/deactivate`),
+
+  activatePortalUser: (companyId, employeeId) =>
+    api.post(`${ENDPOINTS.MODEMP}/${companyId}/modemp/employees/${employeeId}/portal-user/activate`),
+
   // Work Definitions
   getWorkDefinitions: (companyId, activeOnly = true) =>
     api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-definitions?activeOnly=${activeOnly}`),
@@ -528,6 +691,9 @@ export const coreApi = {
 
   deactivateWorkDefinition: (companyId, workDefId) =>
     api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-definitions/${workDefId}/deactivate`),
+
+  activateWorkDefinition: (companyId, workDefId) =>
+    api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-definitions/${workDefId}/activate`),
 
   getWorkDefRateHistory: (companyId, workDefId) =>
     api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/work-definitions/${workDefId}/rate-history`),
@@ -569,6 +735,12 @@ export const coreApi = {
 
   reviewLeaveLog: (companyId, leaveId, data) =>
     api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/leave-logs/${leaveId}/review`, data),
+
+  updateLeaveLogByAdmin: (companyId, leaveId, data) =>
+    api.put(`${ENDPOINTS.MODEMP}/${companyId}/modemp/leave-logs/${leaveId}`, data),
+
+  deleteLeaveLog: (companyId, leaveId) =>
+    api.delete(`${ENDPOINTS.MODEMP}/${companyId}/modemp/leave-logs/${leaveId}`),
 
   // Salary (Admin)
   calculateSalary: (companyId, data) =>
@@ -625,4 +797,33 @@ export const coreApi = {
     api.get(`${ENDPOINTS.EMP}/salary/periods/${salaryPeriodId}/slip`, {
       responseType: "blob",
     }),
+
+  // Company config
+  getCompanyConfigs: (companyId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/config`),
+
+  setCompanyConfig: (companyId, configKey, configValue) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/config/${configKey}`, { configValue }),
+
+  resetCompanyConfig: (companyId, configKey) =>
+    api.delete(`${ENDPOINTS.CUSTOMERS}/${companyId}/config/${configKey}`),
+
+  // Common utilities
+  getAddressById: (addressId) =>
+    api.get(`/common/addresses/addressId/${addressId}`),
+
+  updateAddressById: (addressId, data) =>
+    api.put(`/common/addresses/addressId/${addressId}`, data),
+
+  deleteAddressById: (addressId) =>
+    api.delete(`/common/addresses/addressId/${addressId}`),
+
+  registerDeviceToken: (data) =>
+    api.post("/device-tokens", data),
+
+  deregisterDeviceToken: (token) =>
+    api.delete("/device-tokens", { params: { token } }),
+
+  getOcrHealth: () =>
+    api.get("/health/ocr"),
 };

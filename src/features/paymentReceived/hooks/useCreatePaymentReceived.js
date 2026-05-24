@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { coreApi } from "../../../shared/services/coreApi";
-import { emitAppError } from "../../../shared/utils/appError";
 
 const PAYMENT_MODES = [
   "BANK_TRANSFER",
@@ -180,17 +179,7 @@ const useCreatePaymentReceived = (paymentId = null) => {
     if (!target) return;
 
     if (isEditMode && target.paymentOrderAllocationId) {
-      if (!window.confirm("Delete this allocation from payment?")) return;
-      try {
-        await coreApi.deletePaymentReceivedAllocation(
-          companyId,
-          paymentId,
-          target.paymentOrderAllocationId
-        );
-      } catch (error) {
-        emitAppError(error, "Failed to delete allocation");
-        return;
-      }
+      if (!window.confirm("Remove this allocation from payment?")) return;
     }
 
     setFormData((prev) => ({

@@ -58,7 +58,7 @@ const AdBanner = () => {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    coreApi.getActiveAds("dashboard")
+    coreApi.getActiveAds("DASHBOARD_ADS")
       .then(async (res) => {
         if (cancelled) return;
         const list = res?.data?.responseData?.advertisements

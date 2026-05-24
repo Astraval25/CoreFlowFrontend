@@ -71,7 +71,7 @@ const ViewPaymentMadePage = () => {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      await coreApi.uploadPaymentProof(companyId, formData);
+      await coreApi.uploadPaymentSentProof(companyId, paymentMadeId, formData);
     } catch (err) {
       emitAppError(err, "Failed to upload payment proof");
     } finally {
