@@ -103,6 +103,37 @@ const CreateItemPage = () => {
             options={unitOptions}
           />
 
+          <label className="text-[11px] font-semibold uppercase tracking-wide text-app-muted">
+            Item Usage <span className="text-danger">*</span>
+          </label>
+          <div>
+            <div className="flex flex-wrap items-center gap-5 rounded-lg border border-line bg-white px-3 py-2">
+              <label className="flex items-center gap-2 text-xs font-medium text-app-text">
+                <input
+                  type="checkbox"
+                  name="isSellable"
+                  checked={Boolean(formData.isSellable)}
+                  onChange={handleInputChange}
+                  className="h-4 w-4 accent-[var(--accent)]"
+                />
+                Sellable Item (Sales)
+              </label>
+              <label className="flex items-center gap-2 text-xs font-medium text-app-text">
+                <input
+                  type="checkbox"
+                  name="isPurchasable"
+                  checked={Boolean(formData.isPurchasable)}
+                  onChange={handleInputChange}
+                  className="h-4 w-4 accent-[var(--accent)]"
+                />
+                Purchasable Item (Purchase)
+              </label>
+            </div>
+            {allErrors.itemAvailability && (
+              <p className="mt-1 text-[10px] text-danger">{allErrors.itemAvailability}</p>
+            )}
+          </div>
+
           <InputField
             label="Sales Price"
             name="baseSalesPrice"
@@ -113,6 +144,8 @@ const CreateItemPage = () => {
             regex={priceRegex}
             regexError="Please enter a valid price."
             error={allErrors.baseSalesPrice}
+            required={Boolean(formData.isSellable)}
+            disabled={!formData.isSellable}
           />
 
           <InputField
@@ -125,6 +158,8 @@ const CreateItemPage = () => {
             regex={priceRegex}
             regexError="Please enter a valid price."
             error={allErrors.basePurchasePrice}
+            required={Boolean(formData.isPurchasable)}
+            disabled={!formData.isPurchasable}
           />
 
           <InputField
@@ -162,7 +197,10 @@ const CreateItemPage = () => {
                   onChange={handleInputChange}
                   placeholder="Enter sales description"
                   rows={3}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
+                  disabled={!formData.isSellable}
+                  className={`w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand ${
+                    !formData.isSellable ? "cursor-not-allowed bg-surface-soft text-app-muted" : ""
+                  }`}
                 />
               </div>
 
@@ -176,7 +214,10 @@ const CreateItemPage = () => {
                   onChange={handleInputChange}
                   placeholder="Enter purchase description"
                   rows={3}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
+                  disabled={!formData.isPurchasable}
+                  className={`w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand ${
+                    !formData.isPurchasable ? "cursor-not-allowed bg-surface-soft text-app-muted" : ""
+                  }`}
                 />
               </div>
             </div>

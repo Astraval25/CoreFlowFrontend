@@ -7,6 +7,8 @@ export const useCreateItemPage = (itemId = null) => {
     itemName: "",
     itemType: "GOODS",
     unit: "PCS",
+    isSellable: true,
+    isPurchasable: true,
     baseSalesPrice: "",
     basePurchasePrice: "",
     hsnCode: "",
@@ -38,6 +40,8 @@ export const useCreateItemPage = (itemId = null) => {
             itemName: item.itemName || "",
             itemType: item.itemType || "GOODS",
             unit: item.unit || "PCS",
+            isSellable: item.isSellable ?? Boolean(item.baseSalesPrice),
+            isPurchasable: item.isPurchasable ?? Boolean(item.basePurchasePrice),
             baseSalesPrice: item.baseSalesPrice || "",
             basePurchasePrice: item.basePurchasePrice || "",
             hsnCode: item.hsnCode || "",
@@ -61,15 +65,42 @@ export const useCreateItemPage = (itemId = null) => {
   }, [itemId]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
+    const nextValue = type === "checkbox" ? checked : value;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData((prev) => {
+      const next = {
+        ...prev,
+        [name]: nextValue,
+      };
+
+      if (type === "checkbox" && name === "isSellable" && !checked) {
+        next.baseSalesPrice = "";
+        next.salesDescription = "";
+      }
+
+      if (type === "checkbox" && name === "isPurchasable" && !checked) {
+        next.basePurchasePrice = "";
+        next.purchaseDescription = "";
+      }
+
+      return next;
+    });
 
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+
+    if (errors.itemAvailability) {
+      setErrors((prev) => ({ ...prev, itemAvailability: "" }));
+    }
+
+    if (type === "checkbox" && name === "isSellable" && !checked && errors.baseSalesPrice) {
+      setErrors((prev) => ({ ...prev, baseSalesPrice: "" }));
+    }
+
+    if (type === "checkbox" && name === "isPurchasable" && !checked && errors.basePurchasePrice) {
+      setErrors((prev) => ({ ...prev, basePurchasePrice: "" }));
     }
   };
 
@@ -85,9 +116,16 @@ export const useCreateItemPage = (itemId = null) => {
       newErrors.itemName = "Item name is required";
     }
 
-    if (!formData.baseSalesPrice && !formData.basePurchasePrice) {
-      newErrors.baseSalesPrice = "Either sales or purchase price required";
-      newErrors.basePurchasePrice = "Either sales or purchase price required";
+    if (!formData.isSellable && !formData.isPurchasable) {
+      newErrors.itemAvailability = "Select at least one option: Sellable or Purchasable";
+    }
+
+    if (formData.isSellable && !formData.baseSalesPrice) {
+      newErrors.baseSalesPrice = "Sales price is required for sellable items";
+    }
+
+    if (formData.isPurchasable && !formData.basePurchasePrice) {
+      newErrors.basePurchasePrice = "Purchase price is required for purchasable items";
     }
 
     setErrors(newErrors);
@@ -122,10 +160,10 @@ export const useCreateItemPage = (itemId = null) => {
         itemName: toNullableText(formData.itemName),
         itemType: toNullableText(formData.itemType),
         unit: toNullableText(formData.unit),
-        salesDescription: toNullableText(formData.salesDescription),
-        baseSalesPrice: toNullableNumber(formData.baseSalesPrice),
-        purchaseDescription: toNullableText(formData.purchaseDescription),
-        basePurchasePrice: toNullableNumber(formData.basePurchasePrice),
+        salesDescription: formData.isSellable ? toNullableText(formData.salesDescription) : null,
+        baseSalesPrice: formData.isSellable ? toNullableNumber(formData.baseSalesPrice) : null,
+        purchaseDescription: formData.isPurchasable ? toNullableText(formData.purchaseDescription) : null,
+        basePurchasePrice: formData.isPurchasable ? toNullableNumber(formData.basePurchasePrice) : null,
         hsnCode: toNullableText(formData.hsnCode),
         taxRate: toNullableNumber(formData.taxRate),
       };
