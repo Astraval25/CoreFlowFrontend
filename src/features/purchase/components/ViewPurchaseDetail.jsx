@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useState as useLocalState } from "react";
 import useViewPurchaseDetail from "../hooks/useViewPurchaseDetail";
 import { coreApi } from "../../../shared/services/coreApi";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const money = (value) => `Rs. ${Number(value || 0).toLocaleString()}`;
 
@@ -22,7 +23,7 @@ const ViewPurchaseDetail = ({ companyId, orderId }) => {
       window.open(url, "_blank");
     } catch (err) {
       console.error("Download bill error:", err);
-      alert("Failed to open bill");
+      emitAppError(err, "Failed to open bill");
     }
   };
 

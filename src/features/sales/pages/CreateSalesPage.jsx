@@ -2,6 +2,7 @@ import useCreateSales from "../hooks/useCreateSales";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { MdAdd, MdDeleteOutline, MdClose } from "react-icons/md";
 import { FiSave } from "react-icons/fi";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const ORDER_TYPE_LABEL = {
   quote: "Quote",
@@ -48,13 +49,13 @@ const CreateSalesPage = () => {
     const result = await submitSales();
     if (result?.success) {
       if (result.statusWarning) {
-        alert(result.statusWarning);
+        emitAppError(result.statusWarning);
         navigate(`${salesBase}?tab=quotes`);
       } else {
         navigate(`${salesBase}?tab=${ORDER_TYPE_TAB[orderType]}`);
       }
     } else if (result?.message) {
-      alert(result.message);
+      emitAppError(result.message);
     }
   };
 

@@ -1,9 +1,10 @@
 import { useCreateItemPage } from "../hooks/useCreateItemPage";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import InputField from "../../../shared/components/InputField";
 import SelectField from "../../../shared/components/SelectField";
 import { itemNameRegex, priceRegex, hsnRegex } from "../../../shared/utils/regex";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const CreateItemPage = () => {
   const navigate = useNavigate();
@@ -43,10 +44,9 @@ const CreateItemPage = () => {
     const result = await saveItem();
 
     if (result?.success) {
-      alert(`Item ${isEditMode ? "updated" : "created"} successfully!`);
       navigate(`/cf/company/${companyId}/items`);
     } else {
-      alert(result?.message || "Something went wrong");
+      emitAppError(result?.message || "Something went wrong");
     }
   };
 

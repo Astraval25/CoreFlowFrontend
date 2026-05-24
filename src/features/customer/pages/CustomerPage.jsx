@@ -16,6 +16,11 @@ const CustomerPage = () => {
   const navigate = useNavigate();
   const [companyId, setCompanyId] = useState("");
   const [customerType, setCustomerType] = useState("active");
+  const filteredRows = table.getRowModel().rows;
+  const totalDue = filteredRows.reduce(
+    (sum, row) => sum + Number(row.original?.dueAmount || 0),
+    0
+  );
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -29,18 +34,17 @@ const CustomerPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-app">
-      <div
-        className="px-5 py-4 flex items-center justify-between border-b border-line bg-surface"
-      >
+    <div className="flex flex-col gap-4">
+      <div className="pt-1 flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <h1 className="text-xl font-semibold text-app-text">
-            Customers
-          </h1>
+          <div>
+            <h1 className="text-xl font-extrabold text-app-text">Customers</h1>
+            <p className="text-xs mt-0.5 text-app-sub">Manage your active and archived customers</p>
+          </div>
           <select
             value={customerType}
             onChange={handleCustomerTypeChange}
-            className="text-sm font-semibold px-3 py-2 rounded-lg focus:outline-none cursor-pointer border border-line bg-surface-soft text-app-heading"
+            className="text-sm font-semibold px-3 py-2 rounded-lg focus:outline-none cursor-pointer border border-line bg-surface-soft text-app-heading mt-1"
           >
             <option value="active">Active Customers</option>
             <option value="deleted">Deleted Customers</option>
@@ -62,26 +66,27 @@ const CustomerPage = () => {
           </div>
           <button
             onClick={() => navigate(`/cf/company/${companyId}/customers/create`)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-brand text-surface"
+            className="btn-primary text-xs"
           >
-            <MdAdd size={18} />
-            New
+            <MdAdd size={15} /> New
           </button>
         </div>
       </div>
 
-      <div className="p-4 bg-surface">
-        <div className="flex items-center gap-2 mb-3">
-          {/* <h2 className="text-2xl font-semibold text-app-text">
-            {customerType === "active" ? "Active Customers" : "Deleted Customers"}
-          </h2>
-          <span
-            className="text-xs px-2 py-1 rounded-full font-bold bg-brand-secondary-bg text-brand-secondary"
-          >
-            {table.getRowModel().rows.length}
-          </span> */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="card p-4">
+          <p className="text-[11px] text-app-sub">Customers</p>
+          <p className="text-base font-extrabold text-app-text">{filteredRows.length}</p>
         </div>
+        <div className="card p-4">
+          <p className="text-[11px] text-app-sub">Total Due</p>
+          <p className="text-base font-extrabold text-brand">
+            ₹{totalDue.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </p>
+        </div>
+      </div>
 
+      <div className="card p-4">
         <div className="rounded-xl overflow-hidden border border-line">
           <table className="w-full min-w-[780px]">
             <thead>
@@ -102,14 +107,14 @@ const CustomerPage = () => {
               </tr>
             </thead>
             <tbody>
-              {table.getRowModel().rows.length === 0 ? (
+              {filteredRows.length === 0 ? (
                 <tr>
                   <td colSpan={table.getAllColumns().length} className="py-16 text-center">
                     <p className="text-sm text-app-sub">No customers found</p>
                   </td>
                 </tr>
               ) : (
-                table.getRowModel().rows.map((row) => (
+                filteredRows.map((row) => (
                   <tr
                     key={row.id}
                     className="cursor-pointer border-b border-line-soft"

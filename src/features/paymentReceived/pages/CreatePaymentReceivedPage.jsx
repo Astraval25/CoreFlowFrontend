@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { MdAdd, MdClose, MdDeleteOutline } from "react-icons/md";
 import { FiSave } from "react-icons/fi";
 import useCreatePaymentReceived from "../hooks/useCreatePaymentReceived";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const fmtMoney = (value) =>
   Number(value || 0).toLocaleString("en-IN", {
@@ -53,16 +54,16 @@ const CreatePaymentReceivedPage = () => {
       return;
     }
     if (result.message) {
-      alert(result.message);
+      emitAppError(result.message);
     }
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-surface">
+    <div className="flex flex-col gap-4">
       <div
-        className="flex items-center justify-between px-8 py-4 shrink-0 border-b border-line"
+        className="card flex items-center justify-between px-6 py-4 shrink-0"
       >
-        <h1 className="text-sm font-bold tracking-tight text-app-text">
+        <h1 className="text-xl font-extrabold tracking-tight text-app-text">
           {isEditMode ? "Edit Payment Received" : "New Payment Received"}
         </h1>
         <button
@@ -73,8 +74,8 @@ const CreatePaymentReceivedPage = () => {
         </button>
       </div>
 
-      <div className="flex-1 px-8 py-6 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="card flex-1 p-6 space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <Field label="Customer" required error={errors.customerId}>
             <select
               name="customerId"
@@ -152,7 +153,7 @@ const CreatePaymentReceivedPage = () => {
           </Field>
         </div>
 
-        <div className="border-t border-line">
+        <div className="border-t border-line pt-1">
           <div className="flex items-center justify-between py-3">
             <span className="text-[11px] font-bold uppercase tracking-wide text-app-muted">
               Order Allocations
@@ -281,14 +282,7 @@ const CreatePaymentReceivedPage = () => {
         </div>
       </div>
 
-      <div
-        className="sticky bottom-0 shrink-0 flex items-center justify-between px-8 py-3"
-        style={{
-          background: "var(--surface-bg)",
-          borderTop: "1px solid var(--line)",
-          boxShadow: "0 -2px 10px 0 var(--shadow-soft)",
-        }}
-      >
+      <div className="card sticky bottom-0 shrink-0 flex items-center justify-between px-6 py-3">
         <div className="flex items-center gap-3">
           <button type="button" onClick={handleSubmit} disabled={loading} className="btn-ghost text-xs">
             <FiSave size={13} /> Save as Draft

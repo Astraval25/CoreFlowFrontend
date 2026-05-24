@@ -18,13 +18,15 @@ const PaymentReceivedPage = () => {
   } = usePaymentReceivedPage();
 
   const navigate = useNavigate();
+  const totalAmount = filteredPayments.reduce((sum, p) => sum + Number(p.amount || 0), 0);
 
   return (
-    <div className="min-h-screen bg-app">
-      <div className="flex items-center justify-between mb-5">
-        <h1 className="text-sm font-bold text-app-text">
-          Payment Received
-        </h1>
+    <div className="flex flex-col gap-4">
+      <div className="pt-1 flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-extrabold text-app-text">Payment Received</h1>
+          <p className="text-xs mt-0.5 text-app-sub">Track and manage incoming customer payments</p>
+        </div>
 
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -49,7 +51,18 @@ const PaymentReceivedPage = () => {
         </div>
       </div>
 
-      <div className="p-4 bg-surface">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="card p-4">
+          <p className="text-[11px] text-app-sub">Payments</p>
+          <p className="text-base font-extrabold text-app-text">{filteredPayments.length}</p>
+        </div>
+        <div className="card p-4">
+          <p className="text-[11px] text-app-sub">Amount</p>
+          <p className="text-base font-extrabold text-brand">₹{fmtMoney(totalAmount)}</p>
+        </div>
+      </div>
+
+      <div className="card p-4">
         <div className="rounded-xl overflow-hidden border border-line">
           <table className="w-full min-w-[980px]">
           <thead>

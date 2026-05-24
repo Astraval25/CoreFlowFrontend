@@ -106,9 +106,32 @@ export const useCreateItemPage = (itemId = null) => {
       const decode = jwtDecode(token);
       const companyId = decode.defaultComp[0];
 
-      const formDataToSend = new FormData();
+      const toNullableText = (value) => {
+        if (value === null || value === undefined) return null;
+        const text = String(value).trim();
+        return text === "" ? null : text;
+      };
 
-      formDataToSend.append("item", JSON.stringify(formData));
+      const toNullableNumber = (value) => {
+        if (value === null || value === undefined || value === "") return null;
+        const parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : null;
+      };
+
+      const payload = {
+        itemName: toNullableText(formData.itemName),
+        itemType: toNullableText(formData.itemType),
+        unit: toNullableText(formData.unit),
+        salesDescription: toNullableText(formData.salesDescription),
+        baseSalesPrice: toNullableNumber(formData.baseSalesPrice),
+        purchaseDescription: toNullableText(formData.purchaseDescription),
+        basePurchasePrice: toNullableNumber(formData.basePurchasePrice),
+        hsnCode: toNullableText(formData.hsnCode),
+        taxRate: toNullableNumber(formData.taxRate),
+      };
+
+      const formDataToSend = new FormData();
+      formDataToSend.append("item", JSON.stringify(payload));
 
       if (file) {
         formDataToSend.append("file", file);

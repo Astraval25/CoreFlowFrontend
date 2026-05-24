@@ -4,6 +4,7 @@ import { flexRender } from "@tanstack/react-table";
 import { useNavigate } from "react-router-dom";
 import useItemsPage from "../hooks/useItemsPage";
 import ActionMenu from "../../../shared/components/ActionMenu";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const ItemsPage = () => {
   const {
@@ -112,13 +113,13 @@ const ItemsPage = () => {
                       onDelete={async () => {
                         if (window.confirm("Deactivate this item?")) {
                           try { await deactivateItem(companyId, row.original.itemId); }
-                          catch { alert("Failed to deactivate item."); }
+                          catch (error) { emitAppError(error, "Failed to deactivate item."); }
                         }
                       }}
                       onActivate={async () => {
                         if (window.confirm("Activate this item?")) {
                           try { await activateItem(companyId, row.original.itemId); }
-                          catch { alert("Failed to activate item."); }
+                          catch (error) { emitAppError(error, "Failed to activate item."); }
                         }
                       }}
                     />

@@ -145,7 +145,7 @@ export const coreApi = {
   activateExpense: (companyId, expenseId) =>
     api.patch(`${ENDPOINTS.CUSTOMERS}/${companyId}/expenses/${expenseId}/activate`),
 
-  // items
+  // Items (matches backend ItemController under /api/companies)
   getItems: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/items`),
 
@@ -155,11 +155,15 @@ export const coreApi = {
   getItemDetail: (companyId, itemId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/items/${itemId}`),
 
-  createItems: (companyId, data) =>
-    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/items`, data),
+  createItems: (companyId, formData) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/items`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 
-  editItem: (companyId, itemId, data) =>
-    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/items/${itemId}`, data),
+  editItem: (companyId, itemId, formData) =>
+    api.put(`${ENDPOINTS.CUSTOMERS}/${companyId}/items/${itemId}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
 
   downloadFile: (fsId) => api.get(`${ENDPOINTS.FILE_DOWNLOAD}?fsId=${fsId}`, {
     responseType: "blob",
@@ -174,6 +178,9 @@ export const coreApi = {
     api.patch(
       `${ENDPOINTS.CUSTOMERS}/${companyId}/items/${itemId}/activate`
     ),
+
+  deleteItem: (companyId, itemId) =>
+    api.delete(`${ENDPOINTS.CUSTOMERS}/${companyId}/items/${itemId}`),
 
   // Purchase
   getAllPurchase: (companyId) =>

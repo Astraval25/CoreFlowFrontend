@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { coreApi } from "../../../shared/services/coreApi";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const PAYMENT_MODES = [
   "BANK_TRANSFER",
@@ -187,7 +188,7 @@ const useCreatePaymentReceived = (paymentId = null) => {
           target.paymentOrderAllocationId
         );
       } catch (error) {
-        alert(error?.response?.data?.responseMessage || "Failed to delete allocation");
+        emitAppError(error, "Failed to delete allocation");
         return;
       }
     }

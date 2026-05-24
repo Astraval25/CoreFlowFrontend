@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { MdEdit, MdPayments, MdKeyboardArrowDown, MdUploadFile } from "react-icons/md";
 import usePaymentMadeDetail from "../hooks/usePaymentMadeDetail";
 import { coreApi } from "../../../shared/services/coreApi";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const money = (value) =>
   Number(value || 0).toLocaleString("en-IN", {
@@ -71,9 +72,8 @@ const ViewPaymentMadePage = () => {
       const formData = new FormData();
       formData.append("file", file);
       await coreApi.uploadPaymentProof(companyId, formData);
-      alert("Payment proof uploaded successfully");
     } catch (err) {
-      alert(err?.response?.data?.responseMessage || "Failed to upload payment proof");
+      emitAppError(err, "Failed to upload payment proof");
     } finally {
       setUploading(false);
       e.target.value = "";
@@ -81,15 +81,15 @@ const ViewPaymentMadePage = () => {
   };
 
   if (loading) {
-    return <p className="p-6 text-gray-600">Loading payment details...</p>;
+    return <p className="p-6 text-app-sub">Loading payment details...</p>;
   }
 
   if (!payment) {
-    return <p className="p-6 text-gray-600">Payment not found.</p>;
+    return <p className="p-6 text-app-sub">Payment not found.</p>;
   }
 
   return (
-    <div className="w-full rounded-2xl border border-line bg-white shadow-sm p-5 space-y-6">
+    <div className="card w-full p-5 space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="space-y-2">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-app-sub">

@@ -15,6 +15,7 @@ import { useState, useCallback } from "react";
 import CustomerItems from "../../CustomerItems/pages/CustomerItems";
 import useViewCustomerDetail from "../hooks/useViewCustomerDetail";
 import { coreApi } from "../../../shared/services/coreApi";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const formatAddress = (address) => {
   if (!address) return "Not available";
@@ -46,7 +47,7 @@ const CustomerInvitationSection = ({ companyId, customerId }) => {
       const res = await coreApi.createCustomerInvitation(companyId, customerId);
       setInviteCode(res?.data?.responseData?.invitationCode || null);
     } catch (err) {
-      alert(err?.response?.data?.responseMessage || "Failed to generate invitation code");
+      emitAppError(err, "Failed to generate invitation code");
     } finally {
       setGenerating(false);
     }
@@ -66,10 +67,9 @@ const CustomerInvitationSection = ({ companyId, customerId }) => {
       await coreApi.acceptInvitation(companyId, acceptCode.trim(), {
         selectedCustomerId: Number(customerId),
       });
-      alert("Invitation accepted successfully! Company linked.");
       setAcceptCode("");
     } catch (err) {
-      alert(err?.response?.data?.responseMessage || "Failed to accept invitation");
+      emitAppError(err, "Failed to accept invitation");
     } finally {
       setAccepting(false);
     }
