@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import ViewPurchaseDetail from "../components/ViewPurchaseDetail";
 import ListAllPurchase from "../components/ListAllPurchase";
 import { useParams } from "react-router-dom";
+import { MdReceiptLong } from "react-icons/md";
 
 const ViewPurchasePage = () => {
   const { purchaseId: paramOrderId } = useParams();
@@ -32,25 +33,40 @@ const ViewPurchasePage = () => {
   };
 
   return (
-    <div className="rounded-2xl border border-line bg-white shadow-sm">
-      <div className="flex">
-        <div className="w-[22%]">
+    <div className="w-full">
+      <section className="space-y-4 p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h1 className="text-xl font-extrabold text-app-text">Purchase Orders</h1>
+            <p className="text-xs mt-0.5 text-app-sub">Browse and inspect purchase order details</p>
+          </div>
+        </div>
+
+        <div className="grid gap-4 xl:grid-cols-[320px_minmax(0,1fr)]">
+          <div className="min-w-0">
         <ListAllPurchase
           selectedOrderId={selectedOrderId}
           onSelectOrder={handleSelectOrder}
         />
-        </div>
+          </div>
 
-        <div className="w-[78%] p-2">
-          {selectedOrderId && companyId ? (
-            <ViewPurchaseDetail companyId={companyId} orderId={selectedOrderId} />
-          ) : (
-            <p className="p-6 text-gray-600">
-              Select a purchase order to view details
-            </p>
-          )}
+          <div className="min-w-0 rounded-2xl border border-line bg-white shadow-sm">
+            {selectedOrderId && companyId ? (
+              <ViewPurchaseDetail companyId={companyId} orderId={selectedOrderId} />
+            ) : (
+              <div className="flex min-h-[420px] flex-col items-center justify-center px-6 text-center">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-surface-soft">
+                  <MdReceiptLong size={24} className="text-info" />
+                </div>
+                <p className="text-base font-extrabold text-app-text">Select a purchase order</p>
+                <p className="mt-1 text-sm text-app-sub">
+                  Choose an order from the left panel to view full details.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
