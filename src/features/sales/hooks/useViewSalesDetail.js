@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { coreApi } from "../../../shared/services/coreApi";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const useViewSalesDetail = (companyId, orderId) => {
   const [order, setOrder] = useState(null);
@@ -39,7 +40,7 @@ const useViewSalesDetail = (companyId, orderId) => {
       await fetchOrderDetail();
     } catch (err) {
       console.error("Status update failed:", err);
-      alert(err.response?.data?.responseMessage || "Status update failed");
+      emitAppError(err, "Status update failed");
     } finally {
       setStatusUpdating(false);
     }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import InputField from "../../../shared/components/InputField";
 import SelectField from "../../../shared/components/SelectField";
 import { itemNameRegex, priceRegex, hsnRegex } from "../../../shared/utils/regex";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const CreateItemPage = () => {
   const navigate = useNavigate();
@@ -43,10 +44,9 @@ const CreateItemPage = () => {
     const result = await saveItem();
 
     if (result?.success) {
-      alert(`Item ${isEditMode ? "updated" : "created"} successfully!`);
       navigate(`/cf/company/${companyId}/items`);
     } else {
-      alert(result?.message || "Something went wrong");
+      emitAppError(result?.message || "Something went wrong");
     }
   };
 
@@ -108,32 +108,30 @@ const CreateItemPage = () => {
           </div>
 
           <div>
-            <div className="flex flex-wrap gap-4 text-sm text-app-text">
-              <label className="inline-flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-5 rounded-lg border border-line bg-white px-3 py-2">
+              <label className="flex items-center gap-2 text-xs font-medium text-app-text">
                 <input
                   type="checkbox"
                   name="isSellable"
-                  checked={formData.isSellable}
+                  checked={Boolean(formData.isSellable)}
                   onChange={handleInputChange}
-                  className="h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand"
+                  className="h-4 w-4 accent-[var(--accent)]"
                 />
-                Sellable
+                Sellable Item (Sales)
               </label>
-              <label className="inline-flex items-center gap-2">
+              <label className="flex items-center gap-2 text-xs font-medium text-app-text">
                 <input
                   type="checkbox"
                   name="isPurchasable"
-                  checked={formData.isPurchasable}
+                  checked={Boolean(formData.isPurchasable)}
                   onChange={handleInputChange}
-                  className="h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand"
+                  className="h-4 w-4 accent-[var(--accent)]"
                 />
-                Purchasable
+                Purchasable Item (Purchase)
               </label>
             </div>
-            {allErrors.itemCapability && (
-              <p className="text-[10px] mt-0.5 text-danger">
-                {allErrors.itemCapability}
-              </p>
+            {allErrors.itemAvailability && (
+              <p className="mt-1 text-[10px] text-danger">{allErrors.itemAvailability}</p>
             )}
           </div>
 
@@ -147,7 +145,7 @@ const CreateItemPage = () => {
             regex={priceRegex}
             regexError="Please enter a valid price."
             error={allErrors.baseSalesPrice}
-            required={formData.isSellable}
+            required={Boolean(formData.isSellable)}
             disabled={!formData.isSellable}
           />
 
@@ -161,7 +159,7 @@ const CreateItemPage = () => {
             regex={priceRegex}
             regexError="Please enter a valid price."
             error={allErrors.basePurchasePrice}
-            required={formData.isPurchasable}
+            required={Boolean(formData.isPurchasable)}
             disabled={!formData.isPurchasable}
           />
 
@@ -201,7 +199,9 @@ const CreateItemPage = () => {
                   placeholder="Enter sales description"
                   disabled={!formData.isSellable}
                   rows={3}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+                  className={`w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand ${
+                    !formData.isSellable ? "cursor-not-allowed bg-surface-soft text-app-muted" : ""
+                  }`}
                 />
               </div>
 
@@ -216,7 +216,9 @@ const CreateItemPage = () => {
                   placeholder="Enter purchase description"
                   disabled={!formData.isPurchasable}
                   rows={3}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+                  className={`w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand ${
+                    !formData.isPurchasable ? "cursor-not-allowed bg-surface-soft text-app-muted" : ""
+                  }`}
                 />
               </div>
             </div>

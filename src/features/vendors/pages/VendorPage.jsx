@@ -16,6 +16,11 @@ const VendorPage = () => {
   const navigate = useNavigate();
   const [companyId, setCompanyId] = useState("");
   const [vendorType, setVendorType] = useState("active");
+  const filteredRows = table.getRowModel().rows;
+  const totalDue = filteredRows.reduce(
+    (sum, row) => sum + Number(row.original?.dueAmount || 0),
+    0
+  );
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -29,16 +34,22 @@ const VendorPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-app">
-      <div className="flex items-center justify-between mb-5">
-        <select
-          value={vendorType}
-          onChange={handleVendorTypeChange}
-          className="text-sm font-semibold focus:outline-none bg-transparent cursor-pointer text-app-text"
-        >
-          <option value="active">Active Vendors</option>
-          <option value="deleted">Deleted Vendors</option>
-        </select>
+    <div className="flex flex-col gap-4">
+      <div className="pt-1 flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div>
+            <h1 className="text-xl font-extrabold text-app-text">Vendors</h1>
+            <p className="text-xs mt-0.5 text-app-sub">Manage your active and archived vendors</p>
+          </div>
+          <select
+            value={vendorType}
+            onChange={handleVendorTypeChange}
+            className="text-sm font-semibold px-3 py-2 rounded-lg focus:outline-none cursor-pointer border border-line bg-surface-soft text-app-heading mt-1"
+          >
+            <option value="active">Active Vendors</option>
+            <option value="deleted">Deleted Vendors</option>
+          </select>
+        </div>
 
         <div className="flex items-center gap-3">
           <div className="relative">
@@ -63,7 +74,20 @@ const VendorPage = () => {
         </div>
       </div>
 
-      <div className="p-4 bg-surface">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="card p-4">
+          <p className="text-[11px] text-app-sub">Vendors</p>
+          <p className="text-base font-extrabold text-app-text">{filteredRows.length}</p>
+        </div>
+        <div className="card p-4">
+          <p className="text-[11px] text-app-sub">Total Due</p>
+          <p className="text-base font-extrabold text-brand">
+            ₹{totalDue.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </p>
+        </div>
+      </div>
+
+      <div className="card p-4">
         <div className="rounded-xl overflow-hidden border border-line">
           <table className="w-full min-w-[780px]">
           <thead>
@@ -84,14 +108,14 @@ const VendorPage = () => {
             </tr>
           </thead>
           <tbody>
-            {table.getRowModel().rows.length === 0 ? (
+            {filteredRows.length === 0 ? (
               <tr>
                 <td colSpan={table.getAllColumns().length} className="py-16 text-center">
                   <p className="text-sm text-app-sub">No vendors found</p>
                 </td>
               </tr>
             ) : (
-              table.getRowModel().rows.map((row) => (
+              filteredRows.map((row) => (
                 <tr
                   key={row.id}
                   className="cursor-pointer border-b border-line-soft"

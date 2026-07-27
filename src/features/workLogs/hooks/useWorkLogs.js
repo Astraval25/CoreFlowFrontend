@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { coreApi } from "../../../shared/services/coreApi";
 import { jwtDecode } from "jwt-decode";
+import { emitAppError } from "../../../shared/utils/appError";
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -143,7 +144,7 @@ export const useWorkLogs = () => {
       await coreApi.deleteWorkLog(companyId, logId);
       fetchWorkLogs();
     } catch (err) {
-      window.alert(err.response?.data?.responseMessage || "Failed to delete work log.");
+      emitAppError(err, "Failed to delete work log.");
     }
   };
 

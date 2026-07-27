@@ -15,6 +15,7 @@ import { coreApi } from "../../../shared/services/coreApi";
 import PartyTransactionTab from "../../../shared/components/PartyTransactionTab";
 import PartyMonthlyTrend from "../../../shared/components/PartyMonthlyTrend";
 import ConnectionRequestPanel from "../../../shared/components/ConnectionRequestPanel";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const formatAddress = (address) => {
   if (!address) return "Not available";

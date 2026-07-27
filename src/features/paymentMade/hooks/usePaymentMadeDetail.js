@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { coreApi } from "../../../shared/services/coreApi";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const usePaymentMadeDetail = (paymentId) => {
   const [companyId, setCompanyId] = useState("");
@@ -52,7 +53,7 @@ const usePaymentMadeDetail = (paymentId) => {
       await fetchPayment(companyId, paymentId);
       return true;
     } catch (error) {
-      alert(error?.response?.data?.responseMessage || "Failed to update payment status");
+      emitAppError(error, "Failed to update payment status");
       return false;
     }
   };

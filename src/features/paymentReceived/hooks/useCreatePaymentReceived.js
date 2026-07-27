@@ -179,17 +179,7 @@ const useCreatePaymentReceived = (paymentId = null) => {
     if (!target) return;
 
     if (isEditMode && target.paymentOrderAllocationId) {
-      if (!window.confirm("Delete this allocation from payment?")) return;
-      try {
-        await coreApi.deletePaymentReceivedAllocation(
-          companyId,
-          paymentId,
-          target.paymentOrderAllocationId
-        );
-      } catch (error) {
-        alert(error?.response?.data?.responseMessage || "Failed to delete allocation");
-        return;
-      }
+      if (!window.confirm("Remove this allocation from payment?")) return;
     }
 
     setFormData((prev) => ({

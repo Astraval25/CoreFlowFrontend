@@ -38,9 +38,7 @@ const InputField = ({
           onChange={onChange}
           onBlur={handleBlur}
           disabled={disabled}
-          className={`form-input text-xs py-1.5 ${error ? "border-danger" : ""} ${
-            disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""
-          } ${className}`}
+          className={`form-input text-xs py-1.5 ${error ? "border-danger" : ""} ${disabled ? "cursor-not-allowed bg-surface-soft text-app-muted" : ""} ${className}`}
         />
         {error && <p className="text-[10px] mt-0.5 text-danger">{error}</p>}
       </div>

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { MdArrowBack, MdDownload, MdPerson, MdReceiptLong, MdPayments } from "react-icons/md";
 import { coreApi } from "../../../shared/services/coreApi";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const statusBadge = (status) => {
   const map = { DRAFT: "orange", APPROVED: "blue", PAID: "blue" };
@@ -87,7 +88,7 @@ const SalaryDetailPage = () => {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      window.alert("Failed to download salary slip.");
+      emitAppError(err, "Failed to download salary slip.");
     }
   };
 

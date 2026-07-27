@@ -2,6 +2,7 @@ import useCreatePurchase from "../hooks/useCreatePurchase";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { MdAdd, MdDeleteOutline, MdClose } from "react-icons/md";
 import { FiSave } from "react-icons/fi";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const ORDER_TYPE_LABEL = {
   quote: "Quote",
@@ -48,7 +49,7 @@ const CreatePurchasePage = () => {
   const handleSubmit = async () => {
     const result = await submitPurchase();
     if (!result?.success) {
-      if (result?.message) alert(result.message);
+      if (result?.message) emitAppError(result.message);
       return;
     }
     if (isEditMode) {
@@ -56,7 +57,7 @@ const CreatePurchasePage = () => {
       return;
     }
     if (result.statusWarning) {
-      alert(result.statusWarning);
+      emitAppError(result.statusWarning);
       navigate(`${purchaseBase}?tab=quotes`);
     } else {
       navigate(`${purchaseBase}?tab=${ORDER_TYPE_TAB[orderType]}`);

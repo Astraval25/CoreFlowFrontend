@@ -7,14 +7,14 @@ export const useCreateItemPage = (itemId = null) => {
     itemName: "",
     itemType: "GOODS",
     unit: "PCS",
+    isSellable: true,
+    isPurchasable: false,
     baseSalesPrice: "",
     basePurchasePrice: "",
     hsnCode: "",
     taxRate: "",
     salesDescription: "",
-    purchaseDescription: "",
-    isSellable: true,
-    isPurchasable: false
+    purchaseDescription: ""
   });
 
   const [file, setFile] = useState(null);
@@ -23,7 +23,6 @@ export const useCreateItemPage = (itemId = null) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
 
-  // fetch data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -40,16 +39,16 @@ export const useCreateItemPage = (itemId = null) => {
             itemName: item.itemName || "",
             itemType: item.itemType || "GOODS",
             unit: item.unit || "PCS",
+            isSellable: item.isSellable ?? Boolean(item.baseSalesPrice),
+            isPurchasable: item.isPurchasable ?? Boolean(item.basePurchasePrice),
             baseSalesPrice: item.baseSalesPrice || "",
             basePurchasePrice: item.basePurchasePrice || "",
             hsnCode: item.hsnCode || "",
             taxRate: item.taxRate || "",
             salesDescription: item.salesDescription || "",
-            purchaseDescription: item.purchaseDescription || "",
-            isSellable: item.isSellable ?? Boolean(item.baseSalesPrice),
-            isPurchasable: item.isPurchasable ?? Boolean(item.basePurchasePrice)
+            purchaseDescription: item.purchaseDescription || ""
           });
-          
+
           if (item.itemImage) {
             const imgRes = await coreApi.downloadFile(item.itemImage);
             const blobUrl = URL.createObjectURL(imgRes.data);
@@ -66,14 +65,41 @@ export const useCreateItemPage = (itemId = null) => {
 
   const handleInputChange = (e) => {
     const { name, type, checked, value } = e.target;
+    const nextValue = type === "checkbox" ? checked : value;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value
-    }));
+    setFormData((prev) => {
+      const next = {
+        ...prev,
+        [name]: nextValue
+      };
+
+      if (type === "checkbox" && name === "isSellable" && !checked) {
+        next.baseSalesPrice = "";
+        next.salesDescription = "";
+      }
+
+      if (type === "checkbox" && name === "isPurchasable" && !checked) {
+        next.basePurchasePrice = "";
+        next.purchaseDescription = "";
+      }
+
+      return next;
+    });
 
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+
+    if (errors.itemAvailability) {
+      setErrors((prev) => ({ ...prev, itemAvailability: "" }));
+    }
+
+    if (type === "checkbox" && name === "isSellable" && !checked && errors.baseSalesPrice) {
+      setErrors((prev) => ({ ...prev, baseSalesPrice: "" }));
+    }
+
+    if (type === "checkbox" && name === "isPurchasable" && !checked && errors.basePurchasePrice) {
+      setErrors((prev) => ({ ...prev, basePurchasePrice: "" }));
     }
   };
 
@@ -81,7 +107,6 @@ export const useCreateItemPage = (itemId = null) => {
     setFile(e.target.files[0]);
   };
 
-  // validation
   const validateForm = () => {
     const newErrors = {};
 
@@ -90,8 +115,7 @@ export const useCreateItemPage = (itemId = null) => {
     }
 
     if (!formData.isSellable && !formData.isPurchasable) {
-      newErrors.itemCapability =
-        "Select at least one option: sellable or purchasable";
+      newErrors.itemAvailability = "Select at least one option: Sellable or Purchasable";
     }
 
     if (formData.isSellable && !formData.baseSalesPrice) {
@@ -99,8 +123,7 @@ export const useCreateItemPage = (itemId = null) => {
     }
 
     if (formData.isPurchasable && !formData.basePurchasePrice) {
-      newErrors.basePurchasePrice =
-        "Purchase price is required for purchasable items";
+      newErrors.basePurchasePrice = "Purchase price is required for purchasable items";
     }
 
     setErrors(newErrors);
@@ -108,7 +131,6 @@ export const useCreateItemPage = (itemId = null) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  //  create and update 
   const saveItem = async () => {
     if (!validateForm()) return;
 
@@ -119,27 +141,34 @@ export const useCreateItemPage = (itemId = null) => {
       const decode = jwtDecode(token);
       const companyId = decode.defaultComp[0];
 
-      const formDataToSend = new FormData();
-      const cleanValue = (value) => (value === "" ? null : value);
-      const payload = {
-        ...formData,
-        itemName: formData.itemName.trim(),
-        baseSalesPrice: formData.isSellable
-          ? cleanValue(formData.baseSalesPrice)
-          : null,
-        salesDescription: formData.isSellable
-          ? cleanValue(formData.salesDescription.trim())
-          : null,
-        basePurchasePrice: formData.isPurchasable
-          ? cleanValue(formData.basePurchasePrice)
-          : null,
-        purchaseDescription: formData.isPurchasable
-          ? cleanValue(formData.purchaseDescription.trim())
-          : null,
-        hsnCode: cleanValue(formData.hsnCode.trim()),
-        taxRate: cleanValue(formData.taxRate),
+      const toNullableText = (value) => {
+        if (value === null || value === undefined) return null;
+        const text = String(value).trim();
+        return text === "" ? null : text;
       };
 
+      const toNullableNumber = (value) => {
+        if (value === null || value === undefined || value === "") return null;
+        const parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : null;
+      };
+
+      const payload = {
+        ...formData,
+        itemName: toNullableText(formData.itemName),
+        itemType: toNullableText(formData.itemType),
+        unit: toNullableText(formData.unit),
+        isSellable: Boolean(formData.isSellable),
+        isPurchasable: Boolean(formData.isPurchasable),
+        salesDescription: formData.isSellable ? toNullableText(formData.salesDescription) : null,
+        baseSalesPrice: formData.isSellable ? toNullableNumber(formData.baseSalesPrice) : null,
+        purchaseDescription: formData.isPurchasable ? toNullableText(formData.purchaseDescription) : null,
+        basePurchasePrice: formData.isPurchasable ? toNullableNumber(formData.basePurchasePrice) : null,
+        hsnCode: toNullableText(formData.hsnCode),
+        taxRate: toNullableNumber(formData.taxRate)
+      };
+
+      const formDataToSend = new FormData();
       formDataToSend.append("item", JSON.stringify(payload));
 
       if (file) {

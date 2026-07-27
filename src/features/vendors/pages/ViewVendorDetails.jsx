@@ -1,12 +1,22 @@
-import { MdBusiness, MdEdit, MdEmail, MdLocationOn, MdPhone } from "react-icons/md";
+import {
+  MdBusiness,
+  MdCheck,
+  MdContentCopy,
+  MdEdit,
+  MdEmail,
+  MdLink,
+  MdLocationOn,
+  MdPhone
+} from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import VendorItems from "../../VendorItems/pages/VendorItems";
 import useViewVendorDetail from "../hooks/useViewVendorDetail";
 import { coreApi } from "../../../shared/services/coreApi";
 import PartyTransactionTab from "../../../shared/components/PartyTransactionTab";
 import PartyMonthlyTrend from "../../../shared/components/PartyMonthlyTrend";
 import ConnectionRequestPanel from "../../../shared/components/ConnectionRequestPanel";
+import { emitAppError } from "../../../shared/utils/appError";
 
 const formatAddress = (address) => {
   if (!address) return "Not available";
@@ -15,8 +25,118 @@ const formatAddress = (address) => {
   return [line, location].filter(Boolean).join(" | ") || "Not available";
 };
 
+const VendorInvitationSection = ({ companyId, vendorId }) => {
+  const [inviteCode, setInviteCode] = useState(null);
+  const [generating, setGenerating] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [acceptCode, setAcceptCode] = useState("");
+  const [accepting, setAccepting] = useState(false);
+
+  const fetchOrGenerateCode = useCallback(async () => {
+    setGenerating(true);
+    try {
+      const res = await coreApi.getVendorInvitationCode(companyId, vendorId);
+      const code = res?.data?.responseData?.invitationCode;
+      if (code) {
+        setInviteCode(code);
+        return;
+      }
+    } catch {
+      // No existing code, generate new one
+    }
+    try {
+      const res = await coreApi.createVendorInvitation(companyId, vendorId);
+      setInviteCode(res?.data?.responseData?.invitationCode || null);
+    } catch (err) {
+      emitAppError(err, "Failed to generate invitation code");
+    } finally {
+      setGenerating(false);
+    }
+  }, [companyId, vendorId]);
+
+  const copyCode = () => {
+    if (!inviteCode) return;
+    navigator.clipboard.writeText(inviteCode);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleAccept = async () => {
+    if (!acceptCode.trim()) return;
+    setAccepting(true);
+    try {
+      await coreApi.acceptInvitation(companyId, acceptCode.trim(), {
+        selectedVendorId: Number(vendorId),
+      });
+      setAcceptCode("");
+    } catch (err) {
+      emitAppError(err, "Failed to accept invitation");
+    } finally {
+      setAccepting(false);
+    }
+  };
+
+  return (
+    <div className="rounded-lg bg-app p-4">
+      <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-app-heading">
+        <MdLink size={18} />
+        Company Linking
+      </h3>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="rounded-lg border border-line bg-white p-3">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-app-sub">
+            Invite Code for this Vendor
+          </p>
+          <p className="mb-3 text-[11px] text-app-muted">
+            Share this code with the customer company so they can link to this vendor.
+          </p>
+          {inviteCode ? (
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center rounded-lg border border-dashed border-brand-border bg-app px-4 py-2 text-lg font-bold tracking-[0.3em] text-brand select-all">
+                {inviteCode}
+              </span>
+              <button onClick={copyCode} className="btn-ghost flex items-center gap-1 text-xs">
+                {copied ? <MdCheck size={14} /> : <MdContentCopy size={14} />}
+                {copied ? "Copied" : "Copy"}
+              </button>
+            </div>
+          ) : (
+            <button onClick={fetchOrGenerateCode} disabled={generating} className="btn-primary text-xs">
+              {generating ? "Generating..." : "Generate Invite Code"}
+            </button>
+          )}
+        </div>
+
+        <div className="rounded-lg border border-line bg-white p-3">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-app-sub">
+            Accept Customer Invitation
+          </p>
+          <p className="mb-3 text-[11px] text-app-muted">
+            Enter a code from a customer company to link this vendor to their customer record.
+          </p>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              value={acceptCode}
+              onChange={(e) => setAcceptCode(e.target.value.toUpperCase())}
+              placeholder="Enter code e.g. B6N4KB"
+              className="form-input py-1.5 text-xs uppercase tracking-widest"
+              style={{ maxWidth: 200 }}
+            />
+            <button onClick={handleAccept} disabled={accepting || !acceptCode.trim()} className="btn-primary text-xs">
+              {accepting ? "Linking..." : "Accept"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ViewVendorDetails = ({ companyId, vendorId, notice }) => {
   const { vendor, loading, error, refreshVendor } = useViewVendorDetail(companyId, vendorId);
+
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
   const [transactions, setTransactions] = useState({ orders: [], payments: [] });
@@ -76,6 +196,7 @@ const ViewVendorDetails = ({ companyId, vendorId, notice }) => {
             {notice}
           </div>
         )}
+        <VendorInvitationSection companyId={companyId} vendorId={vendorId} />
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="space-y-2">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-app-sub">
