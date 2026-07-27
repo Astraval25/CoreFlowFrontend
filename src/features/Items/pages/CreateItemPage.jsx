@@ -1,6 +1,6 @@
 import { useCreateItemPage } from "../hooks/useCreateItemPage";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import InputField from "../../../shared/components/InputField";
 import SelectField from "../../../shared/components/SelectField";
 import { itemNameRegex, priceRegex, hsnRegex } from "../../../shared/utils/regex";
@@ -103,6 +103,40 @@ const CreateItemPage = () => {
             options={unitOptions}
           />
 
+          <div className="text-[11px] font-semibold uppercase tracking-wide text-app-muted">
+            Item Usage<span className="text-danger"> *</span>
+          </div>
+
+          <div>
+            <div className="flex flex-wrap gap-4 text-sm text-app-text">
+              <label className="inline-flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="isSellable"
+                  checked={formData.isSellable}
+                  onChange={handleInputChange}
+                  className="h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand"
+                />
+                Sellable
+              </label>
+              <label className="inline-flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="isPurchasable"
+                  checked={formData.isPurchasable}
+                  onChange={handleInputChange}
+                  className="h-4 w-4 rounded border-gray-300 text-brand focus:ring-brand"
+                />
+                Purchasable
+              </label>
+            </div>
+            {allErrors.itemCapability && (
+              <p className="text-[10px] mt-0.5 text-danger">
+                {allErrors.itemCapability}
+              </p>
+            )}
+          </div>
+
           <InputField
             label="Sales Price"
             name="baseSalesPrice"
@@ -113,6 +147,8 @@ const CreateItemPage = () => {
             regex={priceRegex}
             regexError="Please enter a valid price."
             error={allErrors.baseSalesPrice}
+            required={formData.isSellable}
+            disabled={!formData.isSellable}
           />
 
           <InputField
@@ -125,6 +161,8 @@ const CreateItemPage = () => {
             regex={priceRegex}
             regexError="Please enter a valid price."
             error={allErrors.basePurchasePrice}
+            required={formData.isPurchasable}
+            disabled={!formData.isPurchasable}
           />
 
           <InputField
@@ -161,8 +199,9 @@ const CreateItemPage = () => {
                   value={formData.salesDescription}
                   onChange={handleInputChange}
                   placeholder="Enter sales description"
+                  disabled={!formData.isSellable}
                   rows={3}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
                 />
               </div>
 
@@ -175,8 +214,9 @@ const CreateItemPage = () => {
                   value={formData.purchaseDescription}
                   onChange={handleInputChange}
                   placeholder="Enter purchase description"
+                  disabled={!formData.isPurchasable}
                   rows={3}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
                 />
               </div>
             </div>

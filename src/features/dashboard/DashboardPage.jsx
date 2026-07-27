@@ -1,7 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-    LineChart,
     AreaChart,
     Area,
     BarChart,
@@ -16,15 +15,46 @@ import {
     ResponsiveContainer,
 } from "recharts";
 import { useDashboard } from "./hooks/useDashboard";
-import { MdClose, MdTrendingUp, MdTrendingDown } from "react-icons/md";
+import {
+  MdClose,
+  MdPayments,
+  MdPerson,
+  MdReceipt,
+  MdShoppingCart,
+  MdStore,
+  MdTrendingDown,
+  MdTrendingUp,
+} from "react-icons/md";
 import { FiArrowUpRight } from "react-icons/fi";
 import StyledDropdown from "../../shared/components/StyledDropdown";
 import { coreApi } from "../../shared/services/coreApi";
 import AdminAnnouncementModal from "../announcements/components/AdminAnnouncementModal";
+import { OrderPaymentActivityGraph } from "../../shared/components/PartyMonthlyTrend";
 
 /* ─── helpers ─── */
 const fmt = (val) =>
   `₹${Number(val ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}`;
+
+const formatDate = (value) => {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "-";
+  return date.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+const formatDateKey = (value) => {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value).slice(0, 10);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 const textClassForThemeColor = (color) =>
   ({
@@ -47,6 +77,16 @@ const RANGE_OPTIONS = [
   { value: "quarter", label: "Quarter" },
   { value: "prev_fy_year", label: "Prev financial Year" },
 ];
+const ORDER_HISTORY_OPTIONS = [
+  { value: "ALL", label: "All Orders" },
+  { value: "SALES", label: "Sales" },
+  { value: "PURCHASE", label: "Purchase" },
+];
+const PAYMENT_HISTORY_OPTIONS = [
+  { value: "ALL", label: "All Payments" },
+  { value: "RECEIVED", label: "Received" },
+  { value: "MADE", label: "Made" },
+];
 
 /* ─── Ad Banner ─── */
 const AdBanner = () => {
@@ -57,7 +97,6 @@ const AdBanner = () => {
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
     coreApi.getActiveAds("dashboard")
       .then(async (res) => {
         if (cancelled) return;
@@ -522,6 +561,128 @@ const Skeleton = ({ h = "h-40" }) => (
 );
 
 /* ─── Dashboard Page ─── */
+const badgeClassForStatus = (status = "") => {
+  const s = status.toUpperCase();
+  if (s.includes("FAILED") || s.includes("DECLINED") || s.includes("CANCELLED")) return "badge-red";
+  if (s.includes("PARTIAL") || s.includes("VIEWED")) return "badge-orange";
+  if (s.includes("PAID") || s.includes("ORDER_INVOICED")) return "badge-blue";
+  return "badge-gray";
+};
+
+const orderDetailPath = (companyId, order) =>
+  order.orderType === "PURCHASE"
+    ? `/cf/company/${companyId}/purchase/${order.orderId}/detail`
+    : `/cf/company/${companyId}/sales/${order.orderId}/detail`;
+
+const paymentDetailPath = (companyId, payment) =>
+  payment.paymentType === "MADE"
+    ? `/cf/company/${companyId}/payment-made/${payment.paymentId}/detail`
+    : `/cf/company/${companyId}/payment-received/${payment.paymentId}/detail`;
+
+const buildDashboardActivityTrend = (orders, payments) => {
+  const rowsByDay = new Map();
+  const ensureDay = (date) => {
+    const key = formatDateKey(date);
+    if (!key) return null;
+    if (!rowsByDay.has(key)) {
+      rowsByDay.set(key, {
+        day: key,
+        orderAmount: 0,
+        paidAmount: 0,
+        totalQuantity: 0,
+      });
+    }
+    return rowsByDay.get(key);
+  };
+
+  orders.forEach((order) => {
+    const day = ensureDay(order.orderDate);
+    if (!day) return;
+    day.orderAmount += Number(order.totalAmount ?? 0);
+    day.totalQuantity += Number(order.totalQuantity ?? order.quantity ?? 0);
+  });
+
+  payments.forEach((payment) => {
+    const day = ensureDay(payment.paymentDate);
+    if (!day) return;
+    day.paidAmount += Number(payment.amount ?? 0);
+  });
+
+  return [...rowsByDay.values()].sort((a, b) => a.day.localeCompare(b.day));
+};
+
+const TransactionRow = ({ title, partyName, date, status, amount, meta, icon, onClick }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className="w-full text-left rounded-lg border border-line bg-surface px-3 py-3 transition-all hover:border-brand hover:bg-surface-muted"
+  >
+    <div className="flex items-start gap-3">
+      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-surface-soft text-brand">
+        {icon}
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="flex items-start justify-between gap-3">
+          <span className="min-w-0">
+            <span className="block truncate text-xs font-bold text-app-text">{title}</span>
+            <span className="mt-1 block truncate text-[11px] text-app-sub">{partyName || "Unknown party"}</span>
+          </span>
+          <span className="shrink-0 text-right">
+            <span className="block text-xs font-extrabold tabular-nums text-app-text">{amount}</span>
+            <span className="mt-1 block text-[10px] text-app-muted">{date}</span>
+          </span>
+        </span>
+        <span className="mt-2 flex flex-wrap items-center gap-2">
+          <span className={`badge ${badgeClassForStatus(status)}`}>{status || "-"}</span>
+          {meta && <span className="text-[10px] font-medium text-app-sub">{meta}</span>}
+        </span>
+      </span>
+    </div>
+  </button>
+);
+
+const TransactionList = ({ title, subtitle, emptyText, rows, type, icon, onRowClick }) => (
+  <div className="rounded-xl border border-line bg-surface-soft p-3">
+    <div className="mb-3 flex items-center justify-between gap-3">
+      <div>
+        <p className="text-xs font-bold text-app-text">{title}</p>
+        <p className="mt-0.5 text-[11px] text-app-sub">{subtitle}</p>
+      </div>
+      <span className="rounded-full bg-surface px-2 py-1 text-[10px] font-bold text-app-sub">
+        {rows.length}
+      </span>
+    </div>
+    <div className="space-y-2">
+      {rows.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-line bg-surface px-3 py-8 text-center text-xs text-app-sub">
+          {emptyText}
+        </div>
+      ) : (
+        rows.slice(0, 5).map((row) => {
+          const isOrder = type === "order";
+          return (
+            <TransactionRow
+              key={isOrder ? row.orderId : row.paymentId}
+              title={
+                isOrder
+                  ? row.localOrderNumber || `#${row.orderId}`
+                  : row.localPaymentNumber || `#${row.paymentId}`
+              }
+              partyName={row.partyName}
+              date={formatDate(isOrder ? row.orderDate : row.paymentDate)}
+              status={isOrder ? row.orderStatus : row.paymentStatus}
+              amount={isOrder ? fmt(row.totalAmount) : fmt(row.amount)}
+              meta={isOrder ? `${row.paidPercentage ?? 0}% paid` : row.modeOfPayment}
+              icon={icon}
+              onClick={() => onRowClick(row)}
+            />
+          );
+        })
+      )}
+    </div>
+  </div>
+);
+
 export const DashboardPage = () => {
   const { companyId } = useParams();
   const navigate = useNavigate();
@@ -536,6 +697,7 @@ export const DashboardPage = () => {
     orderType: "ALL",
     paymentType: "ALL",
   });
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   const {
     kpi,
@@ -548,7 +710,6 @@ export const DashboardPage = () => {
     cashFlowLoading,
     revenueExpenseLoading,
     topExpensesLoading,
-    userName,
     companyName,
     getDateRangeByPreset,
   } = useDashboard({
@@ -566,22 +727,51 @@ export const DashboardPage = () => {
   };
 
   const cashFlowDateRange = getDateRangeByPreset(cashFlowRange);
+  const overallDateRange = getDateRangeByPreset(overallRange);
+  const customerOrders = orderHistory.filter((order) => order.orderType === "SALES");
+  const vendorOrders = orderHistory.filter((order) => order.orderType === "PURCHASE");
+  const customerPayments = paymentHistory.filter((payment) => payment.paymentType === "RECEIVED");
+  const vendorPayments = paymentHistory.filter((payment) => payment.paymentType === "MADE");
+  const dashboardActivityTrend = useMemo(
+    () => buildDashboardActivityTrend(orderHistory, paymentHistory),
+    [orderHistory, paymentHistory]
+  );
 
   useEffect(() => {
     if (!companyId) return;
     const { startDate, endDate } = getDateRangeByPreset(overallRange);
-    coreApi
-      .getOrderHistory(companyId, startDate, endDate, {
-        orderType: historyFilter.orderType,
+    let cancelled = false;
+
+    Promise.resolve()
+      .then(() => {
+        if (cancelled) return null;
+        setHistoryLoading(true);
+        return Promise.all([
+          coreApi.getOrderHistory(companyId, startDate, endDate, {
+            orderType: historyFilter.orderType,
+          }),
+          coreApi.getPaymentHistory(companyId, startDate, endDate, {
+            paymentType: historyFilter.paymentType,
+          }),
+        ]);
       })
-      .then((res) => setOrderHistory(res?.data?.responseData || []))
-      .catch(() => setOrderHistory([]));
-    coreApi
-      .getPaymentHistory(companyId, startDate, endDate, {
-        paymentType: historyFilter.paymentType,
+      .then(([ordersRes, paymentsRes]) => {
+        if (cancelled || !ordersRes || !paymentsRes) return;
+        setOrderHistory(ordersRes?.data?.responseData || []);
+        setPaymentHistory(paymentsRes?.data?.responseData || []);
       })
-      .then((res) => setPaymentHistory(res?.data?.responseData || []))
-      .catch(() => setPaymentHistory([]));
+      .catch(() => {
+        if (cancelled) return;
+        setOrderHistory([]);
+        setPaymentHistory([]);
+      })
+      .finally(() => {
+        if (!cancelled) setHistoryLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
   }, [companyId, overallRange, historyFilter, getDateRangeByPreset]);
 
   return (
@@ -639,6 +829,17 @@ export const DashboardPage = () => {
           {/* Ad Banner */}
           <AdBanner />
 
+          <div className="card p-5">
+            <OrderPaymentActivityGraph
+              trend={dashboardActivityTrend}
+              range={overallDateRange}
+              title="Order and Payment Activity"
+              subtitle="Daily activity across customers and vendors"
+              loading={historyLoading}
+              emptyText="No order or payment activity found for this dashboard period."
+            />
+          </div>
+
           {/* Receivables + Payables */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {loading
@@ -688,31 +889,26 @@ export const DashboardPage = () => {
           </div>
 
           <div className="card p-5">
-            <div className="flex flex-wrap items-center gap-2 justify-between mb-3">
-              <span className="text-sm font-semibold text-app-text">History</span>
-              <div className="flex items-center gap-2">
-                <select
-                  className="px-2 py-1 text-xs border rounded"
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span className="text-sm font-semibold text-app-text">History</span>
+                <p className="mt-0.5 text-xs text-app-sub">Recent customer and vendor transactions</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <StyledDropdown
                   value={historyFilter.orderType}
-                  onChange={(e) =>
-                    setHistoryFilter((prev) => ({ ...prev, orderType: e.target.value }))
+                  onChange={(value) =>
+                    setHistoryFilter((prev) => ({ ...prev, orderType: value }))
                   }
-                >
-                  <option value="ALL">All Orders</option>
-                  <option value="SALES">Sales</option>
-                  <option value="PURCHASE">Purchase</option>
-                </select>
-                <select
-                  className="px-2 py-1 text-xs border rounded"
+                  options={ORDER_HISTORY_OPTIONS}
+                />
+                <StyledDropdown
                   value={historyFilter.paymentType}
-                  onChange={(e) =>
-                    setHistoryFilter((prev) => ({ ...prev, paymentType: e.target.value }))
+                  onChange={(value) =>
+                    setHistoryFilter((prev) => ({ ...prev, paymentType: value }))
                   }
-                >
-                  <option value="ALL">All Payments</option>
-                  <option value="RECEIVED">Received</option>
-                  <option value="MADE">Made</option>
-                </select>
+                  options={PAYMENT_HISTORY_OPTIONS}
+                />
                 <button
                   className="btn-outline text-xs py-1 px-2.5"
                   onClick={() => navigate(`/cf/company/${companyId}/report`)}
@@ -722,33 +918,57 @@ export const DashboardPage = () => {
               </div>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs font-semibold mb-2 text-app-sub">Order History</p>
-                <div className="space-y-2">
-                  {orderHistory.slice(0, 5).map((o) => (
-                    <div key={o.orderId} className="border rounded p-2 text-xs">
-                      <div className="flex justify-between">
-                        <span className="font-semibold">{o.localOrderNumber || `#${o.orderId}`}</span>
-                        <span>{o.paidPercentage}%</span>
-                      </div>
-                      <div className="text-app-sub">{o.orderStatus}</div>
-                    </div>
-                  ))}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-app-text">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface-soft text-brand">
+                    <MdPerson size={15} />
+                  </span>
+                  Customer Transactions
                 </div>
+                <TransactionList
+                  title="Sales Orders"
+                  subtitle="Customer order activity"
+                  emptyText="No customer orders for this period."
+                  rows={customerOrders}
+                  type="order"
+                  icon={<MdShoppingCart size={16} />}
+                  onRowClick={(order) => navigate(orderDetailPath(companyId, order))}
+                />
+                <TransactionList
+                  title="Payments Received"
+                  subtitle="Customer payment activity"
+                  emptyText="No customer payments for this period."
+                  rows={customerPayments}
+                  type="payment"
+                  icon={<MdReceipt size={16} />}
+                  onRowClick={(payment) => navigate(paymentDetailPath(companyId, payment))}
+                />
               </div>
-              <div>
-                <p className="text-xs font-semibold mb-2 text-app-sub">Payment History</p>
-                <div className="space-y-2">
-                  {paymentHistory.slice(0, 5).map((p) => (
-                    <div key={p.paymentId} className="border rounded p-2 text-xs">
-                      <div className="flex justify-between">
-                        <span className="font-semibold">{p.localPaymentNumber || `#${p.paymentId}`}</span>
-                        <span>{fmt(p.amount)}</span>
-                      </div>
-                      <div className="text-app-sub">{p.paymentStatus}</div>
-                    </div>
-                  ))}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-app-text">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-surface-soft text-brand">
+                    <MdStore size={15} />
+                  </span>
+                  Vendor Transactions
                 </div>
+                <TransactionList
+                  title="Purchase Orders"
+                  subtitle="Vendor order activity"
+                  emptyText="No vendor orders for this period."
+                  rows={vendorOrders}
+                  type="order"
+                  icon={<MdShoppingCart size={16} />}
+                  onRowClick={(order) => navigate(orderDetailPath(companyId, order))}
+                />
+                <TransactionList
+                  title="Payments Made"
+                  subtitle="Vendor payment activity"
+                  emptyText="No vendor payments for this period."
+                  rows={vendorPayments}
+                  type="payment"
+                  icon={<MdPayments size={16} />}
+                  onRowClick={(payment) => navigate(paymentDetailPath(companyId, payment))}
+                />
               </div>
             </div>
           </div>
@@ -818,9 +1038,3 @@ export const DashboardPage = () => {
     </div>
   );
 };
-
-
-
-
-
-

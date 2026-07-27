@@ -49,6 +49,7 @@ const useCreateCustomer = (customerId = null) => {
   const [sameAsBilling, setSameAsBilling] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [submitResult, setSubmitResult] = useState(null);
 
   const isEditMode = Boolean(customerId);
 
@@ -120,8 +121,9 @@ const useCreateCustomer = (customerId = null) => {
       return { ...prev, [name]: value };
     });
 
-    const error = validateCustomerField(name, value);
-    setErrors((prev) => ({ ...prev, [name]: error }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   // Same as billing toggle
@@ -136,7 +138,7 @@ const useCreateCustomer = (customerId = null) => {
   };
 
   // create or update
-  const submitCustomer = async () => {
+  const submitCustomer = async ({ selectedConnectionCompanyId, skipConnectionRequest } = {}) => {
     // Validate the entire form
     const validationErrors = validateCustomerForm(formData);
 
@@ -155,12 +157,15 @@ const useCreateCustomer = (customerId = null) => {
       pan: formData.pan,
       gst: formData.gst,
       advanceAmount: Number(formData.advanceAmount) || 0,
+      requestedConnectionCompanyId: selectedConnectionCompanyId || undefined,
+      skipConnectionRequest: Boolean(skipConnectionRequest),
       sameAsBillingAddress: sameAsBilling,
       billingAddress: formData.billingAddress,
       ...(sameAsBilling ? {} : { shippingAddress: formData.shippingAddress }),
     });
 
     setLoading(true);
+    setSubmitResult(null);
     try {
       const res = isEditMode
         ? await coreApi.editCustomer(companyId, customerId, payload)
@@ -172,6 +177,7 @@ const useCreateCustomer = (customerId = null) => {
       }
 
       setErrors({}); // Clear errors on successful submission
+      setSubmitResult(res.data);
       return res.data;
     } finally {
       setLoading(false);
@@ -182,6 +188,7 @@ const useCreateCustomer = (customerId = null) => {
     formData,
     errors,
     loading,
+    submitResult,
     sameAsBilling,
     handleChange,
     handleSameAsBilling,

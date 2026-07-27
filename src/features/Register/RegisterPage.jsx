@@ -11,14 +11,23 @@ const RegisterPage = () => {
   const handleRegister = async (formData) => {
     try {
       setError("");
-      const { confirmPassword, ...payload } = formData;
-      const res = await register(payload);
+      const res = await register({
+        companyName: formData.companyName.trim(),
+        countryCode: formData.countryCode.trim(),
+        phoneNumber: formData.phoneNumber.trim(),
+        password: formData.password,
+      });
       if (res.responseStatus) {
-        navigate("/cf/auth/verify", {
-          state: {
-            email: formData.email,
-          },
-        });
+        const responseData = res.responseData;
+        if (responseData?.emailVerificationRequired && responseData?.email) {
+          navigate("/cf/auth/verify", {
+            state: {
+              email: responseData.email,
+            },
+          });
+        } else {
+          navigate("/cf/auth/login");
+        }
       }
     } catch (err) {
       setError(err.message);
@@ -34,7 +43,7 @@ const RegisterPage = () => {
           Register to get started
         </p>
 
-        <RegisterForm onSubmit={handleRegister} />
+        <RegisterForm onSubmit={handleRegister} error={error} />
 
         {error && <div className="mt-4 text-red-500 text-center">{error}</div>}
 

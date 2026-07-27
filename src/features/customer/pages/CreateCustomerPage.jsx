@@ -4,6 +4,7 @@ import useCreateCustomer from "../hooks/useCreateCustomer";
 
 import InputField from "../../../shared/components/InputField";
 import SelectField from "../../../shared/components/SelectField";
+import ConnectionCandidatePicker from "../../../shared/components/ConnectionCandidatePicker";
 
 import {
   emailRegex,
@@ -25,6 +26,7 @@ const CreateCustomerPage = () => {
     formData,
     errors,
     loading,
+    submitResult,
     sameAsBilling,
     handleChange: originalHandleChange,
     handleSameAsBilling,
@@ -32,10 +34,16 @@ const CreateCustomerPage = () => {
   } = useCreateCustomer(customerId);
 
   const [fieldErrors, setFieldErrors] = useState({});
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [createOffline, setCreateOffline] = useState(false);
 
   const handleChange = (e) => {
     originalHandleChange(e);
     setFieldErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+    if (e.target.name === "phone" || e.target.name === "customerName" || e.target.name === "displayName") {
+      setSelectedCompany(null);
+      setCreateOffline(false);
+    }
   };
 
   const handleBlur = (name, errorMsg) => {
@@ -46,8 +54,24 @@ const CreateCustomerPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await submitCustomer();
-    if (success) navigate(`/cf/company/${companyId}/customers`);
+    const result = await submitCustomer({
+      selectedConnectionCompanyId: selectedCompany?.companyId,
+      skipConnectionRequest: createOffline,
+    });
+    if (!result) return;
+    const createdCustomerId = result?.responseData?.customerId;
+    if (!isEditMode && createdCustomerId) {
+      navigate(`/cf/company/${companyId}/customers/${createdCustomerId}/detail`, {
+        state: {
+          notice:
+            selectedCompany
+              ? "Customer created with a pending connection request. Orders and payments unlock after both companies accept."
+              : "Customer created offline without a company connection.",
+        },
+      });
+      return;
+    }
+    navigate(`/cf/company/${companyId}/customers`);
   };
 
   const languageOptions = ["English", "Tamil", "Hindi", "Malayalam", "Telugu"];
@@ -64,6 +88,11 @@ const CreateCustomerPage = () => {
       <h1 className="mb-6 text-lg font-bold text-app-text">
         {isEditMode ? "Edit Customer" : "New Customer"}
       </h1>
+      {submitResult?.responseMessage && (
+        <div className="mb-5 rounded-lg border border-line bg-surface-soft px-4 py-3 text-xs font-semibold text-app-text">
+          {submitResult.responseMessage}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-7">
         {/* ================= CUSTOMER ================= */}
@@ -149,6 +178,25 @@ const CreateCustomerPage = () => {
           />
           </div>
         </div>
+
+        {!isEditMode && (
+          <ConnectionCandidatePicker
+            companyId={companyId}
+            phone={formData.phone}
+            name={formData.customerName || formData.displayName}
+            entityLabel="customer"
+            selectedCompany={selectedCompany}
+            offline={createOffline}
+            onSelectCompany={(company) => {
+              setSelectedCompany(company);
+              setCreateOffline(false);
+            }}
+            onCreateOffline={() => {
+              setSelectedCompany(null);
+              setCreateOffline(true);
+            }}
+          />
+        )}
 
         {/* ================= ADDRESSES ================= */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

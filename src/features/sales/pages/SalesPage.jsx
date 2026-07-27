@@ -4,6 +4,8 @@ import { flexRender } from "@tanstack/react-table";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ActionMenu from "../../../shared/components/ActionMenu";
 import { useEffect, useState } from "react";
+import SideDetailDrawer from "../../../shared/components/SideDetailDrawer";
+import ViewSalesDetail from "../components/ViewSalesDetail";
 
 const TABS = [
   { id: "report", label: "Report" },
@@ -26,6 +28,7 @@ const SalesPage = () => {
   const validTabs = TABS.map((t) => t.id);
   const initialTab = validTabs.includes(tabParam) ? tabParam : "quotes";
   const [activeTab, setActiveTab] = useState(initialTab);
+  const [drawerOrderId, setDrawerOrderId] = useState(null);
 
   useEffect(() => {
     if (tabParam && validTabs.includes(tabParam) && tabParam !== activeTab) {
@@ -144,7 +147,7 @@ const SalesPage = () => {
                   key={order.orderId}
                   className="cursor-pointer border-b border-line-soft"
                   
-                  onClick={() => navigate(`/cf/company/${companyId}/sales/${order.orderId}/detail`)}
+                  onClick={() => setDrawerOrderId(order.orderId)}
                 >
                   <td className="px-5 py-3 text-sm text-app-sub">{index + 1}</td>
                   <td className="px-5 py-3 text-sm font-medium text-brand-hover">{order.orderNumber}</td>
@@ -171,6 +174,16 @@ const SalesPage = () => {
           </table>
         </div>
       </div>
+
+      <SideDetailDrawer
+        open={Boolean(drawerOrderId)}
+        title="Sales Order Details"
+        onClose={() => setDrawerOrderId(null)}
+      >
+        {drawerOrderId && companyId && (
+          <ViewSalesDetail companyId={companyId} orderId={drawerOrderId} />
+        )}
+      </SideDetailDrawer>
     </div>
   );
 };

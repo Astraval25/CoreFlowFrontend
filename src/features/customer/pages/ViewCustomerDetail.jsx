@@ -1,20 +1,20 @@
 import {
   MdBusiness,
-  MdCheck,
-  MdContentCopy,
   MdEdit,
   MdEmail,
-  MdLink,
   MdLocalShipping,
   MdLocationOn,
   MdPhone,
   MdReceiptLong,
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import CustomerItems from "../../CustomerItems/pages/CustomerItems";
 import useViewCustomerDetail from "../hooks/useViewCustomerDetail";
 import { coreApi } from "../../../shared/services/coreApi";
+import PartyTransactionTab from "../../../shared/components/PartyTransactionTab";
+import PartyMonthlyTrend from "../../../shared/components/PartyMonthlyTrend";
+import ConnectionRequestPanel from "../../../shared/components/ConnectionRequestPanel";
 
 const formatAddress = (address) => {
   if (!address) return "Not available";
@@ -23,138 +23,47 @@ const formatAddress = (address) => {
   return [line, location].filter(Boolean).join(" | ") || "Not available";
 };
 
-const CustomerInvitationSection = ({ companyId, customerId }) => {
-  const [inviteCode, setInviteCode] = useState(null);
-  const [generating, setGenerating] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [acceptCode, setAcceptCode] = useState("");
-  const [accepting, setAccepting] = useState(false);
-
-  const fetchOrGenerateCode = useCallback(async () => {
-    setGenerating(true);
-    try {
-      const res = await coreApi.getCustomerInvitationCode(companyId, customerId);
-      const code = res?.data?.responseData?.invitationCode;
-      if (code) {
-        setInviteCode(code);
-        return;
-      }
-    } catch {
-      // No existing code, generate new one
-    }
-    try {
-      const res = await coreApi.createCustomerInvitation(companyId, customerId);
-      setInviteCode(res?.data?.responseData?.invitationCode || null);
-    } catch (err) {
-      alert(err?.response?.data?.responseMessage || "Failed to generate invitation code");
-    } finally {
-      setGenerating(false);
-    }
-  }, [companyId, customerId]);
-
-  const copyCode = () => {
-    if (!inviteCode) return;
-    navigator.clipboard.writeText(inviteCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleAccept = async () => {
-    if (!acceptCode.trim()) return;
-    setAccepting(true);
-    try {
-      await coreApi.acceptInvitation(companyId, acceptCode.trim(), {
-        selectedCustomerId: Number(customerId),
-      });
-      alert("Invitation accepted successfully! Company linked.");
-      setAcceptCode("");
-    } catch (err) {
-      alert(err?.response?.data?.responseMessage || "Failed to accept invitation");
-    } finally {
-      setAccepting(false);
-    }
-  };
-
-  return (
-    <div className="card p-5">
-      <h3 className="mb-5 flex items-center justify-between text-sm font-extrabold text-app-text">
-        <span>Company Linking</span>
-        <MdLink size={16} className="text-info" />
-      </h3>
-
-      <div className="space-y-4">
-        <div className="rounded-lg p-4 bg-surface-soft">
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-wide text-app-muted">
-            Accept Vendor Invitation
-          </p>
-          <p className="mb-3 text-[11px] leading-relaxed text-app-sub">
-            Enter a code from a vendor company to link this customer to their vendor record.
-          </p>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={acceptCode}
-              onChange={(e) => setAcceptCode(e.target.value.toUpperCase())}
-              placeholder="Enter invitation code"
-              className="form-input text-sm uppercase tracking-widest"
-            />
-            <button
-              onClick={handleAccept}
-              disabled={accepting || !acceptCode.trim()}
-              className="btn-primary shrink-0 text-sm"
-            >
-              {accepting ? "Linking..." : "Accept"}
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <p className="mb-3 text-center text-sm font-semibold text-app-sub">
-            Need to invite another vendor?
-          </p>
-          {inviteCode ? (
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <span
-                className="inline-flex select-all items-center rounded-lg border border-dashed px-3 py-2 text-base font-extrabold tracking-[0.24em]"
-                style={{
-                  borderColor: "var(--accent-ring-medium)",
-                  background: "var(--surface-bg)",
-                  color: "var(--accent)",
-                }}
-              >
-                {inviteCode}
-              </span>
-              <button
-                onClick={copyCode}
-                className="btn-ghost text-sm"
-              >
-                {copied ? <MdCheck size={14} /> : <MdContentCopy size={14} />}
-                {copied ? "Copied" : "Copy"}
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={fetchOrGenerateCode}
-              disabled={generating}
-              className="btn-outline w-full justify-center border-dashed text-sm"
-            >
-              <MdContentCopy size={14} />
-              {generating ? "Generating..." : "Generate Invite Code"}
-            </button>
-          )}
-          <p className="mt-3 text-[11px] leading-relaxed text-app-sub">
-            Share this code with the vendor company so they can link to this customer.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const ViewCustomerDetail = ({ companyId, customerId }) => {
-  const { customer, loading, error } = useViewCustomerDetail(companyId, customerId);
+const ViewCustomerDetail = ({ companyId, customerId, notice }) => {
+  const { customer, loading, error, refreshCustomer } = useViewCustomerDetail(companyId, customerId);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
+  const [transactions, setTransactions] = useState({ orders: [], payments: [] });
+  const [transactionsLoading, setTransactionsLoading] = useState(false);
+  const [transactionsError, setTransactionsError] = useState("");
+
+  useEffect(() => {
+    if (activeTab !== "transaction" || !companyId || !customerId) return;
+
+    let cancelled = false;
+
+    Promise.resolve()
+      .then(() => {
+        if (cancelled) return null;
+        setTransactionsLoading(true);
+        setTransactionsError("");
+        return coreApi.getCustomerOrdersPayments(companyId, customerId);
+      })
+      .then((res) => {
+        if (cancelled || !res) return;
+        const data = res?.data?.responseData || {};
+        setTransactions({
+          orders: data.orders || [],
+          payments: data.payments || [],
+        });
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setTransactions({ orders: [], payments: [] });
+        setTransactionsError(err?.response?.data?.responseMessage || "Unable to load customer transactions");
+      })
+      .finally(() => {
+        if (!cancelled) setTransactionsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeTab, companyId, customerId]);
 
   if (!customerId) return <p className="p-6 text-gray-600">Select a customer to view details</p>;
   if (loading) return <p className="p-6 text-gray-600">Loading customer details...</p>;
@@ -172,6 +81,11 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
   return (
     <div className="w-full">
       <section className="space-y-5 p-5">
+        {notice && (
+          <div className="rounded-lg border border-brand-border bg-brand-soft px-4 py-3 text-xs font-semibold leading-relaxed text-brand">
+            {notice}
+          </div>
+        )}
         <div className="card flex flex-col gap-5 p-5 md:flex-row md:items-center md:justify-between">
           <div className="flex min-w-0 items-center gap-4">
             <div
@@ -244,9 +158,19 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
               </div>
             </div>
 
-            {!customer.customerCompany && (
-              <CustomerInvitationSection companyId={companyId} customerId={customerId} />
-            )}
+            <ConnectionRequestPanel
+              status={customer.connectionStatus}
+              linkedCompanyName={customer.customerCompany?.companyName || customer.customerCompany?.customerCompany}
+              entityLabel="customer"
+              onAccept={async () => {
+                await coreApi.acceptCustomerConnection(companyId, customerId);
+                await refreshCustomer();
+              }}
+              onReject={async () => {
+                await coreApi.rejectCustomerConnection(companyId, customerId);
+                await refreshCustomer();
+              }}
+            />
           </div>
 
           <div className="space-y-5">
@@ -309,15 +233,29 @@ const ViewCustomerDetail = ({ companyId, customerId }) => {
               <div className="min-h-72 p-4">
                 {activeTab === "items" && <CustomerItems customerId={customerId} />}
                 {activeTab === "overview" && (
-                  <div className="flex min-h-64 flex-col items-center justify-center px-6 text-center">
-                    <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-surface-soft">
-                      <MdReceiptLong size={24} className="text-info" />
-                    </div>
-                    <p className="text-base font-extrabold text-app-text">Overview content coming soon...</p>
-                  </div>
+                  <PartyMonthlyTrend companyId={companyId} partyId={customerId} partyType="customer" />
                 )}
                 {activeTab === "ordertrack" && <div className="text-app-sub">Order Track content coming soon...</div>}
-                {activeTab === "transaction" && <div className="text-app-sub">Transaction content coming soon...</div>}
+                {activeTab === "transaction" && (
+                  <PartyTransactionTab
+                    loading={transactionsLoading}
+                    error={transactionsError}
+                    orders={transactions.orders}
+                    payments={transactions.payments}
+                    orderTitle="Customer Orders"
+                    orderSubtitle="Sales orders for this customer"
+                    paymentTitle="Customer Payments"
+                    paymentSubtitle="Payments received from this customer"
+                    emptyOrderText="No sales orders found for this customer."
+                    emptyPaymentText="No payments received from this customer."
+                    onOrderClick={(order) =>
+                      navigate(`/cf/company/${companyId}/sales/${order.orderId}/detail`)
+                    }
+                    onPaymentClick={(payment) =>
+                      navigate(`/cf/company/${companyId}/payment-received/${payment.paymentId}/detail`)
+                    }
+                  />
+                )}
               </div>
             </div>
           </div>

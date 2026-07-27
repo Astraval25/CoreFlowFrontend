@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { coreApi } from "../../../shared/services/coreApi";
 
 const useViewVendorDetail = (companyId, vendorId) => {
@@ -6,29 +6,29 @@ const useViewVendorDetail = (companyId, vendorId) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const fetchVendor = useCallback(async () => {
     if (!companyId || !vendorId) return;
-
-    const fetchVendor = async () => {
-      setLoading(true);
-      try {
-        const res = await coreApi.getVendorDetail(companyId, vendorId);
-        if (res.data.responseStatus) {
-          setVendor(res.data.responseData);
-        } else {
-          setError("Failed to fetch vendor details");
-        }
-      } catch (err) {
-        setError(err.message || "Something went wrong");
-      } finally {
-        setLoading(false);
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await coreApi.getVendorDetail(companyId, vendorId);
+      if (res.data.responseStatus) {
+        setVendor(res.data.responseData);
+      } else {
+        setError("Failed to fetch vendor details");
       }
-    };
-
-    fetchVendor();
+    } catch (err) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   }, [companyId, vendorId]);
 
-  return { vendor, loading, error };
+  useEffect(() => {
+    fetchVendor();
+  }, [fetchVendor]);
+
+  return { vendor, loading, error, refreshVendor: fetchVendor };
 };
 
 export default useViewVendorDetail;

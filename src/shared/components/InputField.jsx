@@ -10,6 +10,7 @@ const InputField = ({
   regex,
   regexError,
   required = false,
+  disabled = false,
   className = "",
 }) => {
   const handleBlur = (e) => {
@@ -36,7 +37,10 @@ const InputField = ({
           placeholder={placeholder}
           onChange={onChange}
           onBlur={handleBlur}
-          className={`form-input text-xs py-1.5 ${error ? "border-danger" : ""} ${className}`}
+          disabled={disabled}
+          className={`form-input text-xs py-1.5 ${error ? "border-danger" : ""} ${
+            disabled ? "bg-gray-100 text-gray-500 cursor-not-allowed" : ""
+          } ${className}`}
         />
         {error && <p className="text-[10px] mt-0.5 text-danger">{error}</p>}
       </div>

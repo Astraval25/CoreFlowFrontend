@@ -49,6 +49,7 @@ const useCreateVendor = (vendorId = null) => {
   const [sameAsBilling, setSameAsBilling] = useState(false);
   const [companyId, setCompanyId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [submitResult, setSubmitResult] = useState(null);
 
   const isEditMode = Boolean(vendorId);
 
@@ -138,7 +139,7 @@ const useCreateVendor = (vendorId = null) => {
   };
   
   // create or update
-  const submitVendor = async () => {
+  const submitVendor = async ({ selectedConnectionCompanyId, skipConnectionRequest } = {}) => {
     
     if (!companyId) {
       console.error("Company ID not available");
@@ -163,6 +164,8 @@ const useCreateVendor = (vendorId = null) => {
       pan: formData.pan,
       gst: formData.gst,
       advanceAmount: Number(formData.advanceAmount) || 0,
+      requestedConnectionCompanyId: selectedConnectionCompanyId || undefined,
+      skipConnectionRequest: Boolean(skipConnectionRequest),
       sameAsBillingAddress: sameAsBilling,
       billingAddress: formData.billingAddress,
       ...(sameAsBilling ? {} : { shippingAddress: formData.shippingAddress }),
@@ -170,6 +173,7 @@ const useCreateVendor = (vendorId = null) => {
 
 
     setLoading(true);
+    setSubmitResult(null);
     try {
       const res = isEditMode
         ? await coreApi.editVendor(companyId, vendorId, payload)
@@ -182,6 +186,7 @@ const useCreateVendor = (vendorId = null) => {
       }
 
       setErrors({}); // Clear errors on successful submission
+      setSubmitResult(res.data);
       return res.data;
     } catch (error) {
       console.error("Vendor submission error:", error);
@@ -194,6 +199,7 @@ const useCreateVendor = (vendorId = null) => {
     formData,
     errors,
     loading,
+    submitResult,
     sameAsBilling,
     handleChange,
     handleSameAsBilling,

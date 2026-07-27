@@ -25,6 +25,12 @@ export const coreApi = {
   resend_otp: (data) => api.post(ENDPOINTS.RESEND_OTP, data),
   getMyCompanies: () => api.get(ENDPOINTS.GET_COMPANY),
 
+  searchConnectionCandidates: (query, excludeCompanyId) => {
+    const params = new URLSearchParams({ query });
+    if (excludeCompanyId) params.set("excludeCompanyId", excludeCompanyId);
+    return api.get(`${ENDPOINTS.CUSTOMERS}/connection-candidates?${params.toString()}`);
+  },
+
   getCompanyById: (companyId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}`),
 
@@ -56,6 +62,18 @@ export const coreApi = {
   getCustomerDetail: (companyId, customerId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}`),
 
+  getCustomerOrdersPayments: (companyId, customerId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/orders-payments`),
+
+  getCustomerOrderPaymentTrend: (companyId, customerId, startDate, endDate) =>
+    api.get(
+      withDateRange(
+        `${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/customers/${customerId}/order-payment-trend`,
+        startDate,
+        endDate
+      )
+    ),
+
   createCustomer: (companyId, data) =>
     api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers`, data),
 
@@ -84,6 +102,18 @@ export const coreApi = {
 
   getVendorDetail: (companyId, vendorId) =>
     api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}`),
+
+  getVendorOrdersPayments: (companyId, vendorId) =>
+    api.get(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/orders-payments`),
+
+  getVendorOrderPaymentTrend: (companyId, vendorId, startDate, endDate) =>
+    api.get(
+      withDateRange(
+        `${ENDPOINTS.CUSTOMERS}/${companyId}/analytics/vendors/${vendorId}/order-payment-trend`,
+        startDate,
+        endDate
+      )
+    ),
 
   createVendor: (companyId, data) =>
     api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors`, data),
@@ -354,6 +384,21 @@ export const coreApi = {
 
   acceptInvitation: (companyId, invitationCode, data) =>
     api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/${invitationCode}/accept`, data),
+
+  rejectInvitation: (companyId, invitationCode) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/invitations/${invitationCode}/reject`),
+
+  acceptCustomerConnection: (companyId, customerId) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/connection/accept`),
+
+  rejectCustomerConnection: (companyId, customerId) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/customers/${customerId}/connection/reject`),
+
+  acceptVendorConnection: (companyId, vendorId) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/connection/accept`),
+
+  rejectVendorConnection: (companyId, vendorId) =>
+    api.post(`${ENDPOINTS.CUSTOMERS}/${companyId}/vendors/${vendorId}/connection/reject`),
 
   // Dashboard Analytics
   getDashboardKpi: (companyId, startDate, endDate) =>

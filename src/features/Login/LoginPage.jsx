@@ -8,11 +8,17 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useLogin();
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (credentials) => {
     try {
       setError("");
-      const data = await login(credentials);
+      setLoading(true);
+      const data = await login({
+        ...credentials,
+        countryCode: credentials.countryCode.trim(),
+        phoneNumber: credentials.phoneNumber.trim(),
+      });
 
       const token = data?.responseData?.token || localStorage.getItem("token");
       let companyId = "";
@@ -26,14 +32,15 @@ const LoginPage = () => {
         }
       }
 
-      const targetPath =
-        companyId
-          ? `/cf/company/${companyId}/dashboard`
-          : data?.responseData?.landingUrl || "/cf/company/list";
+      const targetPath = companyId
+        ? `/cf/company/${companyId}/dashboard`
+        : data?.responseData?.landingUrl || "/cf/company/list";
 
       navigate(targetPath);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,13 +53,14 @@ const LoginPage = () => {
           Login to access your account
         </p>
 
-        <LoginForm onSubmit={handleLogin} />
-
-        {error && <div className="mt-4  text-red-500 text-center">{error}</div>}
+        <LoginForm onSubmit={handleLogin} loading={loading} error={error} />
 
         <p className="text-center mt-5 text-sm">
-          Don’t have an account?{" "}
-          <span className="text-blue-600 cursor-pointer font-medium" onClick={() => navigate("/cf/auth/register")}>
+          Don't have an account?{" "}
+          <span
+            className="text-blue-600 cursor-pointer font-medium"
+            onClick={() => navigate("/cf/auth/register")}
+          >
             Sign Up
           </span>
         </p>

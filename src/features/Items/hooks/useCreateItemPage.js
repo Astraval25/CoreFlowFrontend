@@ -12,7 +12,9 @@ export const useCreateItemPage = (itemId = null) => {
     hsnCode: "",
     taxRate: "",
     salesDescription: "",
-    purchaseDescription: ""
+    purchaseDescription: "",
+    isSellable: true,
+    isPurchasable: false
   });
 
   const [file, setFile] = useState(null);
@@ -43,7 +45,9 @@ export const useCreateItemPage = (itemId = null) => {
             hsnCode: item.hsnCode || "",
             taxRate: item.taxRate || "",
             salesDescription: item.salesDescription || "",
-            purchaseDescription: item.purchaseDescription || ""
+            purchaseDescription: item.purchaseDescription || "",
+            isSellable: item.isSellable ?? Boolean(item.baseSalesPrice),
+            isPurchasable: item.isPurchasable ?? Boolean(item.basePurchasePrice)
           });
           
           if (item.itemImage) {
@@ -61,11 +65,11 @@ export const useCreateItemPage = (itemId = null) => {
   }, [itemId]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, type, checked, value } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: type === "checkbox" ? checked : value
     }));
 
     if (errors[name]) {
@@ -85,9 +89,18 @@ export const useCreateItemPage = (itemId = null) => {
       newErrors.itemName = "Item name is required";
     }
 
-    if (!formData.baseSalesPrice && !formData.basePurchasePrice) {
-      newErrors.baseSalesPrice = "Either sales or purchase price required";
-      newErrors.basePurchasePrice = "Either sales or purchase price required";
+    if (!formData.isSellable && !formData.isPurchasable) {
+      newErrors.itemCapability =
+        "Select at least one option: sellable or purchasable";
+    }
+
+    if (formData.isSellable && !formData.baseSalesPrice) {
+      newErrors.baseSalesPrice = "Sales price is required for sellable items";
+    }
+
+    if (formData.isPurchasable && !formData.basePurchasePrice) {
+      newErrors.basePurchasePrice =
+        "Purchase price is required for purchasable items";
     }
 
     setErrors(newErrors);
@@ -107,8 +120,27 @@ export const useCreateItemPage = (itemId = null) => {
       const companyId = decode.defaultComp[0];
 
       const formDataToSend = new FormData();
+      const cleanValue = (value) => (value === "" ? null : value);
+      const payload = {
+        ...formData,
+        itemName: formData.itemName.trim(),
+        baseSalesPrice: formData.isSellable
+          ? cleanValue(formData.baseSalesPrice)
+          : null,
+        salesDescription: formData.isSellable
+          ? cleanValue(formData.salesDescription.trim())
+          : null,
+        basePurchasePrice: formData.isPurchasable
+          ? cleanValue(formData.basePurchasePrice)
+          : null,
+        purchaseDescription: formData.isPurchasable
+          ? cleanValue(formData.purchaseDescription.trim())
+          : null,
+        hsnCode: cleanValue(formData.hsnCode.trim()),
+        taxRate: cleanValue(formData.taxRate),
+      };
 
-      formDataToSend.append("item", JSON.stringify(formData));
+      formDataToSend.append("item", JSON.stringify(payload));
 
       if (file) {
         formDataToSend.append("file", file);

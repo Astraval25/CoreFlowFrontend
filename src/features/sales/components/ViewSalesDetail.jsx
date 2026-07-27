@@ -38,19 +38,6 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
     navigate(`/cf/company/${companyId}/sales/${order.orderId}/update`);
   };
 
-  const TransitionBtn = ({ onClick, children, variant = "primary" }) => {
-    const base =
-      "inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 cursor-pointer";
-    const styles = variant === "danger"
-      ? "border border-danger-border bg-danger-bg text-danger-text hover:bg-danger-soft"
-      : "border border-brand-border bg-brand-soft text-brand hover:bg-brand-soft-hover";
-    return (
-      <button onClick={onClick} disabled={statusUpdating} className={`${base} ${styles}`}>
-        {children}
-      </button>
-    );
-  };
-
   return (
     <div className="w-full">
       <section className="p-5 space-y-6">
@@ -76,26 +63,21 @@ const ViewSalesDetail = ({ companyId, orderId }) => {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <button
-              className="inline-flex items-center gap-2 rounded-lg border border-brand-border bg-brand-soft px-3 py-1.5 text-xs font-semibold text-brand transition hover:bg-brand-soft-hover cursor-pointer"
-              onClick={handleEdit}
-            >
-              <MdEdit size={15} />
-              Edit
-            </button>
-
-            {/* Actions dropdown */}
             <div className="relative">
               <button
                 className="inline-flex items-center gap-1.5 rounded-lg border border-brand-border bg-brand-soft px-3 py-1.5 text-xs font-semibold text-brand transition hover:bg-brand-soft-hover cursor-pointer"
                 onClick={() => setDropdownOpen((o) => !o)}
               >
-                Actions <MdExpandMore size={15} />
+                More Actions <MdExpandMore size={15} />
               </button>
               {dropdownOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
-                  <div className="absolute right-0 z-20 mt-1 w-48 rounded-lg border border-line bg-white shadow-lg overflow-hidden">
+                  <div className="absolute right-0 z-20 mt-1 w-56 rounded-lg border border-line bg-white shadow-lg overflow-hidden">
+                    <button onClick={() => { handleEdit(); setDropdownOpen(false); }}
+                      className="w-full px-4 py-2.5 text-left text-xs font-medium text-brand hover:bg-surface-muted flex items-center gap-2">
+                      <MdEdit size={13} /> Edit Order
+                    </button>
                     {(status === "QUOTATION" || status === "QUOTATION_VIEWED") && (
                       <>
                         <button onClick={() => { acceptQuotation(); setDropdownOpen(false); }}

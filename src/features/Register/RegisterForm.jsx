@@ -1,23 +1,19 @@
 import { useState } from "react";
 import {
-  MdPerson,
-  MdLock,
-  MdEmail,
   MdBusiness,
-  MdVisibilityOff,
+  MdLock,
+  MdPhone,
   MdVisibility,
+  MdVisibilityOff,
 } from "react-icons/md";
-import { validateForm } from "../../shared/utils/validation";
 
 const RegisterForm = ({ onSubmit, error }) => {
   const [formData, setFormData] = useState({
     companyName: "",
-    industry: "",
-    firstName: "",
-    lastName: "",
-    userName: "",
-    email: "",
+    countryCode: "+91",
+    phoneNumber: "",
     password: "",
+    confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -25,7 +21,7 @@ const RegisterForm = ({ onSubmit, error }) => {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    // Clear validation error for this field
+
     if (validationErrors[e.target.name]) {
       setValidationErrors({ ...validationErrors, [e.target.name]: "" });
     }
@@ -34,11 +30,20 @@ const RegisterForm = ({ onSubmit, error }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validate form
-    const errors = validateForm({
-      name: `${formData.firstName} ${formData.lastName}`.trim(),
-      email: formData.email,
-    });
+    const errors = {};
+    if (!formData.companyName.trim()) {
+      errors.companyName = "Company name is required";
+    }
+    if (!/^\+?[0-9]{1,4}$/.test(formData.countryCode.trim())) {
+      errors.countryCode = "Enter a valid country code";
+    }
+    if (!/^[0-9]{6,15}$/.test(formData.phoneNumber.trim())) {
+      errors.phoneNumber = "Phone number must be 6 to 15 digits";
+    }
+    if (!/^(?=.*[a-z])(?=.*\d).{5,}$/.test(formData.password)) {
+      errors.password =
+        "Password must be at least 5 characters and include a lowercase letter and a number";
+    }
     if (formData.password !== formData.confirmPassword) {
       errors.confirmPassword = "Passwords do not match";
     }
@@ -54,7 +59,6 @@ const RegisterForm = ({ onSubmit, error }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Company + Industry */}
       <div>
         <label className="block text-xs text-gray-500 mb-1">Company</label>
         <div className="relative">
@@ -68,182 +72,143 @@ const RegisterForm = ({ onSubmit, error }) => {
             value={formData.companyName}
             onChange={handleChange}
             placeholder="Company name"
-            className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-            required
-          />
-        </div>
-      </div>
-
-      <div>
-        <label className="block text-xs text-gray-500 mb-1">Industry</label>
-        <select
-          name="industry"
-          value={formData.industry}
-          onChange={handleChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-          required
-        >
-          <option value="" disabled>
-            Select Industry
-          </option>
-          <option value="IT">IT</option>
-          <option value="Finance">Finance</option>
-          <option value="Healthcare">Healthcare</option>
-          <option value="Education">Education</option>
-          <option value="Manufacturing">Manufacturing</option>
-          <option value="Retail">Retail</option>
-        </select>
-      </div>
-
-      {/* First + Last Name */}
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs text-gray-500 mb-1">First Name</label>
-          <input
-            type="text"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChange}
-            placeholder="First name"
-            className={`w-full px-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-              validationErrors.name ? "border-red-500" : "border-gray-300"
+            className={`w-full pl-9 pr-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+              validationErrors.companyName
+                ? "border-red-500"
+                : "border-gray-300"
             }`}
             required
           />
-          {validationErrors.name && (
-            <p className="text-red-500 text-xs mt-1">{validationErrors.name}</p>
+        </div>
+        {validationErrors.companyName && (
+          <p className="text-red-500 text-xs mt-1">
+            {validationErrors.companyName}
+          </p>
+        )}
+      </div>
+
+      <div className="grid grid-cols-[110px_1fr] gap-3">
+        <div>
+          <label className="block text-xs text-gray-500 mb-1">
+            Country Code
+          </label>
+          <div className="w-full px-3 py-2 border border-gray-300 rounded-full bg-gray-100 text-gray-600">
+            +91
+          </div>
+          {validationErrors.countryCode && (
+            <p className="text-red-500 text-xs mt-1">
+              {validationErrors.countryCode}
+            </p>
           )}
         </div>
 
         <div>
-          <label className="block text-xs text-gray-500 mb-1">Last Name</label>
-          <input
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            placeholder="Last name"
-            className="w-full px-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-            required
-          />
-        </div>
-      </div>
-
-      {/* Email */}
-
-      {/* Username + Password */}
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs text-gray-500 mb-1">Email</label>
+          <label className="block text-xs text-gray-500 mb-1">
+            Phone Number
+          </label>
           <div className="relative">
-            <MdEmail
+            <MdPhone
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               size={16}
             />
             <input
-              type="email"
-              name="email"
-              value={formData.email}
+              type="tel"
+              name="phoneNumber"
+              value={formData.phoneNumber}
               onChange={handleChange}
-              placeholder="Email"
+              placeholder="Phone number"
               className={`w-full pl-9 pr-3 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                validationErrors.email ? "border-red-500" : "border-gray-300"
+                validationErrors.phoneNumber
+                  ? "border-red-500"
+                  : "border-gray-300"
               }`}
               required
             />
           </div>
-          {validationErrors.email && (
+          {validationErrors.phoneNumber && (
             <p className="text-red-500 text-xs mt-1">
-              {validationErrors.email}
+              {validationErrors.phoneNumber}
             </p>
           )}
-        </div>
-        <div>
-          <label className="block text-xs text-gray-500 mb-1">Username</label>
-          <div className="relative">
-            <MdPerson
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={16}
-            />
-            <input
-              type="text"
-              name="userName"
-              value={formData.userName}
-              onChange={handleChange}
-              placeholder="Username"
-              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs text-gray-500 mb-1">Password</label>
-          <div className="relative">
-            <MdLock
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={16}
-            />
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Password"
-              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-            >
-              {showPassword ? (
-                <MdVisibilityOff size={18} />
-              ) : (
-                <MdVisibility size={18} />
-              )}
-            </button>
-          </div>
+      <div>
+        <label className="block text-xs text-gray-500 mb-1">Password</label>
+        <div className="relative">
+          <MdLock
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            size={16}
+          />
+          <input
+            type={showPassword ? "text" : "password"}
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
+            className={`w-full pl-9 pr-10 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+              validationErrors.password ? "border-red-500" : "border-gray-300"
+            }`}
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+          >
+            {showPassword ? (
+              <MdVisibilityOff size={18} />
+            ) : (
+              <MdVisibility size={18} />
+            )}
+          </button>
         </div>
-        <div>
-          <label className="block text-xs text-gray-500 mb-1">
-            Confirm Password
-          </label>
-          <div className="relative">
-            <MdLock
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={16}
-            />
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Password"
-              className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-            >
-              {showConfirmPassword ? (
-                <MdVisibilityOff size={18} />
-              ) : (
-                <MdVisibility size={18} />
-              )}
-            </button>
-          </div>
-          {validationErrors.confirmPassword && (
-            <p className="text-red-500 text-xs mt-1">
-              {validationErrors.confirmPassword}
-            </p>
-          )}
+        {validationErrors.password && (
+          <p className="text-red-500 text-xs mt-1">
+            {validationErrors.password}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-xs text-gray-500 mb-1">
+          Confirm Password
+        </label>
+        <div className="relative">
+          <MdLock
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            size={16}
+          />
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="Confirm password"
+            className={`w-full pl-9 pr-10 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+              validationErrors.confirmPassword
+                ? "border-red-500"
+                : "border-gray-300"
+            }`}
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+          >
+            {showConfirmPassword ? (
+              <MdVisibilityOff size={18} />
+            ) : (
+              <MdVisibility size={18} />
+            )}
+          </button>
         </div>
+        {validationErrors.confirmPassword && (
+          <p className="text-red-500 text-xs mt-1">
+            {validationErrors.confirmPassword}
+          </p>
+        )}
       </div>
 
       {error && (
@@ -256,7 +221,7 @@ const RegisterForm = ({ onSubmit, error }) => {
         type="submit"
         className="w-full bg-blue-500 text-white py-2.5 rounded-full font-semibold hover:bg-blue-400 transition text-sm cursor-pointer"
       >
-        Sign In
+        Sign Up
       </button>
     </form>
   );

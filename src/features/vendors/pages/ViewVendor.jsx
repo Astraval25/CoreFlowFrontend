@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import ViewVendorDetails from "./ViewVendorDetails";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 const ViewVendor = () => {
   const { vendorId: paramVendorId } = useParams();
+  const { state } = useLocation();
   const [companyId, setCompanyId] = useState(null);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ const ViewVendor = () => {
   return (
     <div className="w-full">
       {paramVendorId && companyId ? (
-        <ViewVendorDetails companyId={companyId} vendorId={Number(paramVendorId)} />
+        <ViewVendorDetails companyId={companyId} vendorId={Number(paramVendorId)} notice={state?.notice} />
       ) : (
         <p className="p-6 text-app-sub">Loading vendor details...</p>
       )}
