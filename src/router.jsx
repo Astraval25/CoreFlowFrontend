@@ -4,6 +4,7 @@ import { DashboardPage as Dashboard } from "./features/dashboard/DashboardPage";
 import ProtectedRoute from "./features/Login/routes/ProtectedRoute";
 import RedirectIfLoggedIn from "./features/Login/routes/RedirectIfLoggedIn";
 import RegisterPage from "./features/Register/RegisterPage";
+import RegisterRequestPage from "./features/RegisterRequest/RegisterRequestPage";
 import VerifyOtpPage from "./features/verifyUser/VerifyOtpPage";
 import MainLayout from "./shared/layouts/MainLayout";
 import CustomerPage from "./features/customer/pages/CustomerPage";
@@ -79,8 +80,12 @@ export const router = createBrowserRouter([
     element: <RedirectIfLoggedIn><LoginPage /></RedirectIfLoggedIn>,
   },
   {
-    path: "cf/auth/register",
+    path: "cf/auth/register-admin",
     element: <RedirectIfLoggedIn><RegisterPage /></RedirectIfLoggedIn>,
+  },
+  {
+    path: "cf/auth/register-request",
+    element: <RedirectIfLoggedIn><RegisterRequestPage /></RedirectIfLoggedIn>,
   },
   {
     path: "cf/auth/verify",

@@ -59,7 +59,7 @@ const LoginPage = () => {
           Don't have an account?{" "}
           <span
             className="text-blue-600 cursor-pointer font-medium"
-            onClick={() => navigate("/cf/auth/register")}
+            onClick={() => navigate("/cf/auth/register-request")}
           >
             Sign Up
           </span>
