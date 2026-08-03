@@ -337,12 +337,12 @@ export const OrderPaymentActivityGraph = ({
 
       <div className="rounded-xl border border-line bg-surface p-4">
         {visibleCells.some((item) => item.activity > 0) ? (
-          <div className="thin-scroll overflow-x-auto pb-2">
-            <div className="min-w-[760px]">
+          <div className="thin-scroll w-full overflow-x-auto pb-2">
+            <div className="w-full min-w-[760px]">
               {mode !== "weekly" && (
                 <div
                   className="mb-2 grid gap-1 pl-7 text-[11px] font-semibold text-app-muted"
-                  style={{ gridTemplateColumns: `repeat(${columnCount}, minmax(10px, 1fr))` }}
+                  style={{ gridTemplateColumns: `repeat(${columnCount}, minmax(12px, 1fr))` }}
                 >
                   {monthLabels.map((item) => (
                     <span key={`${item.label}-${item.weekIndex}`} style={{ gridColumn: item.weekIndex + 1 }}>
@@ -352,17 +352,21 @@ export const OrderPaymentActivityGraph = ({
                 </div>
               )}
 
-              <div className="flex gap-2">
-                <div className="grid h-[118px] w-5 grid-rows-7 text-[10px] font-semibold text-app-muted">
+              <div className="grid grid-cols-[20px_minmax(0,1fr)] gap-2">
+                <div className="grid grid-rows-7 text-[10px] font-semibold text-app-muted">
                   <span className="row-start-2">Mon</span>
                   <span className="row-start-4">Wed</span>
                   <span className="row-start-6">Fri</span>
                 </div>
                 <div
-                  className="grid grid-flow-col grid-rows-7 gap-1"
+                  className={`grid grid-flow-col grid-rows-7 gap-1 ${
+                    mode === "weekly" ? "justify-start" : "w-full"
+                  }`}
                   style={{
-                    gridTemplateColumns: `repeat(${columnCount}, 14px)`,
-                    gridAutoColumns: "14px",
+                    gridTemplateColumns: mode === "weekly"
+                      ? `repeat(${columnCount}, 20px)`
+                      : `repeat(${columnCount}, minmax(12px, 1fr))`,
+                    gridAutoColumns: mode === "weekly" ? "20px" : "minmax(12px, 1fr)",
                   }}
                 >
                   {visibleCells.map((item) => {
@@ -371,7 +375,7 @@ export const OrderPaymentActivityGraph = ({
                       <button
                         key={item.id}
                         type="button"
-                        className={`h-3.5 w-3.5 rounded-[3px] border transition hover:scale-125 hover:ring-2 hover:ring-brand/20 focus:outline-none focus:ring-2 focus:ring-brand/30 ${
+                        className={`aspect-square w-full rounded-[3px] border transition hover:z-10 hover:scale-125 hover:ring-2 hover:ring-brand/20 focus:z-10 focus:outline-none focus:ring-2 focus:ring-brand/30 ${
                           item.muted ? "bg-transparent border-transparent" : getIntensityClass(item.activity, maxActivity)
                         }`}
                         style={{
