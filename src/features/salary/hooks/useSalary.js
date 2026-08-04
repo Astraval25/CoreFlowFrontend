@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { coreApi } from "../../../shared/services/coreApi";
+import { emitAppError } from "../../../shared/utils/appError";
 import { jwtDecode } from "jwt-decode";
 import {
   createColumnHelper,
@@ -87,7 +88,16 @@ export const useSalary = () => {
       await coreApi.approveSalaryPeriod(companyId, salaryPeriodId);
       fetchPeriods();
     } catch (err) {
-      console.error("Approve error:", err);
+      emitAppError(err, "Failed to approve salary period.");
+    }
+  };
+
+  const deletePeriod = async (salaryPeriodId) => {
+    try {
+      await coreApi.deleteSalaryPeriod(companyId, salaryPeriodId);
+      fetchPeriods();
+    } catch (err) {
+      emitAppError(err, "Failed to delete salary period.");
     }
   };
 
@@ -107,17 +117,17 @@ export const useSalary = () => {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      console.error("Download slip error:", err);
+      emitAppError(err, "Failed to download salary slip.");
     }
   };
 
   const columnHelper = createColumnHelper();
 
   const columns = [
+    columnHelper.display({ id: "serialNumber", header: "S.No" }),
     columnHelper.accessor("employeeName", { header: "Employee" }),
     columnHelper.accessor("employeeCode", { header: "Code" }),
-    columnHelper.accessor("fromDate", { header: "From" }),
-    columnHelper.accessor("toDate", { header: "To" }),
+    columnHelper.accessor("fromDate", { header: "Salary Period" }),
     columnHelper.accessor("salaryType", { header: "Type" }),
     columnHelper.accessor("grossAmount", { header: "Gross" }),
     columnHelper.accessor("netAmount", { header: "Net" }),
@@ -154,6 +164,7 @@ export const useSalary = () => {
     calcError,
     calculateSalary,
     approvePeriod,
+    deletePeriod,
     viewDetail,
     downloadSlip,
     companyId,

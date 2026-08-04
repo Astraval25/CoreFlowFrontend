@@ -796,6 +796,9 @@ export const coreApi = {
   getSalaryPeriodDetail: (companyId, salaryPeriodId) =>
     api.get(`${ENDPOINTS.MODEMP}/${companyId}/modemp/salary/periods/${salaryPeriodId}`),
 
+  deleteSalaryPeriod: (companyId, salaryPeriodId) =>
+    api.delete(`${ENDPOINTS.MODEMP}/${companyId}/modemp/salary/periods/${salaryPeriodId}`),
+
   approveSalaryPeriod: (companyId, salaryPeriodId) =>
     api.patch(`${ENDPOINTS.MODEMP}/${companyId}/modemp/salary/periods/${salaryPeriodId}/approve`),
 
